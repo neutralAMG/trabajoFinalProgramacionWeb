@@ -14,3 +14,7 @@ exports.GetRegister = async (req,res,next)=>{
 exports.PostRegister = async (req,res,next)=>{
     
 }
+
+exports.PostChangeActiveState = async (req,res,next)=>{
+    
+}

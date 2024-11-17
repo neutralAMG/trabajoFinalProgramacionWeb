@@ -49,7 +49,10 @@ exports.Config = () =>{
     User.hasMany(Role, {foreignKey:"RoleId", hooks:true});
 
     User.hasMany(Order, {foreignKey:"ClientId", onDelete:"CASCADE", hooks:true});
-    Order.hasMany(User, {foreignKey:"ClientId", hooks:true});
+    Order.hasMany(User, {foreignKey:"ClientId", hooks:true}); 
+    
+    User.hasMany(Order, {foreignKey:"DeliveryId", onDelete:"CASCADE", hooks:true});
+    Order.hasMany(User, {foreignKey:"DeliveryId", hooks:true});
 
     User.hasMany(Direction, {foreignKey:"UserId", onDelete:"CASCADE", hooks:true});
     Direction.hasMany(User, {foreignKey:"UserId", hooks:true});

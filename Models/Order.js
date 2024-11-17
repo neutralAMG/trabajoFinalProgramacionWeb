@@ -1,7 +1,7 @@
 const {DataTypes} = require("sequelize");
 const connection = require("../Context/applicationContext");
 
-const Order = require("Order",{
+const Order = connection.define("Order",{
     Id:{
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -15,7 +15,12 @@ const Order = require("Order",{
     TotalAfterTax:{
         type: DataTypes.DECIMAL(10,2),
         allowNull: false,
-    },
+    }, 
+    HasBeenAssinged:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    }, 
     AmountOfProducts:{
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -35,6 +40,10 @@ const Order = require("Order",{
     ClientId:{
         type: DataTypes.INTEGER,
         allowNull: false,
+    }, 
+    DeliveryId:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
     }, 
      
 }, {tableName: "Order"})

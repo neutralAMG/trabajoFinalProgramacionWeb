@@ -37,6 +37,11 @@ const User = connection.define("User",{
         allowNull: false,
         defaultValue: false
     },
+    IsBusy:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
     Password:{
         type: DataTypes.STRING,
         allowNull: false,

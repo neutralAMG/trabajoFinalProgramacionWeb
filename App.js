@@ -24,4 +24,7 @@ routesRegister.Register(app)
 modelRelationshipConfig.Config();
 
 app.use(express.urlencoded({extended: false}));
-connection.sync(/*{alter:true}*/).then((result) => app.listen(8001)).catch((err) => console.log(err));
+app.use(function(req,res,next){
+    res.status(200).send("<h1>hello world</h1>")
+})
+connection.sync(/*{alter:true}*/).then(() => app.listen(8001)).catch((err) => console.log(err));

@@ -15,7 +15,6 @@ const CommerceType = connection.define("CommerceType",{
      Description:{
         type: DataTypes.STRING,
         allowNull: false,
-        autoIncrement: true,
     }, 
      Icon:{
         type: DataTypes.STRING,
