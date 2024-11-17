@@ -16,6 +16,10 @@ const Order = connection.define("Order",{
         type: DataTypes.DECIMAL(10,2),
         allowNull: false,
     }, 
+    TaxApplied:{
+        type: DataTypes.DECIMAL(3,2),
+        allowNull: false,
+    },
     HasBeenAssinged:{
         type: DataTypes.BOOLEAN,
         allowNull: false,

@@ -5,6 +5,7 @@ const path = require("path")
 const connection = require("./Context/applicationContext")
 const routesRegister = require("./Utils/RegisterRoutes")
 const modelRelationshipConfig = require("./Utils/ModelsRelantionshipsConfig")
+const seeds = require("./Utils/Seeds")
 
 app.engine("hbs", engine({
     helpers:{
@@ -24,7 +25,12 @@ routesRegister.Register(app)
 modelRelationshipConfig.Config();
 
 app.use(express.urlencoded({extended: false}));
+
 app.use(function(req,res,next){
     res.status(200).send("<h1>hello world</h1>")
 })
-connection.sync(/*{alter:true}*/).then(() => app.listen(8001)).catch((err) => console.log(err));
+connection.sync(/*{alter:true}*/).then(() => {
+    seeds.GenerateSeeds();
+    app.listen(8001)
+}
+).catch((err) => console.log(err));
