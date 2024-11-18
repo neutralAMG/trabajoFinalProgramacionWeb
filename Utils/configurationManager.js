@@ -11,6 +11,7 @@ const GetConfiguration = async () =>{
     }
   
 }
+
 const GetSingleConfigurationValue = async (key) =>{
     try{
         const fileData = await fs.promises.readFile(fileName, "utf8"); 

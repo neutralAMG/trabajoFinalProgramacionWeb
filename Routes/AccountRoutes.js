@@ -3,6 +3,7 @@ const accountController = require("../Controllers/AccountController")
 
 router.get("/authenticate", accountController.GetAuthenticate);
 router.post("/authenticate", accountController.PostAuthenticate);
+router.post("/unAuthenticate", accountController.PostUnAuthenticate);
 router.get("/register", accountController.GetRegister);
 router.post("/register", accountController.PostRegister);
 router.post("/change-active-state/:id", accountController.PostChangeActiveState);

@@ -3,25 +3,25 @@ const orderDetailModel = require("../Models/OrderDetail");
 const orderStatusModel = require("../Models/OrderStatus");
 const orderUpdateModel = require("../Models/OrderUpdate");
 
-exports.GetAllOrders = (req,res,next) => {
+exports.GetAllOrders = async (req,res,next) => {
 
 }
-exports.GetOrderDetail = (req,res,next) =>{
+exports.GetOrderDetail = async (req,res,next) =>{
 
 }
-exports.GetAddOrder = (req,res,next) =>{
+exports.GetAddOrder = async (req,res,next) =>{
     
 }
 
-exports.PostAddOrder = (req,res,next) =>{
+exports.PostAddOrder = async (req,res,next) =>{
     
 }
 
-exports.PostUpdateOrderStatus = (req,res,next) =>{
+exports.PostUpdateOrderStatus = async (req,res,next) =>{
     
 }
 
-exports.PostAssingOrder = (req,res,next) =>{
+exports.PostAssingOrder = async (req,res,next) =>{
     
 }
 

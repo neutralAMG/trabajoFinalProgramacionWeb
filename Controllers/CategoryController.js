@@ -1,25 +1,25 @@
 const categoryModel = require("../Models/Category");
 
-exports.GetAllCategory = (req,res,next) =>{
+exports.GetAllCategory = async (req,res,next) =>{
 
 }
 
-exports.GetAddCategory = (req,res,next) =>{
+exports.GetAddCategory = async (req,res,next) =>{
     
 }
 
-exports.PostAddCategory = (req,res,next) =>{
+exports.PostAddCategory = async  (req,res,next) =>{
     
 }
 
-exports.GetEditCategory = (req,res,next) =>{
+exports.GetEditCategory = async (req,res,next) =>{
     
 }
 
-exports.PostEditCategory = (req,res,next) =>{
+exports.PostEditCategory = async (req,res,next) =>{
     
 }
 
-exports.PostDeleteCategory = (req,res,next) =>{
+exports.PostDeleteCategory = async (req,res,next) =>{
     
 }

@@ -1,13 +1,13 @@
 const userFavCommerceModel = require("../Models/UserFavCommerce");
 
-exports.GetAllUserFavCommerces = (req,res,next) =>{
+exports.GetAllUserFavCommerces = async (req,res,next) =>{
 
 }
 
-exports.PostAddUserFavCommerces = (req,res,next) =>{
+exports.PostAddUserFavCommerces = async (req,res,next) =>{
     
 }
 
-exports.PostDeleteUserFavCommerces = (req,res,next) =>{
+exports.PostDeleteUserFavCommerces = async (req,res,next) =>{
     
 }
