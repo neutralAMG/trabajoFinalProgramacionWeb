@@ -22,7 +22,7 @@ const Product = connection.define("Product",{
     },
     Discount:{
         type: DataTypes.DECIMAL(3,2),
-        allowNull: false,
+        allowNull: true,
     },
     Photo:{
         type: DataTypes.STRING,

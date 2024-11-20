@@ -6,7 +6,7 @@ const connection = require("./Context/applicationContext")
 const routesRegister = require("./Utils/RegisterRoutes")
 const modelRelationshipConfig = require("./Utils/ModelsRelantionshipsConfig")
 const seeds = require("./Utils/Seeds")
-const SessionManager = require("../Utils/SessionManager");
+const SessionManager = require("./Utils/SessionManager");
 const session = require("express-session")
 
 app.engine("hbs", engine({
@@ -26,7 +26,9 @@ app.use("/Images",express.static(path.join(__dirname,"Images")));
 app.use(session({secret:"anything", resave: true, saveUninitialized: false}));
 
 app.use((req, res, next) =>{
-    res.locals.IsLoggedIn = SessionManager.IsLogin(req)
+    res.locals.IsLoggedIn = SessionManager.IsLogin(req);
+    res.locals.UserInfo = SessionManager.ShowLogin(req);
+    next();
 });
 
 routesRegister.Register(app)

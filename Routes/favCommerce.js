@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const userfavCommereceController = require("../Controllers/userFavCommerceController");
 
-router.get("/fav-index", userfavCommereceController.GetAllUserFavCommerces);
-router.post("/fav-add", userfavCommereceController.PostAddUserFavCommerces);
-router.post("/fav-delete", userfavCommereceController.PostDeleteUserFavCommerces);
+router.get("/favCommerce-index", userfavCommereceController.GetAllUserFavCommerces);
+router.post("/favCommerce-add", userfavCommereceController.PostAddUserFavCommerces);
+router.post("/favCommerce-delete", userfavCommereceController.PostDeleteUserFavCommerces);
 
 module.exports = router
 

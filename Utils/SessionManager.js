@@ -1,13 +1,15 @@
-
+const session = require("express-session")
 exports.IsLogin = (req)=> req.session.IsLogin
 
 
 
-exports.Login = (req, UserInfo) => {
+exports.Login = async (req, UserInfo) => {
     req.session.UserInfo = UserInfo;
     req.session.IsLogin = true;
-    return req.session.save();
+    return await req.session.save();
 }
 
-
+exports.ShowLogin = (req) => {
+  return req.session.UserInfo;
+}
 exports.Logout = (req) => req.session.destroy();
