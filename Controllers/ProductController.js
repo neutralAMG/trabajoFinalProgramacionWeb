@@ -32,7 +32,7 @@ exports.GetAllProductsByCommerceId = async (req,res,next) =>{
 exports.GetAllProductsByCategory = async (req,res,next) =>{
     const CategoryId = req.params.id;
     try{
-        let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CategoryId:CategoryId, CommerceId: req.locals.UserInfo.CommerceId}});
+        let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CategoryId:CategoryId, CommerceId: res.locals.UserInfo.CommerceId}});
         products = products.map((p) => p.dataValues);
 
         res.render("ProductsViews/product-category",{
@@ -47,7 +47,7 @@ exports.GetAllProductsByCategory = async (req,res,next) =>{
 exports.GetProductById = async (req,res,next) =>{
     const Id = req.params.id;
     try{
-        let product = await productModel.findOne({include:[{model:categoryModel}], where:{ Id:Id, CommerceId: req.locals.UserInfo.CommerceId}});
+        let product = await productModel.findOne({include:[{model:categoryModel}], where:{ Id:Id, CommerceId: res.locals.UserInfo.CommerceId}});
 
         res.render("ProductsViews/product-detail",{
             product: product.dataValues,
@@ -58,10 +58,14 @@ exports.GetProductById = async (req,res,next) =>{
 }
 
 
-exports.GetAddProduct = async (req,res,next) => res.render("ProductsViews/product-add",{  
+exports.GetAddProduct = async (req,res,next) => {
+    let categories = await productModel.findAll({where: { CommerceId:res.locals.UserInfo.CommerceId }});
+    res.render("ProductsViews/product-add",{  
     product: null,
-    EditMode: false,});
-
+    categories: categories.map((c) => c.dataValues),
+    EditMode: false,
+   });
+}
 
 exports.PostAddProduct = async (req,res,next) =>{
     const { Name, Description, Price, Discount, Photo, CategoryId,} = req.body;
@@ -88,10 +92,12 @@ exports.GetEditProduct = async (req,res,next) =>{
     try{
         const id = req.params.id;
     
-        let product = await productModel.findOne({where: {Id:id, CommerceId:req.locals.UserInfo.CommerceId }});
+        let product = await productModel.findOne({where: {Id:id, CommerceId:res.locals.UserInfo.CommerceId }});
+        let categories = await productModel.findAll({where: { CommerceId:res.locals.UserInfo.CommerceId }});
     
         res.render("ProductsViews/product-add",{
             product: product.dataValues,
+            categories: categories.map((c) => c.dataValues),
             EditMode: true,
         });
     }catch{
@@ -128,7 +134,7 @@ exports.PostAddDiscoundProduct = async (req,res,next) =>{
 
         await productModel.update({
             Discount
-         },{where: {Id:id, CommerceId:req.locals.UserInfo.CommerceId }});
+         },{where: {Id:id, CommerceId:res.locals.UserInfo.CommerceId }});
 
          res.redirect("/product/product-mant");
     }catch{
@@ -141,7 +147,7 @@ exports.PostDeleteProduct = async (req,res,next) =>{
     const Id = req.body;
 
     try{
-        await productModel.destroy({where: {Id:Id, CommerceId:req.locals.UserInfo.CommerceId }});
+        await productModel.destroy({where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId }});
 
         res.redirect("/product/product-mant");
     }catch (err){

@@ -2,7 +2,7 @@ const directionModel = require("../Models/Direction");
 
 exports.GetAllUserDirection = async (req,res,next) =>{
     try{
-        let directions = await directionModel.findAll({where: {UserId: req.locals.UserInfo.Id}});
+        let directions = await directionModel.findAll({where: {UserId: res.locals.UserInfo.Id}});
         directions = directions.map((c) => c.dataValues);
 
         res.render("DirectionViews/direction-mant",{
@@ -40,7 +40,7 @@ exports.GetEditDirection = async (req,res,next) =>{
     try{
         const id = req.params.id;
     
-        let direction = await directionModel.findOne({where: {Id:id, UserId:req.locals.UserInfo.Id }});
+        let direction = await directionModel.findOne({where: {Id:id, UserId:res.locals.UserInfo.Id }});
     
         res.render("DirectionViews/direction-add",{
             direction: direction.dataValues,
@@ -75,7 +75,7 @@ exports.PostDeleteDirection = async (req,res,next) =>{
     const Id = req.body;
 
     try{
-        await directionModel.destroy({where: {Id:Id, UserId:req.locals.UserInfo.Id }});
+        await directionModel.destroy({where: {Id:Id, UserId:res.locals.UserInfo.Id }});
 
         res.redirect("/direction/direction-mant");
     }catch (err){

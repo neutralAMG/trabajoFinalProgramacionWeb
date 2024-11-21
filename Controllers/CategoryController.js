@@ -4,7 +4,7 @@ const categoryModel = require("../Models/Category");
 exports.GetAllCategory = async (req,res,next) =>{
 
     try{
-        let categories = await categoryModel.findAll({where:{ CommerceId: req.locals.UserInfo.CommerceId}});
+        let categories = await categoryModel.findAll({where:{ CommerceId: res.locals.UserInfo.CommerceId}});
          categories = categories.map((c) => c.dataValues);
 
         res.render("CategoryViews/category-mant",{
@@ -32,7 +32,7 @@ exports.PostAddCategory = async  (req,res,next) =>{
      await categoryModel.create({
         Name,
         Description,
-        CommerceId: req.locals.UserInfo.CommerceId
+        CommerceId: res.locals.UserInfo.CommerceId
      })
 
      res.redirect("/category/category-mant");
@@ -48,7 +48,7 @@ exports.GetEditCategory = async (req,res,next) =>{
     try{
     const id = req.params.id;
 
-    let category = await categoryModel.findOne({where: {Id:id, CommerceId:req.locals.UserInfo.CommerceId }});
+    let category = await categoryModel.findOne({where: {Id:id, CommerceId:res.locals.UserInfo.CommerceId }});
 
     res.render("CategoryViews/category-add",{
         category: category.dataValues,
@@ -69,7 +69,7 @@ exports.PostEditCategory = async (req,res,next) =>{
      await categoryModel.update({
         Name,
         Description,
-     },{where: {Id:Id, CommerceId:req.locals.UserInfo.CommerceId }})
+     },{where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId }})
 
      res.redirect("/category/category-mant")
 
@@ -83,7 +83,7 @@ exports.PostDeleteCategory = async (req,res,next) =>{
     const Id = req.body;
 
     try{
-        await categoryModel.destroy({where: {Id:Id, CommerceId:req.locals.UserInfo.CommerceId }});
+        await categoryModel.destroy({where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId }});
         res.redirect("/category/category-mant");
     }catch (err){
         res.redirect("/category/category-mant");
