@@ -12,7 +12,7 @@ const orderUpdates = connection.define("orderUpdates",{
     },
     Comment:{
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
 
 },{tableName: "orderUpdates"})

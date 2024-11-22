@@ -32,8 +32,6 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
 
 exports.GetAddCommerece = async (req,res,next) =>{
     try{
-
-    
     const userPendingToSave = {
         Name,
         UserName,

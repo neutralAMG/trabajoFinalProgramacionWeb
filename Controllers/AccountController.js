@@ -28,7 +28,11 @@ exports.PostAuthenticate = async (req,res,next)=>{
         res.redirect("/account//authenticate");
 
     SessionManager.Login(req,{
-        
+        Id: UserToAuth.dataValues.Id,
+        CommerceId: UserToAuth.dataValues.CommerceId,
+        Name: UserToAuth.dataValues.Name,
+        RoleId: UserToAuth.dataValues.RoleId,
+        IsActive: UserToAuth.dataValues.IsActive,
     })
     res.redirect("/")
 }
@@ -58,11 +62,18 @@ exports.PostRegister = async (req,res,next)=>{
     } = req.body
 
         if(Password != ConfirmPassword)
-            res.redirect("/account//authenticate");
+            res.redirect("/account/authenticate");
         const  hashPass = await bycrypt.hash(pass, 12);
 
 }
 
 exports.PostChangeActiveState = async (req,res,next)=>{
-    
+    const id = req.params.id;
+    const userToUpdate = await userModel.findByPk(req.locals.UserInfo.CommerceId);
+
+    await userModel.update({
+        IsActive: !userToUpdate.dataValues.IsActive,
+       }, {where:{Id:id}});
+
+       res.redirect("/user/user-mant/")
 }

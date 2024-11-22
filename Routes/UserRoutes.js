@@ -1,11 +1,12 @@
 const router = require("express").Router()
 const userController = require("../Controllers/UserController")
 
-router.get("/order-mant", userController.GetAllUserMant);
-router.get("/order-admin-mant", userController.GetAllAdminUserMant)
-router.get("/order-edit", userController.GetEditUser);
-router.post("/order-edit", userController.PostEditUser);
-router.post("/order-delete", userController.PostDeleteUser);
+router.get("/user-client-mant", userController.GetAllUserClientMant);
+router.get("/user-delivery-mant", userController.GetAllUserDeliveryMant);
+router.get("/user-admin-mant", userController.GetAllAdminUserMant)
+router.get("/user-edit", userController.GetEditUser);
+router.post("/user-edit", userController.PostEditUser);
+router.post("/user-delete", userController.PostDeleteUser);
 
 
 module.exports = router

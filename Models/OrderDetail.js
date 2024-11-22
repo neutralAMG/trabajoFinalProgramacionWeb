@@ -18,7 +18,7 @@ const OrderDetails = connection.define("OrderDetails",{
     }, 
     Discount:{
     type: DataTypes.DECIMAL(3,2),
-    allowNull: false,
+    allowNull: true,
    },
 },{
     tableName: "OrderDetails",

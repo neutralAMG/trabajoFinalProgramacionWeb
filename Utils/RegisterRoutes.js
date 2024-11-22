@@ -8,6 +8,7 @@ const favCommerceRoutes = require("../Routes/favCommerce");
 const orderRoutes = require("../Routes/OrderRoutes");
 const productRoutes = require("../Routes/ProductRoutes");
 const userRoutes = require("../Routes/UserRoutes");
+const homeRoutes = require("../Routes/HomeRoutes");
 
 exports.Register = (express) =>{
     express.use("/account", accountRoutes);
@@ -20,6 +21,7 @@ exports.Register = (express) =>{
     express.use("/order", orderRoutes);
     express.use("/product", productRoutes);
     express.use("/user", userRoutes);
+    express.use("/home", homeRoutes);
 }
 
 

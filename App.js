@@ -39,7 +39,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(function(req,res,next){
     res.status(200).send("<h1>hello world</h1>")
 })
-connection.sync(/*{alter:true}*/).then(() => {
+connection.sync({/*alter:true*/}).then(() => {
     seeds.GenerateSeeds();
     app.listen(8001)
 }
