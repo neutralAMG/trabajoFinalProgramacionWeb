@@ -1,8 +1,11 @@
 const userModel = require("../Models/User");
+const {Roles} = require("../Utils/ImportantENVVariables");
+const SessionManager = require("../Utils/SessionManager");
+
 
 exports.GetAllUserClientMant = async (req,res,next) =>{
     try{
-        let clients = await userModel.findAll({where:{ RoleId:2}});
+        let clients = await userModel.findAll({where:{ RoleId:Roles.Client}});
         clients = clients.map((p) => p.dataValues);
 
         res.render("UserViews/user-client",{
@@ -16,7 +19,7 @@ exports.GetAllUserClientMant = async (req,res,next) =>{
 
 exports.GetAllUserDeliveryMant = async (req,res,next) =>{
     try{
-        let deliveries = await userModel.findAll({where:{ RoleId:3}});
+        let deliveries = await userModel.findAll({where:{ RoleId:Roles.Delivery}});
         deliveries = deliveries.map((p) => p.dataValues);
 
         res.render("UserViews/user-delivery",{
@@ -31,7 +34,7 @@ exports.GetAllUserDeliveryMant = async (req,res,next) =>{
 
 exports.GetAllAdminUserMant = async (req,res,next) =>{
     try{
-        let admins = await userModel.findAll({where:{ RoleId:1}});
+        let admins = await userModel.findAll({where:{ RoleId:Roles.Admin}});
         admins = admins.map((p) => p.dataValues);
 
         res.render("UserViews/user-admin",{
@@ -47,17 +50,16 @@ exports.GetAllAdminUserMant = async (req,res,next) =>{
 exports.GetEditUser = async (req,res,next) =>{
     try{
         const id = req.params.id;
-
     
-        let user = await userModel.findOne({where: {Id:id ?? res.locals.UserInfo.Id}});
+        let user = await userModel.findOne({where: {Id:id ?? SessionManager.getSessionUserInfo(res).Id}});
     
         res.render("UserViews/user-edit",{
             category: user.dataValues,
             EditMode: true,
         });
+
         }catch{
-            // make diferent by role
-           res.redirect("/user/user-mant");
+           res.redirect(redirectUrl);
            console.error(err);
         }
 }
@@ -73,6 +75,7 @@ exports.PostEditUser = async (req,res,next) =>{
         ConfirmPassword,
         RoleId,
         CommerceId  } = req.body;
+    const redirectUrl = req.body;
       let  Phone = req.file;
 
     try{
@@ -95,10 +98,9 @@ exports.PostEditUser = async (req,res,next) =>{
         CommerceId 
      },{where: {Id:Id}})
 
-     res.redirect("/user/user-mant")
+     res.redirect(redirectUrl)
 
    }catch(err){
-      // make diferent by role
      res.redirect("/user/user-edit/" + Id)
      console.error(err);
    }
@@ -110,10 +112,10 @@ exports.PostDeleteUser = async (req,res,next) =>{
     try{
         await userModel.destroy({where: {Id:Id}});
             // make diferent by role
-        res.redirect("/user/user-mant");
+        res.redirect(redirectUrl);
     }catch (err){
-            // make diferent by role
         res.redirect("/user/user-mant");
         console.error(err);
     }
 }
+

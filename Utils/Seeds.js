@@ -1,7 +1,7 @@
 const OrderStatuses = require("../Models/OrderStatus");
 const Role = require("../Models/Role");
 const Config = require("../Models/Configuration");
-
+const {ConfigurationValueTypes} = require("./ImportantENVVariables")
 const User = require("../Models/User");
 
 
@@ -44,7 +44,7 @@ const DefaultAdminUser = {
 const Configuration = {
     Name: "ITBS",  
     Value:"0.18",  
-    Type:"Int"
+    Type: ConfigurationValueTypes.int
 }
 
 exports.GenerateSeeds = async ()=>{

@@ -1,4 +1,5 @@
 const userModel = require("../Models/User");
+const roleModel = require("../Models/Role");
 const SessionManager = require("../Utils/SessionManager");
 const bycrypt = require("bcryptjs");
 const {Op} = require("sequelize")
@@ -20,12 +21,12 @@ exports.PostAuthenticate = async (req,res,next)=>{
     })
 
     if(!UserToAuth)
-        res.redirect("/account//authenticate");
+        res.redirect("/account/authenticate");
 
     const IsPasswordValid = await bycrypt.compare(Pass, UserToAuth.dataValues.Password)
 
     if(!IsPasswordValid) 
-        res.redirect("/account//authenticate");
+        res.redirect("/account/authenticate");
 
     SessionManager.Login(req,{
         Id: UserToAuth.dataValues.Id,
@@ -37,12 +38,15 @@ exports.PostAuthenticate = async (req,res,next)=>{
     res.redirect("/")
 }
 exports.PostUnAuthenticate = async (req,res,next)=>{
-    SessionManager.Logout(req)
-    res.redirect()
+    SessionManager.Logout(req);
+    res.redirect("/account/authenticate");
 }
 
 exports.GetRegister = async (req,res,next)=>{
-    
+    const roles = await roleModel.findAll();
+    res.render("Auth/register",{
+        roles: roles
+    })
 }
 
 exports.PostRegister = async (req,res,next)=>{

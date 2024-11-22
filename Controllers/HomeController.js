@@ -6,6 +6,8 @@ const orderDetailModel = require("../Models/OrderDetail");
 const orderStatusModel = require("../Models/OrderStatus");
 const userModel = require("../Models/User");
 const productModel = require("../Models/Product");
+const {Roles} = require("../Utils/ImportantENVVariables");
+const SessionManager = require("../Utils/SessionManager");
 
 exports.GetClientHome = async  (req,res,next)=>{
     try{
@@ -25,7 +27,7 @@ exports.GetDeliveryHome = async  (req,res,next)=>{
     try{
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ CommerceId: res.locals.UserInfo.CommerceId},
+            where:{ CommerceId: SessionManager.getSessionUserInfo(res).CommerceId},
         order:["createdAt", "DESC"] });
         orders = orders.map((p) => p.dataValues);
 
@@ -43,12 +45,14 @@ exports.GetCommereceHome = async (req,res,next)=>{
     try{
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ DeliveryId: res.locals.UserInfo.Id},
-        order:["createdAt", "DESC"] });
+            where:{ DeliveryId: SessionManager.getSessionUserInfo(res).Id},
+            order:["createdAt", "DESC"] });
         orders = orders.map((p) => p.dataValues);
+        const statuses =  await orderStatusModel.findAll();
 
         res.render("HomeViews/home-delivery",{
             orders: orders,
+            statuses: statuses.map((s) => s.dataValues),
             isEmpty: orders.length === 0,
         } );
     }catch{
@@ -69,8 +73,8 @@ exports.GetAdminHome = async (req,res,next)=>{
         AmountOfProducts:1,
     }
     const orders =  (await orderModel.findAll()).map((o) => o.dataValues);
-    const client =  (await userModel.findAll({where:{RoleId:2}})).map((o) => o.dataValues);
-    const delivery =  (await userModel.findAll({where:{RoleId:3}})).map((o) => o.dataValues);
+    const client =  (await userModel.findAll({where:{RoleId:Roles.Client}})).map((o) => o.dataValues);
+    const delivery =  (await userModel.findAll({where:{RoleId:Roles.Delivery}})).map((o) => o.dataValues);
     const products =  (await productModel.findAll()).map((o) => o.dataValues);
     const commerece =  (await commereceModel.findAll()).map((o) => o.dataValues);
 

@@ -5,13 +5,15 @@ const orderUpdateModel = require("../Models/OrderUpdate");
 const productModel = require("../Models/Product");
 const categoryModel = require("../Models/Category");
 const userModel = require("../Models/User");
+const {Roles} = require("../Utils/ImportantENVVariables");
+const SessionManager = require("../Utils/SessionManager");
 
 
 exports.GetAllUserOrders = async (req,res,next) => {
     try{
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ ClientId: res.locals.UserInfo.Id},
+            where:{ ClientId: SessionManager.getSessionUserInfo(res).Id},
         order:["createdAt", "DESC"] });
         orders = orders.map((p) => p.dataValues);
 
@@ -25,11 +27,11 @@ exports.GetAllUserOrders = async (req,res,next) => {
 }
 exports.GetOrderDetail = async (req,res,next) =>{
     try{
-        let order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel}, ], where:{ Id:id ,ClientId: res.locals.UserInfo.Id}});
-
+        let order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel}, ], where:{ Id:id ,ClientId: SessionManager.getSessionUserInfo(res).Id}});
+        const orderStatuses = await orderStatusModel.findAll();
         res.render("OrdersViews/order-detail",{
             order: order.dataValues,
-
+            orderStatuses: orderStatuses.map((o) => o.dataValues),
         } );
     }catch{
         console.error(err);
@@ -78,7 +80,7 @@ exports.PostUpdateOrderStatus = async (req,res,next) =>{
 
 exports.PostAssingOrder = async (req,res,next) =>{
     try{
-       const freeDeliveries = userModel.findAll({where:{IsBusy:false, RoleId:3}});
+       const freeDeliveries = userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery}});
 
     if(!freeDeliveries)
         res.redirect("");

@@ -1,7 +1,7 @@
 const commereceModel = require("../Models/Commerce");
 const commereceTypeModel = require("../Models/CommerceType");
 const userModel = require("../Models/User");
-
+const SessionManager = require("../Utils/SessionManager")
 exports.GetAllCommerece = async (req,res,next) =>{
     try{
          let commerces = await commereceModel.findAll();
@@ -119,7 +119,7 @@ exports.PostAddCommerece = async (req,res,next) =>{
 }
 
 exports.GetEditCommerece = async (req,res,next) =>{
-     const commereceToUpdate =   await commereceModel.findByPk(req.locals.UserInfo.CommerceId);
+     const commereceToUpdate =   await commereceModel.findByPk(SessionManager.getSessionUserInfo(res).CommerceId);
      const commerceTypes = commereceTypeModel.findAll();
     res.render("CommereceViews/commerece-add",{
         commerece: commereceToUpdate.dataValues,
@@ -151,15 +151,15 @@ exports.PostEditCommerece = async (req,res,next) =>{
      OpeningHour, 
      ClousingHour, 
      CommerceTypeId,
-    }, {where:{Id:req.locals.UserInfo.CommerceId}});
+    }, {where:{Id: SessionManager.getSessionUserInfo(res).CommerceId}});
 
-    res.redirect("/commerece/commerece-edit/"+ req.locals.UserInfo.CommerceId)
+    res.redirect("/commerece/commerece-edit/"+ SessionManager.getSessionUserInfo(res).CommerceId)
 }
 exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
-    const commereceToUpdate = await commereceModel.findByPk(req.locals.UserInfo.CommerceId);
+    const commereceToUpdate = await commereceModel.findByPk(SessionManager.getSessionUserInfo(res).CommerceId);
     await commereceModel.update({
         IsActive: !commereceToUpdate.dataValues.IsActive,
-       }, {where:{Id:req.locals.UserInfo.CommerceId}});
+       }, {where:{Id:SessionManager.getSessionUserInfo(res).CommerceId}});
 
        res.redirect("/user/user-mant/")
 }

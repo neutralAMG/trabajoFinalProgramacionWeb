@@ -1,9 +1,11 @@
 const userFavCommerceModel = require("../Models/UserFavCommerce");
 const commerceModel = require("../Models/Commerce");
+const SessionManager = require("../Utils/SessionManager");
+
 
 exports.GetAllUserFavCommerces = async (req,res,next) =>{
     try{
-        let userFavCommerce = await userFavCommerceModel.findAll({include:[{model:commerceModel}],where: {UserId: res.locals.UserInfo.Id}});
+        let userFavCommerce = await userFavCommerceModel.findAll({include:[{model:commerceModel}],where: {UserId: SessionManager.getSessionUserInfo(res).Id}});
         userFavCommerce = userFavCommerce.map((c) => c.dataValues);
 
         res.render("UserFavCommereceViews/favCommerce-index",{
@@ -20,7 +22,7 @@ exports.PostAddUserFavCommerces = async (req,res,next) =>{
         const id = req.params.id;
 
       await  userFavCommerceModel.create({
-            UserId: req.locals.UserInfo.Id, 
+            UserId: SessionManager.getSessionUserInfo(res).Id, 
             CommerceId: id,
         })
 
@@ -36,7 +38,7 @@ exports.PostDeleteUserFavCommerces = async (req,res,next) =>{
     try{
         const id = req.params.id;
 
-        await  userFavCommerceModel.destroy({where:{UserId: res.locals.UserInfo.Id,  CommerceId: id} });
+        await  userFavCommerceModel.destroy({where:{UserId: SessionManager.getSessionUserInfo(res).Id,  CommerceId: id} });
 
         res.redirect("/favCommerce/favCommerce-Index");
 
