@@ -23,6 +23,7 @@ const Product = connection.define("Product",{
     Discount:{
         type: DataTypes.DECIMAL(3,2),
         allowNull: true,
+        defaultValue: 0,
     },
     Photo:{
         type: DataTypes.STRING,

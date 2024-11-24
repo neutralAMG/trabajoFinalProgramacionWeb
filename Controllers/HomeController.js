@@ -43,6 +43,7 @@ exports.GetDeliveryHome = async  (req,res,next)=>{
 
 exports.GetCommereceHome = async (req,res,next)=>{
     try{
+
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
             where:{ DeliveryId: SessionManager.getSessionUserInfo(res).Id},

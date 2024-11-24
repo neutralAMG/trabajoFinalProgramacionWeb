@@ -5,9 +5,11 @@ const orderUpdateModel = require("../Models/OrderUpdate");
 const productModel = require("../Models/Product");
 const categoryModel = require("../Models/Category");
 const userModel = require("../Models/User");
-const {Roles} = require("../Utils/ImportantENVVariables");
+const {Roles,OrderStatus} = require("../Utils/ImportantENVVariables");
 const SessionManager = require("../Utils/SessionManager");
-
+const Order = require("../Models/Order");
+const config = require("../Models/Configuration");
+const OrderDetails = require("../Models/OrderDetail");
 
 exports.GetAllUserOrders = async (req,res,next) => {
     try{
@@ -44,6 +46,7 @@ exports.GetAddOrder = async (req,res,next) =>{
         products =  products.map((c)=> c.dataValues)
         res.render("OrdersViews/order-add",{
             products: products,
+            currentTax: Number((await config.findByPk(1)).dataValues.Value),
             isEmpty: products.length === 0,
         } );
     }catch{
@@ -52,6 +55,29 @@ exports.GetAddOrder = async (req,res,next) =>{
 }
 
 exports.PostAddOrder = async (req,res,next) =>{
+    const OrderItems = req.body.GetAddOrder.OrderItems;
+    const {
+    TotalBeforeTax,
+    TotalAfterTax, 
+    TaxApplied,
+    AmountOfProducts,
+    Direction,
+    CommerceId} = req.body
+
+    const newOrder = await Order.create({
+    TotalBeforeTax,
+    TotalAfterTax, 
+    TaxApplied,
+    AmountOfProducts,
+    Direction,
+    OrderStatusId: OrderStatus.Created, 
+    CommerceId, 
+    ClientId: SessionManager.getSessionUserInfo(res).Id,
+    });
+
+    const fullOrderDetails = OrderDetails.map((o) => o.OrderId = newOrder.Id)
+    await OrderDetails.bulkCreate(OrderDetails)
+
     
     
 }

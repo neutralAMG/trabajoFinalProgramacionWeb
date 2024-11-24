@@ -33,7 +33,7 @@ exports.PostAddCategory = async  (req,res,next) =>{
         Name,
         Description,
         CommerceId: res.locals.UserInfo.CommerceId
-     })
+     });
 
      res.redirect("/category/category-mant");
    }catch(err){
@@ -69,12 +69,12 @@ exports.PostEditCategory = async (req,res,next) =>{
      await categoryModel.update({
         Name,
         Description,
-     },{where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId }})
+     },{where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId }});
 
-     res.redirect("/category/category-mant")
+     res.redirect("/category/category-mant");
 
    }catch(err){
-     res.redirect("/category/category-edit/" + Id)
+     res.redirect("/category/category-edit/" + Id);
      console.error(err);
    }
 }

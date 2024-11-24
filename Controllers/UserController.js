@@ -54,12 +54,12 @@ exports.GetEditUser = async (req,res,next) =>{
         let user = await userModel.findOne({where: {Id:id ?? SessionManager.getSessionUserInfo(res).Id}});
     
         res.render("UserViews/user-edit",{
-            category: user.dataValues,
+            user: user.dataValues,
             EditMode: true,
         });
 
         }catch{
-           res.redirect(redirectUrl);
+           res.redirect(back);
            console.error(err);
         }
 }
@@ -98,7 +98,7 @@ exports.PostEditUser = async (req,res,next) =>{
         CommerceId 
      },{where: {Id:Id}})
 
-     res.redirect(redirectUrl)
+     res.redirect("back")
 
    }catch(err){
      res.redirect("/user/user-edit/" + Id)
@@ -112,7 +112,7 @@ exports.PostDeleteUser = async (req,res,next) =>{
     try{
         await userModel.destroy({where: {Id:Id}});
             // make diferent by role
-        res.redirect(redirectUrl);
+        res.redirect(back);
     }catch (err){
         res.redirect("/user/user-mant");
         console.error(err);

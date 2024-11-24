@@ -21,14 +21,14 @@ exports.GetAddCommereceType = async (req,res,next) =>res.render("CommerceTypeVie
 exports.PostAddCommereceType = async (req,res,next) =>{
     
    const { Name, Description } = req.body;
-   const Icon = req.file
+   const Icon = req.file;
 
    try{
     await commereceTypeModel.create({
        Name,
        Description,
        Icon: "/"+Icon.path
-    })
+    });
         res.redirect("/commereceType/commereceType-mant");
     }catch(err){
       res.redirect("/commereceType/commereceType-add");
@@ -46,10 +46,10 @@ exports.GetEditCommereceType = async (req,res,next) =>{
             commereceType: commereceType.dataValues,
             EditMode: true
         });
-        }catch{
-           res.redirect("/commereceType/commereceType-mant");
-           console.error(err);
-        }
+    }catch{
+       res.redirect("/commereceType/commereceType-mant");
+       console.error(err);
+     }
 }
 
 exports.PostEditCommereceType = async (req,res,next) =>{

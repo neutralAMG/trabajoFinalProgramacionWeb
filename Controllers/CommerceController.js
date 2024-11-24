@@ -10,7 +10,7 @@ exports.GetAllCommerece = async (req,res,next) =>{
         res.render("CommereceViews/commerece-mant",{
             commerces: commerces,
             isEmpty: commerces.length === 0,
-        } );
+        });
     }catch{
         console.error(err);
     }
@@ -32,40 +32,11 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
 
 exports.GetAddCommerece = async (req,res,next) =>{
     try{
-    const userPendingToSave = {
-        Name,
-        UserName,
-        Email,
-        Cedula,
-        Phone,
-        IsActive,
-        IsBusy,
-        Password,
-        ConfirmPassword,
-        RoleId,
-        CommerceId 
-    } = req.body;
-    const commerceTypes = commereceTypeModel.findAll();
-    res.render("CommereceViews/commerece-add",{
-        commerceTypes: (await commerceTypes).map((c) => c.dataValues),
-        userPendingToSave: userPendingToSave,
-        EditMode: false,
-    })
-    
-   
-  }catch(err){
-    console.error(err);
-  }
-}
-
-exports.PostAddCommerece = async (req,res,next) =>{
-    try{
         const userPendingToSave = {
             Name,
             UserName,
             Email,
             Cedula,
-            Photo, 
             Phone,
             IsActive,
             IsBusy,
@@ -74,9 +45,23 @@ exports.PostAddCommerece = async (req,res,next) =>{
             RoleId,
             CommerceId 
         } = req.body;
+        const commerceTypes = commereceTypeModel.findAll();
 
+        res.render("CommereceViews/commerece-add",{
+            commerceTypes: (await commerceTypes).map((c) => c.dataValues),
+            userPendingToSave: userPendingToSave,
+            EditMode: false,
+        })
+
+      }catch(err){
+        console.error(err);
+      }
+}
+
+exports.PostAddCommerece = async (req,res,next) =>{
+    try{
         const 
-        {NameC, 
+        {Name, 
          Phone, 
          Email, 
         IsActive,
@@ -86,33 +71,28 @@ exports.PostAddCommerece = async (req,res,next) =>{
         } = req.body;
 
         const logo = Logo.file
-        await commereceModel.create({
-        Name:NameC, 
+       const newCommerece =  await commereceModel.create({
+        Name, 
          Phone, 
          Email, 
          Logo: "/" + logo.path, 
-        IsActive,
-        OpeningHour, 
-        ClousingHour, 
+         IsActive,
+         OpeningHour, 
+         ClousingHour, 
          CommerceTypeId,
         });
-         const Photo = req.file
 
+        await userModel.update({
+            CommerceId: newCommerece.Id, 
+        },{where:{Id: SessionManager.getSessionUserInfo(res).Id}});
+        
+        const UserInfo = SessionManager.getSessionUserInfo(res);
+        UserInfo.CommerceId = newCommerece.Id;
 
-         await userModel.create({
-        Name,
-        UserName,
-        Email,
-        Cedula,
-        Photo, 
-        Phone: "/" +    Photo.path,
-        IsActive,
-        IsBusy,
-        Password,
-        RoleId,
-        CommerceId: (await commereceModel.findOne({where: {Name: NameC}})).dataValues.Id, 
-    });
-    res.redirect("")
+        await SessionManager.Logout(res);
+        await SessionManager.Login(req, UserInfo);
+
+       res.status(201).redirect("/home/home-commerece");
     }catch (err){
         console.error(err);
     }
