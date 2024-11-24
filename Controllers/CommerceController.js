@@ -84,9 +84,9 @@ exports.PostAddCommerece = async (req,res,next) =>{
 
         await userModel.update({
             CommerceId: newCommerece.Id, 
-        },{where:{Id: SessionManager.getSessionUserInfo(res).Id}});
+        },{where:{Id: req.user.id}});
         
-        const UserInfo = SessionManager.getSessionUserInfo(res);
+        const UserInfo = req.user;
         UserInfo.CommerceId = newCommerece.Id;
 
         await SessionManager.Logout(res);
@@ -99,7 +99,7 @@ exports.PostAddCommerece = async (req,res,next) =>{
 }
 
 exports.GetEditCommerece = async (req,res,next) =>{
-     const commereceToUpdate =   await commereceModel.findByPk(SessionManager.getSessionUserInfo(res).CommerceId);
+     const commereceToUpdate =   await commereceModel.findByPk(req.user.CommerceId);
      const commerceTypes = commereceTypeModel.findAll();
     res.render("CommereceViews/commerece-add",{
         commerece: commereceToUpdate.dataValues,
@@ -131,16 +131,22 @@ exports.PostEditCommerece = async (req,res,next) =>{
      OpeningHour, 
      ClousingHour, 
      CommerceTypeId,
-    }, {where:{Id: SessionManager.getSessionUserInfo(res).CommerceId}});
+    }, {where:{Id: req.user.CommerceId}});
 
-    res.redirect("/commerece/commerece-edit/"+ SessionManager.getSessionUserInfo(res).CommerceId)
+    res.redirect("/commerece/commerece-edit/"+ req.user.CommerceId)
 }
 exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
-    const commereceToUpdate = await commereceModel.findByPk(SessionManager.getSessionUserInfo(res).CommerceId);
-    await commereceModel.update({
-        IsActive: !commereceToUpdate.dataValues.IsActive,
-       }, {where:{Id:SessionManager.getSessionUserInfo(res).CommerceId}});
 
-       res.redirect("/user/user-mant/")
+    try{
+        const commereceToUpdate = await commereceModel.findByPk(req.user.CommerceId);
+        await commereceModel.update({
+           IsActive: commereceToUpdate.dataValues.IsActive ? true : false ,
+        }, {where:{Id:req.user.CommerceId}});
+
+       res.redirect("back")
+
+    }catch(err){
+        res.redirect("back");
+    }
 }
 

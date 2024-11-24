@@ -1,6 +1,5 @@
 const userModel = require("../Models/User");
 const {Roles} = require("../Utils/ImportantENVVariables");
-const SessionManager = require("../Utils/SessionManager");
 
 
 exports.GetAllUserClientMant = async (req,res,next) =>{
@@ -51,7 +50,7 @@ exports.GetEditUser = async (req,res,next) =>{
     try{
         const id = req.params.id;
     
-        let user = await userModel.findOne({where: {Id:id ?? SessionManager.getSessionUserInfo(res).Id}});
+        let user = await userModel.findOne({where: {Id:id ?? req.user.Id}});
     
         res.render("UserViews/user-edit",{
             user: user.dataValues,

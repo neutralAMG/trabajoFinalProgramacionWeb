@@ -7,7 +7,6 @@ const orderStatusModel = require("../Models/OrderStatus");
 const userModel = require("../Models/User");
 const productModel = require("../Models/Product");
 const {Roles} = require("../Utils/ImportantENVVariables");
-const SessionManager = require("../Utils/SessionManager");
 
 exports.GetClientHome = async  (req,res,next)=>{
     try{
@@ -27,7 +26,7 @@ exports.GetDeliveryHome = async  (req,res,next)=>{
     try{
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ CommerceId: SessionManager.getSessionUserInfo(res).CommerceId},
+            where:{ CommerceId: req.user.CommerceId},
         order:["createdAt", "DESC"] });
         orders = orders.map((p) => p.dataValues);
 
@@ -46,7 +45,7 @@ exports.GetCommereceHome = async (req,res,next)=>{
 
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ DeliveryId: SessionManager.getSessionUserInfo(res).Id},
+            where:{ DeliveryId: req.user.Id},
             order:["createdAt", "DESC"] });
         orders = orders.map((p) => p.dataValues);
         const statuses =  await orderStatusModel.findAll();

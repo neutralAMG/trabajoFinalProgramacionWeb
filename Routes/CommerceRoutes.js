@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const commereceController = require("../Controllers/CommerceController")
+const commereceController = require("../Controllers/CommerceController");
 
 router.get("/comerce-mant", commereceController.GetAllCommerece);
 router.get("/comerce-index/:cTypeId", commereceController.GetAllCommereceByCommerceType);

@@ -1,10 +1,10 @@
 const productModel = require("../Models/Product");
 const categoryModel = require("../Models/Category");
-const SessionManager = require("../Utils/SessionManager");
+
 
 exports.GetAllProducts = async (req,res,next) =>{
     try{
-        let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CommerceId: SessionManager.getSessionUserInfo(res).CommerceId}});
+        let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CommerceId: req.user.CommerceId}});
         products = products.map((p) => p.dataValues);
 
         res.render("ProductsViews/product-mant",{
@@ -33,7 +33,7 @@ exports.GetAllProductsByCommerceId = async (req,res,next) =>{
 exports.GetAllProductsByCategory = async (req,res,next) =>{
     const CategoryId = req.params.id;
     try{
-        let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CategoryId:CategoryId, CommerceId: SessionManager.getSessionUserInfo(res).CommerceId}});
+        let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CategoryId:CategoryId, CommerceId: req.user.CommerceId}});
         products = products.map((p) => p.dataValues);
 
         res.render("ProductsViews/product-category",{
@@ -48,7 +48,7 @@ exports.GetAllProductsByCategory = async (req,res,next) =>{
 exports.GetProductById = async (req,res,next) =>{
     const Id = req.params.id;
     try{
-        let product = await productModel.findOne({include:[{model:categoryModel}], where:{ Id:Id, CommerceId: SessionManager.getSessionUserInfo(res).CommerceId}});
+        let product = await productModel.findOne({include:[{model:categoryModel}], where:{ Id:Id, CommerceId: req.user.CommerceId}});
 
         res.render("ProductsViews/product-detail",{
             product: product.dataValues,
@@ -60,7 +60,7 @@ exports.GetProductById = async (req,res,next) =>{
 
 
 exports.GetAddProduct = async (req,res,next) => {
-    let categories = await productModel.findAll({where: { CommerceId:SessionManager.getSessionUserInfo(res).CommerceId }});
+    let categories = await productModel.findAll({where: { CommerceId:req.user.CommerceId }});
     res.render("ProductsViews/product-add",{  
     product: null,
     categories: categories.map((c) => c.dataValues),
@@ -93,8 +93,8 @@ exports.GetEditProduct = async (req,res,next) =>{
     try{
         const id = req.params.id;
     
-        let product = await productModel.findOne({where: {Id:id, CommerceId:SessionManager.getSessionUserInfo(res).CommerceId }});
-        let categories = await productModel.findAll({where: { CommerceId: SessionManager.getSessionUserInfo(res).CommerceId }});
+        let product = await productModel.findOne({where: {Id:id, CommerceId:req.user.CommerceId }});
+        let categories = await productModel.findAll({where: { CommerceId: req.user.CommerceId }});
     
         res.render("ProductsViews/product-add",{
             product: product.dataValues,
@@ -119,7 +119,7 @@ exports.PostEditProduct = async (req,res,next) =>{
         Price,
         Photo,
         CategoryId,
-     },{where: {Id:Id, CommerceId: SessionManager.getSessionUserInfo(res).CommerceId }})
+     },{where: {Id:Id, CommerceId: req.user.CommerceId }})
 
      res.redirect("/product/product-mant")
 
@@ -135,7 +135,7 @@ exports.PostAddDiscoundProduct = async (req,res,next) =>{
 
         await productModel.update({
             Discount
-         },{where: {Id:id, CommerceId: SessionManager.getSessionUserInfo(res).CommerceId }});
+         },{where: {Id:id, CommerceId: req.user.CommerceId }});
 
          res.redirect("/product/product-mant");
     }catch{
@@ -148,7 +148,7 @@ exports.PostDeleteProduct = async (req,res,next) =>{
     const Id = req.body;
 
     try{
-        await productModel.destroy({where: {Id:Id, CommerceId: SessionManager.getSessionUserInfo(res).CommerceId }});
+        await productModel.destroy({where: {Id:Id, CommerceId: req.user.CommerceId }});
 
         res.redirect("/product/product-mant");
     }catch (err){

@@ -25,3 +25,4 @@ exports.ConfigurationValueTypes ={
     Date: "DATE",
 }
 
+exports.ErrorNameforFlash = "errors"

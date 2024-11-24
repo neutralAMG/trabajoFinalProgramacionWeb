@@ -3,7 +3,7 @@ const roleModel = require("../Models/Role");
 const SessionManager = require("../Utils/SessionManager");
 const bycrypt = require("bcryptjs");
 const {Op} = require("sequelize");
-const {Roles} = require("../Utils/ImportantENVVariables");
+const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 
 
@@ -11,37 +11,52 @@ exports.GetAuthenticate = async (req,res,next)=>{
     res.render("Auth/login",{})
 }
 exports.PostAuthenticate = async (req,res,next)=>{
-    const {UserNameOrEmail, Pass} = req.body;
+    try{
+        const {UserNameOrEmail, Pass} = req.body;
 
-    const UserToAuth = await userModel.findOne({
-        where:{
-           [Op.or]:[
-            {UserName: UserNameOrEmail},
-            {Email: UserNameOrEmail}
-           ]
+        const UserToAuth = await userModel.findOne({
+            where:{
+               [Op.or]:[
+                {UserName: UserNameOrEmail},
+                {Email: UserNameOrEmail}
+               ]
+            }
+        })
+    
+        if(!UserToAuth){
+            req.flash(ErrorNameforFlash, "Email or username is invalid");
+            res.redirect("/account/authenticate");
         }
-    })
+            
+    
 
-    if(!UserToAuth)
+            
+    
+    
+        const IsPasswordValid = await bycrypt.compare(Pass, UserToAuth.dataValues.Password)
+    
+        if(!IsPasswordValid) {
+            req.flash(ErrorNameforFlash, "The password is incorrect");
+            res.redirect("/account/authenticate");
+        }
+        
+        if(!UserToAuth.dataValues.IsActive){
+            req.flash(ErrorNameforFlash, "User is not active");
+            res.redirect("/account/authenticate");
+        }
+    
+        await SessionManager.Login(req,{
+            Id: UserToAuth.dataValues.Id,
+            CommerceId: UserToAuth.dataValues.CommerceId,
+            Name: UserToAuth.dataValues.Name,
+            RoleId: UserToAuth.dataValues.RoleId,
+            IsActive: UserToAuth.dataValues.IsActive,
+        })
+        res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId))
+    }catch(err){
+        req.flash(ErrorNameforFlash, "An unexpected errror happed");
         res.redirect("/account/authenticate");
-
-    if(!UserToAuth.dataValues.IsActive)
-        res.redirect("/account/authenticate");
-
-
-    const IsPasswordValid = await bycrypt.compare(Pass, UserToAuth.dataValues.Password)
-
-    if(!IsPasswordValid) 
-        res.redirect("/account/authenticate");
-
-    await SessionManager.Login(req,{
-        Id: UserToAuth.dataValues.Id,
-        CommerceId: UserToAuth.dataValues.CommerceId,
-        Name: UserToAuth.dataValues.Name,
-        RoleId: UserToAuth.dataValues.RoleId,
-        IsActive: UserToAuth.dataValues.IsActive,
-    })
-    res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId))
+    }
 }
 exports.PostUnAuthenticate = async (req,res,next)=>{
     await SessionManager.Logout(req);
@@ -56,36 +71,47 @@ exports.GetRegister = async (req,res,next)=>{
 }
 
 exports.PostRegister = async (req,res,next)=>{
-    const {
-        Name,
-        UserName,
-        Email,
-        Cedula,
-        Phone,
-        Password,
-        ConfirmPassword,
-        RoleId,
-    } = req.body;
-
-    const Pthoto = req.body.file;
-
-    if(Password != ConfirmPassword)
-        res.redirect("/account/authenticate");
-
-    const  hashPass = await bycrypt.hash(Password, 12);
+    try{
+        const {
+            Name,
+            UserName,
+            Email,
+            Cedula,
+            Phone,
+            Password,
+            ConfirmPassword,
+            RoleId,
+        } = req.body;
     
-    await userModel.create({
-        Name,
-        UserName,
-        Email,
-        Cedula: Cedula ?? "",
-        Photo: "/"+ Pthoto.path, 
-        Phone,
-        Password: hashPass,
-        RoleId,
-    });
+        const Pthoto = req.body.file;
+        //TODO: verify if email and username allready exits
 
-    res.redirect("/account/authenticate");
+        //TODO: verify if user name and username allready exits
+
+        if(Password != ConfirmPassword){
+            req.flash(ErrorNameforFlash, "passwords dont match");
+            res.redirect("/account/authenticate");
+        }
+            
+    
+        const  hashPass = await bycrypt.hash(Password, 12);
+        
+        await userModel.create({
+            Name,
+            UserName,
+            Email,
+            Cedula: Cedula ?? "",
+            Photo: "/"+ Pthoto.path, 
+            Phone,
+            Password: hashPass,
+            RoleId,
+        });
+    
+        res.redirect("/account/authenticate");
+    }catch (err){
+        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        res.redirect("/account/authenticate");
+    }
 }
 
 exports.PostChangeActiveState = async (req,res,next)=>{

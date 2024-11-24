@@ -6,7 +6,6 @@ const productModel = require("../Models/Product");
 const categoryModel = require("../Models/Category");
 const userModel = require("../Models/User");
 const {Roles,OrderStatus} = require("../Utils/ImportantENVVariables");
-const SessionManager = require("../Utils/SessionManager");
 const Order = require("../Models/Order");
 const config = require("../Models/Configuration");
 const OrderDetails = require("../Models/OrderDetail");
@@ -15,7 +14,7 @@ exports.GetAllUserOrders = async (req,res,next) => {
     try{
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ ClientId: SessionManager.getSessionUserInfo(res).Id},
+            where:{ ClientId: req.user.id},
         order:["createdAt", "DESC"] });
         orders = orders.map((p) => p.dataValues);
 
@@ -29,7 +28,7 @@ exports.GetAllUserOrders = async (req,res,next) => {
 }
 exports.GetOrderDetail = async (req,res,next) =>{
     try{
-        let order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel}, ], where:{ Id:id ,ClientId: SessionManager.getSessionUserInfo(res).Id}});
+        let order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel}, ], /* where:{ Id:id ,ClientId: req.user.id}*/});
         const orderStatuses = await orderStatusModel.findAll();
         res.render("OrdersViews/order-detail",{
             order: order.dataValues,
@@ -72,7 +71,7 @@ exports.PostAddOrder = async (req,res,next) =>{
     Direction,
     OrderStatusId: OrderStatus.Created, 
     CommerceId, 
-    ClientId: SessionManager.getSessionUserInfo(res).Id,
+    ClientId: req.user.id,
     });
 
     const fullOrderDetails = OrderDetails.map((o) => o.OrderId = newOrder.Id)
