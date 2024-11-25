@@ -80,7 +80,7 @@ exports.PostEditUser = async (req,res,next) =>{
     try{
 
         if(Password != ConfirmPassword)
-            res.redirect("/user/user-edit/" + Id);
+            return res.redirect("/user/user-edit/" + Id);
 
      await userModel.update({
         Name,
@@ -107,6 +107,10 @@ exports.PostEditUser = async (req,res,next) =>{
 
 exports.PostDeleteUser = async (req,res,next) =>{
     const Id = req.body;
+
+    if(Id === req.user.id){
+     return res.redirect("back")
+    }
 
     try{
         await userModel.destroy({where: {Id:Id}});

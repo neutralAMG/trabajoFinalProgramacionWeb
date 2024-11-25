@@ -53,6 +53,14 @@ const User = connection.define("User",{
     CommerceId:{
        type: DataTypes.INTEGER,
        allowNull: true,
+   },
+   ResetToken:{
+    type: DataTypes.STRING,
+    allowNull: true,
+   },
+   ResetTokenExpiration:{
+    type: DataTypes.DATE,
+    allowNull: true,
    }
 },{tableName: "User"})
 

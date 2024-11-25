@@ -1,13 +1,13 @@
-const isAuth = require("./IsAuth");
+const isNotAuth = require("./isNotAuth");
 const SessionManager = require("../Utils/SessionManager");
 const {Roles} = require("../Utils/ImportantENVVariables");
 
 const RoleMiddle = (AllowRoles) =>{ 
     return [
-        isAuth, 
+        isNotAuth, 
         (req, res, next) =>{ 
-            if (!AllowRoles.includes(SessionManager.getSessionUserInfo(res).RoleId)  ) {
-                req.flash(errorMessages, "You are not authorized to view this content");
+            if (!AllowRoles.includes(req.user.RoleId)  ) {
+                req.flash(ErrorNameforFlash, "You are not authorized to view this content");
                 return res.redirect("..");
             };
             next();

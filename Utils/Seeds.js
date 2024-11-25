@@ -3,7 +3,7 @@ const Role = require("../Models/Role");
 const Config = require("../Models/Configuration");
 const {ConfigurationValueTypes} = require("./ImportantENVVariables")
 const User = require("../Models/User");
-
+const bycrypt = require("bcryptjs");
 
 //Orderstatuses
 const orderStatusesToSeed =[ 
@@ -36,7 +36,7 @@ const DefaultAdminUser = {
         Phone: "123-456-7890",
         IsActive: true,
         IsBusy: false,
-        Password: "123qwea", 
+        Password: "123qwea" , 
         RoleId: 1, 
         CommerceId: null, 
 }
@@ -61,8 +61,11 @@ exports.GenerateSeeds = async ()=>{
     if(!roles)
       await  Role.bulkCreate(rolesToSeed);
 
-    if(!users)
+    if(!users){
+       DefaultAdminUser.Password = await bycrypt.hash("123qwea",12);
         await  User.create(DefaultAdminUser);    
+    }
+        
     
     if(!configs)
         await  Config.create(Configuration); 

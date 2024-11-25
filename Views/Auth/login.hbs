@@ -1,0 +1,45 @@
+
+<div class="row col-12 justify-content-center mt-5">
+
+<div class="col-6 d-flex justify-content-center mt-5">
+<form action="/account/authenticate"  method="post">
+
+  <h1 class="text-center">APP CENAR</h1>
+    <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
+  <div  class="form-outline mb-4"> 
+    <label class="form-label" for="UserNameOrEmail">Email/Username: </label>
+    <input type="text" name="UserNameOrEmail" id="UserNameOrEmail" class="form-control" required/>
+   
+  </div>
+
+
+  <div class="form-outline mb-4">
+    <label class="form-label" for="form2Example2">Password</label>
+    <input type="password" name="Pass" id="Pass" class="form-control" required/>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col d-flex justify-content-center">
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+        <label class="form-check-label" for="form2Example31"> Remember me </label>
+      </div>
+    </div>
+
+    <div class="col">
+      <a href="/account/reset-password">Forgot password?</a>
+    </div>
+  </div>
+
+
+  <button  type="submit"  class="btn btn-primary w-100 btn-block mb-4">Sign in</button>
+
+  <div class="text-center">
+    <p>Not a member? <a href="/account/register">Register</a></p>
+  </div>
+</form>
+
+</div>
+
+</div>

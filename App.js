@@ -11,7 +11,11 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const {ErrorNameforFlash} = require("./Utils/ImportantENVVariables");
 const User = require("./Models/User");
-
+const multer = require("multer");
+const {uuidv4} = require("uuid")
+const csurf = require("csurf");
+const { log } = require("console");
+const crfProtecttion = csurf();
 // TODO: Encapsulate this part on a utils file (ConfigureEngine)
 app.engine("hbs", engine({
     helpers:{
@@ -27,23 +31,29 @@ app.set("views", "views")
 app.use(express.static(path.join(__dirname,"Public")));
 
 app.use("/Images",express.static(path.join(__dirname,"Images")));
+
+const imageStorage = multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null, "Images")
+    },
+    filename: (req, file, cb) =>{
+        cb(null, `${uuidv4()}-${file.originalname}`)
+    }
+});
+app.use(multer({storage: imageStorage}).single("Image"));
 // until here
 
 
 //TODO: Encapsulate this on a utils file (ConfigureSessionAndCustomizeRequests)
 app.use(session({secret:"anything", resave: true, saveUninitialized: false}));
 
+app.use(express.urlencoded({extended: false}));
 //TODO: Make success messages too
+app.use(crfProtecttion);
 app.use(flash());
 
 app.use(async (req, res, next)  =>{
-    if(!req.session)
-        return next();
-
-    if(!req.session.user)
-        return next();
-
-    if(!req.session)
+    if(!req.session || !req.session.user)
         return next();
 
     const User = await User.findByPk(req.session.UserInfo.id);
@@ -53,11 +63,13 @@ app.use(async (req, res, next)  =>{
 })
 
 app.use((req, res, next) =>{
-    const errors = req.flash(ErrorNameforFlash)
-    res.locals.IsLoggedIn = SessionManager.IsLogin(req);
-    res.locals.UserInfo = SessionManager.ShowLogin(req);
+    const errors = req.flash(ErrorNameforFlash);
+    res.locals.IsLoggedIn = SessionManager.IsLogin(res);
+    res.locals.UserInfo = SessionManager.ShowLogin(res);
     res.locals.errorMessages = errors;
     res.locals.hasErrors = errors.length > 0;
+    res.locals.csrfToken = req.csrfToken();
+    log(res.locals.csrfToken)
     next();
 });
 // until this part
@@ -66,12 +78,12 @@ routesRegister.Register(app)
 
 modelRelationshipConfig.Config();
 
-app.use(express.urlencoded({extended: false}));
+
 
 app.use(function(req,res,next){
-    res.status(200).send("<h1>hello world</h1>")
+    res.redirect("/account/authenticate");
 })
-connection.sync({force:true}).then(() => {
+connection.sync(/*{force:true}*/).then(() => {
     seeds.GenerateSeeds();
     app.listen(8001);
 }

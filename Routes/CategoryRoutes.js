@@ -1,6 +1,5 @@
 const router = require("express").Router()
 const categoryController = require("../Controllers/CategoryController")
-const isAuth = require("../Middlewares/IsAuth");
 const middlewares = require("../Middlewares/Users-Middleware");
 
 router.get("/category-mant", middlewares.CommereceMiddleware,categoryController.GetAllCategory);

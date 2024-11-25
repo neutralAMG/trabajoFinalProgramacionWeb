@@ -32,24 +32,9 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
 
 exports.GetAddCommerece = async (req,res,next) =>{
     try{
-        const userPendingToSave = {
-            Name,
-            UserName,
-            Email,
-            Cedula,
-            Phone,
-            IsActive,
-            IsBusy,
-            Password,
-            ConfirmPassword,
-            RoleId,
-            CommerceId 
-        } = req.body;
         const commerceTypes = commereceTypeModel.findAll();
-
         res.render("CommereceViews/commerece-add",{
             commerceTypes: (await commerceTypes).map((c) => c.dataValues),
-            userPendingToSave: userPendingToSave,
             EditMode: false,
         })
 
@@ -64,19 +49,18 @@ exports.PostAddCommerece = async (req,res,next) =>{
         {Name, 
          Phone, 
          Email, 
-        IsActive,
-        OpeningHour, 
-        ClousingHour, 
+         OpeningHour, 
+         ClousingHour, 
          CommerceTypeId,
         } = req.body;
 
         const logo = Logo.file
        const newCommerece =  await commereceModel.create({
-        Name, 
+         Name, 
          Phone, 
          Email, 
          Logo: "/" + logo.path, 
-         IsActive,
+         IsActive: true,
          OpeningHour, 
          ClousingHour, 
          CommerceTypeId,
@@ -84,7 +68,7 @@ exports.PostAddCommerece = async (req,res,next) =>{
 
         await userModel.update({
             CommerceId: newCommerece.Id, 
-        },{where:{Id: req.user.id}});
+        },{where:{Id: req.user.Id}});
         
         const UserInfo = req.user;
         UserInfo.CommerceId = newCommerece.Id;
