@@ -1,0 +1,68 @@
+<div class="row col-12 d-flex justify-content-center">
+    <div class="col-10 d-flex justify-content-center"> 
+       <h1 class="display-2">COMMERECE PRODUCT</h1>
+        <div>
+            <a href="/product/prod-add" class="btn btn-success">Add a new product</a>
+        </div>
+<table class="table align-middle mb-0 bg-white">
+  <thead class="bg-light">
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>Opening Hour</th>
+      <th>Clousing Hour</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each admins as |admin|}}
+    <tr>
+      <td>
+        <div class="d-flex align-items-center">
+          <img
+              src="{{commerece.Logo}}"
+              alt=""
+              style="width: 45px; height: 45px"
+              class="rounded-circle"
+              />
+          <div class="ms-3">
+            <p class="fw-bold mb-1">{{commerece.Name}}</p>
+            <p class="text-muted mb-0">{{commerece.Email}}</p>
+          </div>
+        </div>
+      </td>
+      <td>
+        <p class="fw-normal mb-1">Software engineer</p>
+        <p class="text-muted mb-0">commereceType</p>
+      </td>
+      <td>
+        <span class="badge badge-success rounded-pill d-inline">
+          {{#if commerece.IsActive}}
+            Active
+          {{/if}}
+          {{#unless commerece.IsActive}}
+             Inactive
+          {{/unless}}
+          </span>
+      </td>
+      <td>{{commerece.OpeningHour}}</td>
+      <td>{{commerece.ClousingHour}}</td>
+      <td>
+        <button type="button" class="btn btn-link btn-sm btn-rounded">
+          Delete
+        </button>
+        <a href="/commerece/commerce-change-active-status/{{commerece.Id}}"  class="btn btn-link btn-sm btn-rounded">
+          Change status
+        </a>
+        <a href="/commerece/commerece-edit/{{commerece.Id}}"  class="btn btn-link btn-sm btn-rounded">
+          Edit
+        </a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>  
+</div>
+</div>

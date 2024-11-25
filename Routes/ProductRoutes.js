@@ -4,7 +4,7 @@ const isAuth = require("../Middlewares/IsAuth");
 const middlewares = require("../Middlewares/Users-Middleware");
 
 
-router.get("/prod-index", middlewares.CommereceMiddleware, productController.GetAllProducts);
+router.get("/prod-mant", middlewares.CommereceMiddleware, productController.GetAllProducts);
 router.get("/prod-commerece-prod/:id", middlewares.ClientMiddleware, productController.GetAllProductsByCommerceId);
 router.get("/prod-catergory/:id", middlewares.ClientMiddleware, productController.GetAllProductsByCategory);
 router.get("/prod-detail/:id", middlewares.CommereceMiddleware, productController.GetProductById);
