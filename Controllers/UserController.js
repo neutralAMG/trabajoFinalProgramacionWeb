@@ -46,6 +46,36 @@ exports.GetAllAdminUserMant = async (req,res,next) =>{
 
 }
 
+exports.GetAllEmployeeUserMant = async (req,res,next) =>{
+    try{
+        let employees = await userModel.findAll({where:{ RoleId:Roles.Employee}});
+        employees = employees.map((p) => p.dataValues);
+
+        res.render("UserViews/user-admin",{
+            employees: employees,
+            isEmpty: employees.length === 0,
+        } );
+    }catch{
+        console.error(err);
+    }
+
+}
+
+exports.GetAllManagerUserMant = async (req,res,next) =>{
+    try{
+        let managers = await userModel.findAll({where:{ RoleId:Roles.Manager}});
+        managers = managers.map((p) => p.dataValues);
+
+        res.render("UserViews/user-admin",{
+            managers: managers,
+            isEmpty: managers.length === 0,
+        } );
+    }catch{
+        console.error(err);
+    }
+
+}
+
 exports.GetEditUser = async (req,res,next) =>{
     try{
         const id = req.params.id;

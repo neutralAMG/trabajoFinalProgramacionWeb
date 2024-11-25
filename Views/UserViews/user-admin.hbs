@@ -22,14 +22,14 @@
       <td>
         <div class="d-flex align-items-center">
           <img
-              src="{{commerece.Logo}}"
+              src="{{admin.Photo}}"
               alt=""
               style="width: 45px; height: 45px"
               class="rounded-circle"
               />
           <div class="ms-3">
-            <p class="fw-bold mb-1">{{commerece.Name}}</p>
-            <p class="text-muted mb-0">{{commerece.Email}}</p>
+            <p class="fw-bold mb-1">{{admin.Name}}</p>
+            <p class="text-muted mb-0">{{admin.Email}}</p>
           </div>
         </div>
       </td>
@@ -39,10 +39,10 @@
       </td>
       <td>
         <span class="badge badge-success rounded-pill d-inline">
-          {{#if commerece.IsActive}}
+          {{#if admin.IsActive}}
             Active
           {{/if}}
-          {{#unless commerece.IsActive}}
+          {{#unless admin.IsActive}}
              Inactive
           {{/unless}}
           </span>

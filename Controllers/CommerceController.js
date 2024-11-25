@@ -125,6 +125,7 @@ exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
 
     try{
         const commereceToUpdate = await commereceModel.findByPk(req.user.CommerceId);
+        //TODO: change all the statuses of the users related to this
         await commereceModel.update({
            IsActive: commereceToUpdate.dataValues.IsActive ? true : false ,
         }, {where:{Id:req.user.CommerceId}});
