@@ -1,0 +1,34 @@
+<div class="row col-12 d-flex justify-content-center">
+    <div class="col-10 d-flex justify-content-center"> 
+        <h1 class="display-2">PRODUCT CATEGORIES</h1>
+        <div>
+            <a href="/category/category-add" class="btn btn-success">Add a new category</a>
+        </div>
+            <table class="table table-hover table-responsive mb-0">
+                <thead>
+                        <tr>
+                            <th class="row"><a>Name</a></th>
+                            <th class="th-lg"><a href="">Description</a></th>
+                            <th class="th-lg"><a href="">Cnt</a></th>
+                            <th class="th-lg"><a href="">Actions</a></th>
+                        </tr>
+                </thead>
+                <tbody>
+                        {{{#each categories as |category|}}
+                        <tr>
+                            <th scope="row">{{category.Name}}</th>
+                            <td>{{category.Description}}</td>
+                            <td>0</td>
+                            <td><div class="text-center">
+                                <form action="/category/category-delete" method="post">
+                                  <input type="hidden" value="{{category.Id}}" name="Id"/>
+                                  <button class="btn btn-danger">Delete</button>
+                                </form>
+                               <a href="/category/category-edit/{{category.Id}}" class="btn btn-info">Edit</a>
+                            </div></td>
+                         </tr>
+                    {{/each}}}
+                </tbody>
+            </table>
+    </div>
+</div>

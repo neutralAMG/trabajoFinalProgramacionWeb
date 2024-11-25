@@ -1,0 +1,44 @@
+<div class="row col-12 d-flex justify-content-center">
+    <div class="col-10 d-flex justify-content-center"> 
+        <h1 class="display-2">COMMERECE TYPES</h1>
+        <div>
+            <a href="/commereceType/commereceType-add" class="btn btn-success">Add a new commerece type</a>
+        </div>
+            <table class="table table-hover table-responsive mb-0">
+                <thead>
+                        <tr>
+                            <th class="row"><a>Name</a></th>
+                            <th class="th-lg"><a href="">Description</a></th>
+                            <th class="th-lg"><a href="">Cnt</a></th>
+                            <th class="th-lg"><a href="">Actions</a></th>
+                        </tr>
+                </thead>
+                <tbody>
+                        {{{#each commereceTypes as |commereceType|}}
+                        <tr>
+                            <th scope="row"> 
+                             <div class="d-flex align-items-center">
+                                <img src="{{commereceType.Icon}}" 
+                                style="width: 45px; height: 45px;" 
+                                class="rounded-circle" 
+                                alt="commerce type icon"> 
+                                <p>
+                                    {{commereceType.Name}}
+                                </p>
+                             </div> 
+                            </th>
+                            <td>{{commereceType.Description}}</td>
+                            <td>0</td>
+                            <td><div class="text-center">
+                                <form action="/commereceType/commereceType-delete" method="post" class="w-50">
+                                  <input type="hidden" value="{{commereceType.Id}}" name="Id"/>
+                                  <button class="btn btn-danger">Delete</button>
+                                </form>
+                               <a href="/commereceType/commereceType-edit/{{commereceType.Id}}" class="btn btn-info w-50">Edit</a>
+                            </div></td>
+                         </tr>
+                    {{/each}}}
+                </tbody>
+            </table>
+    </div>
+</div>
