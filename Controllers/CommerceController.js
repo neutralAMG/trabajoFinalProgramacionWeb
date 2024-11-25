@@ -6,7 +6,9 @@ exports.GetAllCommerece = async (req,res,next) =>{
     try{
          let commerces = await commereceModel.findAll();
          commerces = commerces.map((c) => c.dataValues);
-
+         //TODO: include commerece type
+         //TODO: format opening and clousing type
+         //TODO: add is and isnt active
         res.render("CommereceViews/commerece-mant",{
             commerces: commerces,
             isEmpty: commerces.length === 0,

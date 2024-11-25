@@ -69,7 +69,6 @@ app.use((req, res, next) =>{
     res.locals.errorMessages = errors;
     res.locals.hasErrors = errors.length > 0;
     res.locals.csrfToken = req.csrfToken();
-    log(res.locals.csrfToken)
     next();
 });
 // until this part
@@ -78,9 +77,10 @@ routesRegister.Register(app)
 
 modelRelationshipConfig.Config();
 
-
-
 app.use(function(req,res,next){
+    if(res.locals.IsLoggedIn)
+        res.status(400).send("<h1 class='text-center display-1 mt-5' ></h1>");
+ 
     res.redirect("/account/authenticate");
 })
 connection.sync(/*{force:true}*/).then(() => {

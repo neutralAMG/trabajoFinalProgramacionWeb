@@ -47,8 +47,9 @@ exports.PostAuthenticate = async (req,res,next)=>{
             Name: UserToAuth.dataValues.Name,
             RoleId: UserToAuth.dataValues.RoleId,
             IsActive: UserToAuth.dataValues.IsActive,
-        })
-        res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId))
+        });
+        
+        res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId));
     }catch(err){
         req.flash(ErrorNameforFlash, "An unexpected errror happed");
         res.redirect("/account/authenticate");
