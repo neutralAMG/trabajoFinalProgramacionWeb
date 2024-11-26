@@ -40,16 +40,20 @@ exports.PostAuthenticate = async (req,res,next)=>{
             req.flash(ErrorNameforFlash, "User is not active");
             return  res.redirect("/account/authenticate");
         }
-    
-        await SessionManager.Login(req,{
-            Id: UserToAuth.dataValues.Id,
-            CommerceId: UserToAuth.dataValues.CommerceId,
-            Name: UserToAuth.dataValues.Name,
-            RoleId: UserToAuth.dataValues.RoleId,
-            IsActive: UserToAuth.dataValues.IsActive,
+        req.session.UserInfo = UserToAuth.dataValues;
+        req.session.IsLogin = true;
+        req.session.save((err) => {
+            if (err) {
+                req.flash(ErrorNameforFlash, "Error saving session");
+                console.log(err);
+                return res.redirect("/account/authenticate");
+            }
+
+            // Redirect to home page based on the user's role
+            console.log("hey");
+            return res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId));
         });
-        
-        res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId));
+       
     }catch(err){
         req.flash(ErrorNameforFlash, "An unexpected errror happed");
         res.redirect("/account/authenticate");
@@ -64,7 +68,7 @@ exports.GetRegister = async (req,res,next)=>{
     let roles = await roleModel.findAll();
     roles = roles.map((r) => r.dataValues);
     res.render("Auth/register",{
-        roles: roles.filter((r) => r.Id != Roles.Admin || r.Id != Roles.Employee)
+        roles: roles.filter((r) => r.Id != Roles.Admin && r.Id != Roles.Employee)
     });
 }
 
@@ -81,51 +85,53 @@ exports.PostRegister = async (req,res,next)=>{
             RoleId,
         } = req.body;
     
-        const Pthoto = req.body.file;
+        const Photo = req.file;
 
         let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
 
         if(userWithSameCredentials){
             req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
-            res.redirect("/account/authenticate");
+          return  res.redirect("/account/register");
         }
 
         userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
 
         if(userWithSameCredentials){
             req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
-            res.redirect("/account/authenticate");
+            return res.redirect("/account/register");
         }
 
         if(Password != ConfirmPassword){
             req.flash(ErrorNameforFlash, "passwords dont match");
-            res.redirect("/account/authenticate");
+            return  res.redirect("/account/register");
         }
             
-        const  hashPass = await bycrypt.hash(Password, 12);
+       const  hashPass = await bycrypt.hash(Password, 12);
         
        const newUser = await userModel.create({
             Name,
             UserName,
             Email,
             Cedula: Cedula ?? "",
-            Photo: "/"+ Pthoto.path, 
+            Photo: "/"+ Photo.path, 
             Phone,
             Password: hashPass,
             RoleId,
         });
-
-        transporter.sendMail({
+        console.log(newUser);
+        
+         transporter.sendMail({
             from: "alejandrodanielmoscosoguerrero@gmail.com",
             to: newUser.dataValues.Email,
             subject: "Activate your account",
             html: `<h1><a href='http://localhost:8001/account/activate-user/${newUser.Id}'>  Click this link to activate your account</a></h1>`
-        })
+        }, (err) =>{console.error("Error during registration:", err.toString().split(" at ")[0]); });
     
-        res.redirect("/account/authenticate");
+        res.redirect("/account/register");
     }catch (err){
-        req.flash(ErrorNameforFlash, "An unexpected errror happed");
-        res.redirect("/account/authenticate");
+        console.error("Error during registration:", err.toString().split(" at ")[0]);
+        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        res.redirect("/account/register");
     }
 }
 

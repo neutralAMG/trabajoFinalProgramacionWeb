@@ -12,10 +12,11 @@ const flash = require("connect-flash");
 const {ErrorNameforFlash} = require("./Utils/ImportantENVVariables");
 const User = require("./Models/User");
 const multer = require("multer");
-const {uuidv4} = require("uuid")
+const {v4: uuidv4} = require("uuid")
 const csurf = require("csurf");
 const { log } = require("console");
 const crfProtecttion = csurf();
+
 // TODO: Encapsulate this part on a utils file (ConfigureEngine)
 app.engine("hbs", engine({
     helpers:{
@@ -53,19 +54,24 @@ app.use(crfProtecttion);
 app.use(flash());
 
 app.use(async (req, res, next)  =>{
-    if(!req.session || !req.session.user)
+    
+    if(!req.session )
         return next();
 
-    const User = await User.findByPk(req.session.UserInfo.id);
-    req.user = User.dataValues;
+    if(!req.session.user)
+        return next();
+    console.log(req.session.UserInfo.Id);
+    
+    const User = await User.findByPk(req.session.UserInfo.Id);
+    req.user = User;
 
     next();
 })
 
 app.use((req, res, next) =>{
     const errors = req.flash(ErrorNameforFlash);
-    res.locals.IsLoggedIn = SessionManager.IsLogin(res);
-    res.locals.UserInfo = SessionManager.ShowLogin(res);
+    res.locals.IsLoggedIn = SessionManager.IsLogin(req);
+    res.locals.UserInfo = SessionManager.ShowLogin(req);
     res.locals.errorMessages = errors;
     res.locals.hasErrors = errors.length > 0;
     res.locals.csrfToken = req.csrfToken();
