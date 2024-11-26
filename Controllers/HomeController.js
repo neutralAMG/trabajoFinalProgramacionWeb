@@ -1,6 +1,5 @@
 const commereceTypeModel = require("../Models/CommerceType");
 const commereceModel = require("../Models/Commerce");
-const commereceTypeModel = require("../Models/CommerceType");
 const orderModel = require("../Models/Order");
 const orderDetailModel = require("../Models/OrderDetail");
 const orderStatusModel = require("../Models/OrderStatus");
@@ -83,7 +82,7 @@ exports.GetAdminHome = async (req,res,next)=>{
     metrics.AmountOfClientsActive = client.filter((o) => o.IsActive === true).length;
     metrics.AmountOfClientsUnActive =  Math.abs(client.length - metrics.AmountOfClientsActive);
     metrics.AmountOfDeliveryActive = delivery.filter((o) => o.IsActive === true).length;
-    metrics.AmountOfDeliveryUnActive =  Math.abs( delivery.length() - metrics.AmountOfDeliveryActive);
+    metrics.AmountOfDeliveryUnActive =  Math.abs( delivery.length - metrics.AmountOfDeliveryActive);
     metrics.AmountOfCommereceActive = commerece.filter((o) => o.IsActive === true).length;
     metrics.AmountOfCommereceUnActive = Math.abs(commerece.length - metrics.AmountOfCommereceActive);
     metrics.AmountOfProducts = products.length;

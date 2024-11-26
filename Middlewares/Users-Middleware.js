@@ -9,7 +9,7 @@ const RoleMiddle = (AllowRoles) =>{
                 req.flash(ErrorNameforFlash, "You are not authorized to view this content");
                 return res.redirect("..");
             };
-            next();
+          next();
         }
     ]
 }

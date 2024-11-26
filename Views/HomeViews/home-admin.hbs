@@ -1,0 +1,125 @@
+ <style>
+ 
+
+
+.card {
+    border-radius: 10px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.card-body {
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.card-text {
+    font-size: 36px;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.container {
+    margin-top: 50px;
+}
+ </style>
+ <div class="container my-4">
+        <h1 class="text-center mb-4">Admin Dashboard</h1>
+
+        <!-- Dashboard Metrics Section -->
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+
+            <!-- Total Orders -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Total Orders</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfOrders}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Today -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Orders Today</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfOrdersToday}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Clients -->
+             <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Active Clients</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfClientsActive}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inactive Clients -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Inactive Clients</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfClientsUnActive}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Delivery -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Active Delivery</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfDeliveryActive}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inactive Delivery -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Inactive Delivery</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfDeliveryUnActive}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Commerce -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Active Commerce</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfCommereceActive}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inactive Commerce -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Inactive Commerce</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfCommereceUnActive}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Products -->
+            <div class="col  d-flex justify-content-center">
+                <div class="card text-center w-50 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Total Products</h3>
+                        <p class="card-text display-4">{{metrics.AmountOfProducts}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
