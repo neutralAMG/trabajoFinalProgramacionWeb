@@ -3,14 +3,11 @@ const commereceTypeModel = require("../Models/CommerceType");
 const userModel = require("../Models/User");
 const SessionManager = require("../Utils/SessionManager")
 const User = require("../Models/User");
-const User = require("../Models/User");
 exports.GetAllCommerece = async (req,res,next) =>{
     try{
-         let commerces = await commereceModel.findAll();
+         let commerces = await commereceModel.findAll({include:[{model:commereceTypeModel}]});
          commerces = commerces.map((c) => c.dataValues);
-         //TODO: include commerece type
          //TODO: format opening and clousing type
-         //TODO: add is and isnt active
         res.render("CommereceViews/commerece-mant",{
             commerces: commerces,
             isEmpty: commerces.length === 0,
@@ -127,7 +124,7 @@ exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
      const Id = req.params.id;
     try{
         const commereceToUpdate = await commereceModel.findByPk(Id);
-        //TODO: change all the statuses of the users related to this
+       
         const status = commereceToUpdate.dataValues.IsActive ? true : false ;
 
         const Users = await User.findAll({where:{CommerceId: Id}});

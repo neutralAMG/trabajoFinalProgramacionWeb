@@ -22,8 +22,11 @@ exports.GetAllUserOrders = async (req,res,next) => {
             orders: orders,
             isEmpty: orders.length === 0,
         } );
+
     }catch{
+        req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
+        res.redirect("/home/home-client");
     }
 }
 exports.GetOrderDetail = async (req,res,next) =>{
@@ -35,6 +38,7 @@ exports.GetOrderDetail = async (req,res,next) =>{
             orderStatuses: orderStatuses.map((o) => o.dataValues),
         } );
     }catch{
+        req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
     }
 }
@@ -49,33 +53,43 @@ exports.GetAddOrder = async (req,res,next) =>{
             isEmpty: products.length === 0,
         } );
     }catch{
+        req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
+        res.redirect("/home/home-client");
     }
 }
 
 exports.PostAddOrder = async (req,res,next) =>{
-    const OrderItems = req.body.GetAddOrder.OrderItems;
-    const {
-    TotalBeforeTax,
-    TotalAfterTax, 
-    TaxApplied,
-    AmountOfProducts,
-    Direction,
-    CommerceId} = req.body
-
-    const newOrder = await Order.create({
-    TotalBeforeTax,
-    TotalAfterTax, 
-    TaxApplied,
-    AmountOfProducts,
-    Direction,
-    OrderStatusId: OrderStatus.Created, 
-    CommerceId, 
-    ClientId: req.user.id,
-    });
-
-    const fullOrderDetails = OrderDetails.map((o) => o.OrderId = newOrder.Id)
-    await OrderDetails.bulkCreate(OrderDetails)
+    try {
+        const OrderItems = req.body.GetAddOrder;
+        const {
+        TotalBeforeTax,
+        TotalAfterTax, 
+        TaxApplied,
+        AmountOfProducts,
+        Direction,
+        CommerceId} = req.body
+    
+        const newOrder = await Order.create({
+        TotalBeforeTax,
+        TotalAfterTax, 
+        TaxApplied,
+        AmountOfProducts,
+        Direction,
+        OrderStatusId: OrderStatus.Created, 
+        CommerceId, 
+        ClientId: req.user.id,
+        });
+    
+        const fullOrderDetails = OrderItems.map((o) => o.OrderId = newOrder.Id)
+        await OrderDetails.bulkCreate(fullOrderDetails);
+    
+        res.redirect("/home/home-client");
+    } catch (error) {
+        req.flash(ErrorNameforFlash, "Error while preforming the operation");
+        console.error(err);
+        res.redirect("/home/home-client");
+    }
 
     
     
@@ -96,9 +110,11 @@ exports.PostUpdateOrderStatus = async (req,res,next) =>{
           OrderId: id,
       })
     
-      res.redirect("/home/home-client"); 
+      res.redirect("/home/home-delivery"); 
     }catch (err){
+        req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
+        res.redirect("/home/home-delivery"); 
     }
     
 }
@@ -107,8 +123,11 @@ exports.PostAssingOrder = async (req,res,next) =>{
     try{
        const freeDeliveries = userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery}});
 
-    if(!freeDeliveries)
-        res.redirect("");
+    if(!freeDeliveries){
+        req.flash(ErrorNameforFlash, "There are no free deliveries");
+       return res.redirect("/home/home-Commerece");
+    }
+        
 
         await orderModel.update({
             DeliveryId: (await freeDeliveries).map((d) => d.dataValues)[0].Id,
@@ -116,7 +135,9 @@ exports.PostAssingOrder = async (req,res,next) =>{
         },{where: {Id:id}});
         res.redirect("/home/home-Commerece");  
     }catch(err){
+        req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
+        res.redirect("/home/home-Commerece"); 
     }
     
 }

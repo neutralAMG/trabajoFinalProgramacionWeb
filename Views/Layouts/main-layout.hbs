@@ -42,25 +42,119 @@
     text-align: center;
 }
   </style>
+
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Navbar</a>
+  {{#if IsLoggedIn}}
+    <a class="navbar-brand" href="#">AppCenar</a>
+  {{/if}}
+  {{#unless IsLoggedIn}}
+    <a class="navbar-brand" href="/account/authenticate">AppCenar</a>
+  {{/if}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      {{#if IsLoggedIn}}
+
+      {{#if equals (UserInfo.RoleId roles.Admin)}}
+      <li class="nav-item">
+        <a class="nav-link" href="/home/home-admin">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Features</a>
+        <a class="nav-link" href="/user/user-client-mant">Clients mant</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Pricing</a>
+        <a class="nav-link" href="/user-delivery-mant">Deliveries mant</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+        <a class="nav-link" href="/user/user-client-mant">Commerece mant</a>
+      </li> 
+      <li class="nav-item">
+        <a class="nav-link" href="/configuration/configuration-index">Configurations</a>
+      </li> 
+      <li class="nav-item">
+        <a class="nav-link" href="/user/user-admin-mant">Admins mant</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/commereceType/commerceType-mant">Commerece types mant</a>
+      </li>
+      {{/if }}     
+      
+      {{#if equals( UserInfo.RoleId roles.Client)}}
+      <li class="nav-item">
+        <a class="nav-link" href="/home/home-client">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/commereceType/commerceType-Index">Commerces</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/user-edit/{{UserInfo.Id}}">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/order/order-index">My Orders</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/direction/direction-man">My Directions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/favCommerce/favCommerce-index">My favs</a>
+      </li>
+      {{/if }}     
+      
+      {{#if equals( UserInfo.RoleId roles.Delivery)}}
+      <li class="nav-item">
+        <a class="nav-link" href="/home/home-delivery">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/user-edit/{{UserInfo.Id}}">Profile</a>
+      </li>
+      {{/if }}     
+      
+      {{#if equals( UserInfo.RoleId roles.Manager)}}
+      <li class="nav-item">
+        <a class="nav-link" href="/home/home-commerece">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/user-edit/{{UserInfo.Id}}">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/user-employee-mant">Employees</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/category/category-mant">Categories</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/product/prod-mant">Products</a>
+      </li>
+      {{/if }}
+      
+      
+      {{#if equals( UserInfo.RoleId roles.Employee)}}
+       <li class="nav-item">
+        <a class="nav-link" href="/home/home-commerece">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/user-edit/{{UserInfo.Id}}">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/category/category-mant">Categories</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/product/prod-mant">Products</a>
+      </li>
+      {{/if }}
+
+      {{/if}}
+
+      {{#if IsLoggedIn}}
+      <div class="d-flex flex-row-reverse">   
+        <li class="nav-item">
+          <a class="nav-link" href="/account/unAuthenticate">Log out</a>
+        </li>
+      </div>
+     {{/if}}
     </ul>
   </div>
 </nav>

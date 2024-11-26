@@ -37,9 +37,14 @@ exports.PostAuthenticate = async (req,res,next)=>{
         }
         
         if(!UserToAuth.dataValues.IsActive){
+            if(!UserToAuth.dataValues.CommerceId){
+                req.flash(ErrorNameforFlash, "Commerece is not active, contact and admin");
+                 return  res.redirect("/account/authenticate");
+            }
             req.flash(ErrorNameforFlash, "User is not active");
             return  res.redirect("/account/authenticate");
         }
+
         req.session.UserInfo = UserToAuth.dataValues;
         req.session.IsLogin = true;
         req.session.save((err) => {
@@ -50,7 +55,6 @@ exports.PostAuthenticate = async (req,res,next)=>{
             }
 
             // Redirect to home page based on the user's role
-            console.log("hey");
             return res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId));
         });
        
