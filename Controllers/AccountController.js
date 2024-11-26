@@ -80,6 +80,7 @@ exports.PostRegister = async (req,res,next)=>{
     try{
         const {
             Name,
+            LastName,
             UserName,
             Email,
             Cedula,
@@ -114,6 +115,7 @@ exports.PostRegister = async (req,res,next)=>{
         
        const newUser = await userModel.create({
             Name,
+            LastName,
             UserName,
             Email,
             Cedula: Cedula ?? "",
@@ -140,6 +142,8 @@ exports.PostRegister = async (req,res,next)=>{
 }
 
 exports.PostChangeActiveState = async (req,res,next)=>{
+
+    try {
     const id = req.params.id;
     const userToUpdate = await userModel.findByPk(req.locals.UserInfo.CommerceId);
 
@@ -148,6 +152,12 @@ exports.PostChangeActiveState = async (req,res,next)=>{
        }, {where:{Id:id}});
        // using http referrer
        res.redirect("back");
+
+    } catch (err) {
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
+        res.redirect("back");
+    }
 }
 
 const GetRoleHomeUrl = (role) =>{
@@ -201,25 +211,32 @@ exports.PostReset = async (req,res,next)=>{
         
        
     }catch(err){
-        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
         res.redirect("/account/reset-password");
     }
 
 }  
 exports.GetNewPassword = async (req,res,next)=>{
+    try {
         const token = req.params.token;
        const user = await User.findOne({where:{ResetToken: token, ResetTokenExpiration: {
             [Op.gte]: Date.now(),
-        }}})
+        }}});
 
         if(!user){
             req.flash(ErrorNameforFlash, "invalid token");
-            res.redirect("/account/reset-password");
+          return res.redirect("/account/reset-password");  
         }
         res.render("Auth/new-password",{
             userId: user.dataValues.Id,
             token:user.dataValues.ResetToken
         })
+    } catch (err) {
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
+        res.redirect("/account/reset-password");
+    }
 }
 
 exports.PostNewPassword  = async (req,res,next)=>{
@@ -228,28 +245,30 @@ exports.PostNewPassword  = async (req,res,next)=>{
 
        if(newPass != confirmPass){
         req.flash(ErrorNameforFlash, "password dont match");
-        res.redirect("/account/reset-password");
+         return res.redirect("/account/reset-password");
        }
        const user = await User.findOne({where:{Id: userId,ResetToken: passToken, ResetTokenExpiration: {
         [Op.gte]: Date.now(),
        }}});
 
        if(!user){
-        req.flash(ErrorNameforFlash, "invalid token");
-        res.redirect("/account/reset-password");
+       req.flash(ErrorNameforFlash, "invalid token");
+       return res.redirect("/account/reset-password");
+       } 
 
        const newHashPass = await bycrypt.hash(newPass, 12);
-      
 
        await user.update({
          Password: newHashPass,
         ResetToken: null,
         ResetTokenExpiration: null,
        }, {where:{Id:userId}});
-       res.redirect("/account/authenticate")
-    }
+
+       res.redirect("/account/authenticate");
+
     }catch(err){
-        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
         res.redirect("/account/reset-password");
     }
 
@@ -261,20 +280,20 @@ exports.PostActivateUser  = async (req,res,next)=>{
 
        if(newPass != confirmPass){
         req.flash(ErrorNameforFlash, "password dont match");
-        res.redirect("/account/reset-password");
+        return res.redirect("/account/reset-password");
        }
        const user = await User.findOne({where:{Id: Id}});
 
        if(!user){
-        req.flash(ErrorNameforFlash, "invalid  request");
-        res.redirect("/account/reset-password");
+        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        return res.redirect("/account/reset-password");
+       }
        
         await user.update({
             IsActive: true
           }, {where:{Id:Id}});
 
        res.redirect("/account/authenticate")
-    }
     }catch(err){
         req.flash(ErrorNameforFlash, "An unexpected errror happed");
         res.redirect("/account/reset-password");

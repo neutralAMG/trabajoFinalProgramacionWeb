@@ -12,6 +12,10 @@ const User = connection.define("User",{
         type: DataTypes.STRING,
         allowNull: false,
     }, 
+    LastName:{
+        type: DataTypes.STRING,
+        allowNull: false,
+    }, 
      UserName:{
         type: DataTypes.STRING,
         allowNull: false,
