@@ -2,6 +2,8 @@ const commereceModel = require("../Models/Commerce");
 const commereceTypeModel = require("../Models/CommerceType");
 const userModel = require("../Models/User");
 const SessionManager = require("../Utils/SessionManager")
+const User = require("../Models/User");
+const User = require("../Models/User");
 exports.GetAllCommerece = async (req,res,next) =>{
     try{
          let commerces = await commereceModel.findAll();
@@ -107,7 +109,7 @@ exports.PostEditCommerece = async (req,res,next) =>{
     } = req.body;
 
 
-    const logo = Logo.file
+    const logo = req.file
     await commereceModel.update({
      Name:NameC, 
      Phone, 
@@ -119,15 +121,25 @@ exports.PostEditCommerece = async (req,res,next) =>{
      CommerceTypeId,
     }, {where:{Id: req.user.CommerceId}});
 
-    res.redirect("/commerece/commerece-edit/"+ req.user.CommerceId)
+    res.redirect("/commerece/commerece-edit/"+ req.user.CommerceId);
 }
 exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
-
+     const Id = req.params.id;
     try{
-        const commereceToUpdate = await commereceModel.findByPk(req.user.CommerceId);
+        const commereceToUpdate = await commereceModel.findByPk(Id);
         //TODO: change all the statuses of the users related to this
+        const status = commereceToUpdate.dataValues.IsActive ? true : false ;
+
+        const Users = await User.findAll({where:{CommerceId: Id}});
+
+         Users.forEach( async (user) =>{
+           await User.update({
+                IsActive: status
+            },{where:{Id: user.dataValues.Id}});
+        });
+
         await commereceModel.update({
-           IsActive: commereceToUpdate.dataValues.IsActive ? true : false ,
+           IsActive: status,
         }, {where:{Id:req.user.CommerceId}});
 
        res.redirect("back")
