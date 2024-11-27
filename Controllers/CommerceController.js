@@ -1,25 +1,40 @@
 const commereceModel = require("../Models/Commerce");
 const commereceTypeModel = require("../Models/CommerceType");
 const userModel = require("../Models/User");
-const SessionManager = require("../Utils/SessionManager")
+const SessionManager = require("../Utils/SessionManager");
 const User = require("../Models/User");
+const { Op } = require("sequelize");
+const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+
 exports.GetAllCommerece = async (req,res,next) =>{
     try{
-         let commerces = await commereceModel.findAll({include:[{model:commereceTypeModel}]});
+         let commerces = await commereceModel.findAll({include:[{model:commereceTypeModel}, {model:User}]});
          commerces = commerces.map((c) => c.dataValues);
+         commerces = commerces.map((c) =>{
+            c.amountOrders = c.dataValues.CommereceTypes;
+            c.amountEmployees = c.dataValues.Users;
+            return c;
+         })
          //TODO: format opening and clousing times
         res.render("CommereceViews/commerece-mant",{
             commerces: commerces,
             isEmpty: commerces.length === 0,
         });
     }catch{
+        req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
+        res.redirect("back");
     }
 }
 exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
     const cTypeId = req.params.cTypeId
     try{
-        let commerces = await commereceModel.findAll({where:{CommerceTypeId:cTypeId}});
+        let commerces = await commereceModel.findAll({
+            where:{CommerceTypeId:cTypeId, 
+            ClousingHour:{[Op.gt]:[new Date().getTime]}, 
+            OpeningHour:{[Op.lt]:[new Date().getTime]},
+            IsActive: true,
+        }});
         commerces = commerces.map((c) => c.dataValues);
 
        res.render("CommereceViews/commerece-ctype",{
@@ -27,7 +42,9 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
            isEmpty: commerces.length === 0,
        } );
    }catch{
-       console.error(err);
+    req.flash(ErrorNameforFlash, "Error while processing the request");
+    console.error(err);
+    res.redirect("/commerceType/commerceType-Index");
    }
 }
 
@@ -40,7 +57,9 @@ exports.GetAddCommerece = async (req,res,next) =>{
         })
 
       }catch(err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
+        res.redirect("back");
       }
 }
 
@@ -79,23 +98,34 @@ exports.PostAddCommerece = async (req,res,next) =>{
 
        res.status(201).redirect("/home/home-commerece");
     }catch (err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
+        res.redirect("back");
     }
 }
 
 exports.GetEditCommerece = async (req,res,next) =>{
+    try {
      const commereceToUpdate =   await commereceModel.findByPk(req.user.CommerceId);
      const commerceTypes = commereceTypeModel.findAll();
-    res.render("CommereceViews/commerece-add",{
+      res.render("CommereceViews/commerece-add",{
         commerece: commereceToUpdate.dataValues,
         commerceTypes: (await commerceTypes).map((c) => c.dataValues),
         userPendingToSave: null,
         EditMode: true,
-    })
+       })
+    } catch (error) {
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
+        res.redirect("back");
+    }
+
 }
+    
 
 exports.PostEditCommerece = async (req,res,next) =>{
-    const 
+    try {
+        const 
     {NameC, 
      Phone, 
      Email, 
@@ -119,13 +149,18 @@ exports.PostEditCommerece = async (req,res,next) =>{
     }, {where:{Id: req.user.CommerceId}});
 
     res.redirect("/commerece/commerece-edit/"+ req.user.CommerceId);
+    } catch (error) {
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
+        res.redirect("back");
+    }
 }
 exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
      const Id = req.params.id;
     try{
         const commereceToUpdate = await commereceModel.findByPk(Id);
        
-        const status = commereceToUpdate.dataValues.IsActive ? true : false ;
+        const status = commereceToUpdate.dataValues.IsActive ? false :true  ;
 
         const Users = await User.findAll({where:{CommerceId: Id}});
 
@@ -142,6 +177,8 @@ exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
        res.redirect("back")
 
     }catch(err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
         res.redirect("back");
     }
 }

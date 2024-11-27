@@ -1,4 +1,5 @@
 const categoryModel = require("../Models/Category");
+const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 
 exports.GetAllCategory = async (req,res,next) =>{
@@ -12,7 +13,9 @@ exports.GetAllCategory = async (req,res,next) =>{
             isEmpty: categories.length === 0,
         } );
     }catch{
+        req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
+        res.redirect("back");
     }
     
 
@@ -37,6 +40,7 @@ exports.PostAddCategory = async  (req,res,next) =>{
 
      res.redirect("/category/category-mant");
    }catch(err){
+    req.flash(ErrorNameforFlash, "Error while processing the request");
     res.redirect("/category/category-add");
     console.error(err);
    }
@@ -55,6 +59,7 @@ exports.GetEditCategory = async (req,res,next) =>{
         EditMode: true,
     });
     }catch{
+        req.flash(ErrorNameforFlash, "Error while processing the request");
        res.redirect("/category/category-mant");
        console.error(err);
     }
@@ -74,6 +79,7 @@ exports.PostEditCategory = async (req,res,next) =>{
      res.redirect("/category/category-mant");
 
    }catch(err){
+     req.flash(ErrorNameforFlash, "Error while processing the request");
      res.redirect("/category/category-edit/" + Id);
      console.error(err);
    }
@@ -86,6 +92,7 @@ exports.PostDeleteCategory = async (req,res,next) =>{
         await categoryModel.destroy({where: {Id:Id, CommerceId:req.user.CommerceId}});
         res.redirect("/category/category-mant");
     }catch (err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
         res.redirect("/category/category-mant");
         console.error(err);
     }

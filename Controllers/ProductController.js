@@ -134,7 +134,7 @@ exports.PostAddDiscoundProduct = async (req,res,next) =>{
         const {id, Discount} = req.body.id;
 
         await productModel.update({
-            Discount
+            Discount: (Discount / 100)
          },{where: {Id:id, CommerceId: req.user.CommerceId }});
 
          res.redirect("/product/product-mant");

@@ -3,12 +3,12 @@ const connection = require("../Context/applicationContext")
 
 const OrderDetails = connection.define("OrderDetails",{
     OrderId:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true
     }, 
      ProductId:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true
     }, 

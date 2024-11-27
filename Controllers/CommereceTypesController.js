@@ -1,5 +1,6 @@
 const commereceTypeModel = require("../Models/CommerceType");
 const commereceModel = require("../Models/Commerce");
+const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 exports.GetAllCommereceType = async (req,res,next) =>{
     try{
@@ -17,7 +18,9 @@ exports.GetAllCommereceType = async (req,res,next) =>{
             isEmpty: commereceTypes.length === 0,
         } );
     }catch (err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
+        res.redirect("back");
     }
     
 }
@@ -38,8 +41,10 @@ exports.PostAddCommereceType = async (req,res,next) =>{
     });
         res.redirect("/commerceType/commerceType-mant");
     }catch(err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+       console.error(err);
       res.redirect("/commerceType/commerceType-add");
-      console.error(err);
+      
   }
 }
 
@@ -54,6 +59,7 @@ exports.GetEditCommereceType = async (req,res,next) =>{
             EditMode: true
         });
     }catch (err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
        res.redirect("/commerceType/commerceType-mant");
        console.error(err);
      }
@@ -73,6 +79,7 @@ exports.PostEditCommereceType = async (req,res,next) =>{
      res.redirect("/commereceType/commerceType-mant");
 
    }catch(err){
+    req.flash(ErrorNameforFlash, "Error while processing the request");
      res.redirect("/commereceType/commerceType-edit/" + Id)
      console.error(err);
    }
@@ -84,6 +91,7 @@ exports.PostDeleteCommereceType = async (req,res,next) =>{
         await commereceTypeModel.destroy({where: {Id:Id}});
         res.redirect("/commereceType/commerceType-mant");
     }catch(err){
+        req.flash(ErrorNameforFlash, "Error while processing the request");
         res.redirect("/commereceType/commerceType-mant");
         console.error(err);
 

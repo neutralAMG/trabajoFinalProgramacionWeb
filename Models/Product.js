@@ -30,11 +30,11 @@ const Product = connection.define("Product",{
         allowNull: false,
     },
     CategoryId:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     CommerceId:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 
