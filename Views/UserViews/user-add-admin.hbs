@@ -1,6 +1,6 @@
 <div class="row justify-content-center mt-5">
   <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
-    <form enctype="multipart/form-data" {{# if EditMode }} action="/user/user-admin-edit" {{/if}} {{# unless EditMode }} action="/user/user-admin-add" {{/unless}}   action="/user/user-admin-add" method="post" onsubmit=" return confirm('You sure you whant to create this admin?');">
+    <form enctype="multipart/form-data" {{# if EditMode }} action="/user/user-admin-edit" {{/if}} {{#unless EditMode }} action="/user/user-admin-add" {{/unless}}   action="/user/user-admin-add" method="post" onsubmit=" return confirm('You sure you whant to create this admin?');">
       <h1 class="text-center mb-4">SAVE ADMIN</h1>
        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
 
@@ -35,12 +35,12 @@
 
       <div class="form-outline mb-4">
         <label class="form-label" for="password">Password:</label>
-        <input type="password" id="password" name="Password" class="form-control form-control-lg" >
+        <input type="password" id="password" name="Password" class="form-control form-control-lg"  {{#unless EditMode }} required {{/unless}}>
       </div>
 
       <div class="form-outline mb-4">
         <label class="form-label" for="ConfirmPassword">Confirm Password:</label>
-        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control form-control-lg">
+        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control form-control-lg" {{#unless EditMode }} required {{/unless}}>
       </div>
 
       <button type="submit" class="btn btn-primary w-100 btn-block mb-4">SAVE</button>

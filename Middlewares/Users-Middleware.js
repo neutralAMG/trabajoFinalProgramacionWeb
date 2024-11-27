@@ -1,4 +1,6 @@
 const isAuth = require("./IsAuth");
+const isActive = require("./IsAuth");
+const createCommerece = require("./needToCreateCommerece");
 const {Roles} = require("../Utils/ImportantENVVariables");
 
 const RoleMiddle = (AllowRoles) =>{ 
@@ -23,8 +25,8 @@ exports.ClientMiddleware = RoleMiddle([Roles.Client])
 
 exports.DeliveryMiddleware = RoleMiddle([Roles.Delivery])
 
-
-exports.ManagerMiddleware = RoleMiddle([Roles.Manager])
+const middlewares = RoleMiddle([Roles.Manager]);
+exports.ManagerMiddleware = [middlewares[0], createCommerece, middlewares[1]]
 
 
 exports.CommereceMiddleware = RoleMiddle([Roles.Manager,Roles.Employee])

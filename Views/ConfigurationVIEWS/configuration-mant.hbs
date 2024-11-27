@@ -1,0 +1,35 @@
+<div class="row col-12 d-flex justify-content-center">
+     <h1 class="display-2 text-center p-2">CONFIGURATIOND</h1>
+    <div class="col-10 d-flex justify-content-center"> 
+       
+            <table class="table table-hover text-center table-responsive mb-0">
+                <thead>
+                        <tr>
+                            <th class=" th-lg"><a>Name</a></th>
+                            <th class="th-lg">Actions</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        {{#each configurations as |configuration|}}
+                        <tr>
+                            <th scope="row"> 
+                             <div class="d-flex justify-content-center">
+                                <p class="p-2 ">
+                                    {{configuration.Name}}
+                                </p>
+                             </div> 
+                            </th>
+                            <td><div class="d-flex justify-content-center text-center">
+                                <form action="/configuration/configuration-edit" method="post" class="w-50" onsubmit=" return confirm('You sure you want to update this config?');" >
+                                  <input type="hidden" value="{{commereceType.Id}}" name="Id"/>
+                                  <input type="number" value="{{configuration.Value}}" id="config" name="config" required/>
+                                  <button class="btn btn-info">Edit</button>
+                                </form>
+                       
+                            </div></td>
+                         </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+    </div>
+</div>

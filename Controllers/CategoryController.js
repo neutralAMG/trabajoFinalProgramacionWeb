@@ -1,12 +1,18 @@
 const categoryModel = require("../Models/Category");
+const user = require("../Models/User");
 const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 
 exports.GetAllCategory = async (req,res,next) =>{
 
     try{
-        let categories = await categoryModel.findAll({where:{ CommerceId: req.user.CommerceId}});
+        let categories = await categoryModel.findAll({include:[{model:user }],where:{ CommerceId: req.user.CommerceId}});
          categories = categories.map((c) => c.dataValues);
+
+         categories = categories.map((c) => {
+            c.amountProduct = c.Users.length;
+            return c;
+         });
 
         res.render("CategoryViews/category-mant",{
             categories: categories,
@@ -86,7 +92,7 @@ exports.PostEditCategory = async (req,res,next) =>{
 }
 
 exports.PostDeleteCategory = async (req,res,next) =>{
-    const Id = req.body;
+    const Id = req.body.Id;
 
     try{
         await categoryModel.destroy({where: {Id:Id, CommerceId:req.user.CommerceId}});
