@@ -69,15 +69,15 @@ exports.GetAddProduct = async (req,res,next) => {
 }
 
 exports.PostAddProduct = async (req,res,next) =>{
-    const { Name, Description, Price, Discount, Photo, CategoryId,} = req.body;
-
+    const { Name, Description, Price, Discount, CategoryId,} = req.body;
+     const Photo = req.file;
     try{
      await productModel.create({
         Name,
         Description,
         Price,
         Discount,
-        Photo,
+        Photo: "/" + Photo.path ,
         CategoryId,
         CommerceId: req.locals.UserInfo.CommerceId
      })
@@ -109,15 +109,15 @@ exports.GetEditProduct = async (req,res,next) =>{
 
 
 exports.PostEditProduct = async (req,res,next) =>{
-    const {Id, Name, Description, Price, Photo, CategoryId,} = req.body;
-
+    const {Id, Name, Description, Price, CategoryId, PrevImage} = req.body;
+   const Photo = req.file
     try{
 
      await productModel.update({
         Name,
         Description,
         Price,
-        Photo,
+        Photo: Photo != null ? "/" + Photo.path : PrevImage,
         CategoryId,
      },{where: {Id:Id, CommerceId: req.user.CommerceId }})
 
@@ -131,11 +131,11 @@ exports.PostEditProduct = async (req,res,next) =>{
 
 exports.PostAddDiscoundProduct = async (req,res,next) =>{
     try{
-        const {id, Discount} = req.body.id;
+        const {Id, Discount} = req.body;
 
         await productModel.update({
             Discount: (Discount / 100)
-         },{where: {Id:id, CommerceId: req.user.CommerceId }});
+         },{where: {Id:Id, CommerceId: req.user.CommerceId }});
 
          res.redirect("/product/product-mant");
     }catch{

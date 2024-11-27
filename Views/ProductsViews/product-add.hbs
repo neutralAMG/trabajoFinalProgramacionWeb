@@ -1,0 +1,45 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
+    <form enctype="multipart/form-data" {{#if EditMode }} action="/product/product-edit" {{/if}} {{#unless EditMode }} action="/product/product-add" {{/unless}}  method="post" onsubmit="return confirm('You sure you whant to create this admin?');">
+      <h1 class="text-center mb-4">SAVE ADMIN</h1>
+       <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
+
+       {{#if EditMode }}
+       <input type="hidden" id="Id" name="Id" value="{{product.Id}}"> 
+       <input type="hidden" id="PrevImage" name="PrevImage" value="{{product.Photo}}">
+       {{/if}}
+       
+      <div class="form-outline mb-4">
+        <label class="form-label" for="name">Name:</label>
+        <input type="text" id="name" name="Name" class="form-control form-control-lg" {{#if EditMode }} value="{{product.Name}}" {{/if}} required>
+      </div> 
+      <div class="form-outline mb-4">
+        <label class="form-label" for="Description">Description:</label>
+        <input type="text" id="Description" name="Description" class="form-control form-control-lg" {{#if EditMode }} value="{{product.Description}}" {{/if}}  required>
+      </div> 
+      
+      <div class="form-outline mb-4">
+        <label class="form-label" for="Price">Price:</label>
+        <input type="text" id="Price" name="Price" class="form-control form-control-lg" {{#if EditMode }} value="{{product.Price}}" {{/if}}  required>
+      </div> 
+      <div class="form-outline mb-4">
+        <label class="form-label" for="Photo">Photo:</label>
+        <input type="file" id="Photo" name="Image" class="form-control form-control-lg" >
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="CategoryId">Category:</label>
+        <select id="CategoryId" name="CategoryId" class="form-control form-control-lg" required>
+          <option value="">Select Role</option>
+          {{#each roles as |role|}}
+             <option value="{{categories.Id}}" {{#if EditMode }} {{#if (equals categories.Id product.CategoryId)}} selected  {{/if}}  {{/if}}>{{categories.Name}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 btn-block mb-4">SAVE</button>
+      <a href="javascript:history.back()"  class="btn btn-info w-100 btn-block mb-4"> Go back</a>
+
+    </form>
+  </div>
+</div>
