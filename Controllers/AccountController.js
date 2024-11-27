@@ -66,9 +66,12 @@ exports.PostAuthenticate = async (req,res,next)=>{
         res.redirect("/account/authenticate");
     }
 }
-exports.PostUnAuthenticate = async (req,res,next)=>{
-    await SessionManager.Logout(req);
-    await res.redirect("/account/authenticate");
+exports.PostUnAuthenticate =  (req,res,next)=>{
+     req.session.destroy((err) => {
+        console.log(err);
+        
+     });
+     res.redirect("/account/authenticate");
 }
 
 exports.GetRegister = async (req,res,next)=>{

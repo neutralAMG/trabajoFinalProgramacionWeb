@@ -44,7 +44,7 @@ app.use(multer({storage: imageStorage}).single("Image"));
 
 
 //TODO: Encapsulate this on a utils file (ConfigureSessionAndCustomizeRequests)
-app.use(session({secret:"anything", resave: true, saveUninitialized: false,cookie:{
+app.use(session({secret:"anything", resave: false, saveUninitialized: false,cookie:{
     maxAge: 30 * 24 * 60 * 60 * 1000,
 }}));
 
@@ -86,7 +86,7 @@ routesRegister.Register(app)
 modelRelationshipConfig.Config();
 
 app.use(function(req,res,next){
-    if(res.locals.IsLoggedIn){ return res.status(400).send("<h1 class='text-center display-1 mt-5' ></h1>");}
+    if(res.locals.IsLoggedIn){ return res.status(400).send("<h1 class='text-center display-1 mt-5' >404</h1>");}
         
     res.redirect("/account/authenticate");
 })

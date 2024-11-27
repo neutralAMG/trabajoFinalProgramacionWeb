@@ -1,6 +1,6 @@
 <div class="row justify-content-center mt-5">
   <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
-    <form enctype="multipart/form-data" {{# if EditMode }} action="/commereceType/commereceType-edit" {{/if}} {{# unless EditMode }} action="/commereceType/commereceType-add" {{/unless}}   action="/user/user-admin-add" method="post" onsubmit="confirm('You sure you whant to create this admin?');">
+    <form enctype="multipart/form-data" {{#if EditMode }} action="/commereceType/commerceType-edit" {{/if}} {{#unless EditMode }} action="/commereceType/commereceType-add" {{/unless}}  method="post" onsubmit="return confirm('You sure you whant to create this admin?');">
       <h1 class="text-center mb-4">SAVE ADMIN</h1>
        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
 
@@ -11,11 +11,11 @@
        
       <div class="form-outline mb-4">
         <label class="form-label" for="name">Name:</label>
-        <input type="text" id="name" name="Name" class="form-control form-control-lg" {{# if EditMode }} value="{{commerceType.Name}}" {{/if}} required>
+        <input type="text" id="name" name="Name" class="form-control form-control-lg" {{#if EditMode }} value="{{commerceType.Name}}" {{/if}} required>
       </div> 
       <div class="form-outline mb-4">
         <label class="form-label" for="Description">Description:</label>
-        <input type="text" id="Description" name="Description" class="form-control form-control-lg" {{# if EditMode }} value="{{commerceType.Description}}" {{/if}}  required>
+        <input type="text" id="Description" name="Description" class="form-control form-control-lg" {{#if EditMode }} value="{{commerceType.Description}}" {{/if}}  required>
       </div>
 
       <div class="form-outline mb-4">

@@ -1,15 +1,22 @@
 const commereceTypeModel = require("../Models/CommerceType");
+const commereceModel = require("../Models/Commerce");
 
 exports.GetAllCommereceType = async (req,res,next) =>{
     try{
-        let commereceTypes = await commereceTypeModel.findAll();
+        let commereceTypes = await commereceTypeModel.findAll({include:[{model:commereceModel }]});
         commereceTypes = commereceTypes.map((c) => c.dataValues);
+        console.log(commereceTypes);
+        
+        commereceTypes = commereceTypes.map((c) => {
+            c.commereceCount = c.Commerces.length
+          return c;
+        });
 
         res.render("CommerceTypeViews/commereceType-mant",{
             commereceTypes: commereceTypes,
             isEmpty: commereceTypes.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
     }
     
@@ -29,25 +36,25 @@ exports.PostAddCommereceType = async (req,res,next) =>{
        Description,
        Icon: "/"+Icon.path
     });
-        res.redirect("/commereceType/commereceType-mant");
+        res.redirect("/commerceType/commerceType-mant");
     }catch(err){
-      res.redirect("/commereceType/commereceType-add");
+      res.redirect("/commerceType/commerceType-add");
       console.error(err);
   }
 }
 
 exports.GetEditCommereceType = async (req,res,next) =>{
     try{
-        const id = req.params.id;
+        const Id = req.params.id;
     
-        let commereceType = await commereceTypeModel.findOne({where: {Id:id}});
+        let commerceType = await commereceTypeModel.findOne({where: {Id:Id}});
     
         res.render("CommerceTypeViews/commereceType-add",{
-            commereceType: commereceType.dataValues,
+            commerceType: commerceType.dataValues,
             EditMode: true
         });
-    }catch{
-       res.redirect("/commereceType/commereceType-mant");
+    }catch (err){
+       res.redirect("/commerceType/commerceType-mant");
        console.error(err);
      }
 }
@@ -57,27 +64,27 @@ exports.PostEditCommereceType = async (req,res,next) =>{
     const Icon = req.file
     try{
 
-     await categoryModel.update({
+     await commereceTypeModel.update({
         Name,
         Description,
         Icon: Icon != null  ? "/"+Icon.path : PrevImage
      },{where: {Id:Id}})
 
-     res.redirect("/commereceType/commereceType-mant");
+     res.redirect("/commereceType/commerceType-mant");
 
    }catch(err){
-     res.redirect("/category/category-edit/" + Id)
+     res.redirect("/commereceType/commerceType-edit/" + Id)
      console.error(err);
    }
 }
 
 exports.PostDeleteCommereceType = async (req,res,next) =>{
     try{
-        const id = req.body.id;
-        await commereceTypeModel.destroy({where: {Id:id}});
-        res.redirect("/commereceType/commereceType-mant");
+        const Id = req.body.Id;
+        await commereceTypeModel.destroy({where: {Id:Id}});
+        res.redirect("/commereceType/commerceType-mant");
     }catch(err){
-        res.redirect("/commereceType/commereceType-mant");
+        res.redirect("/commereceType/commerceType-mant");
         console.error(err);
 
     }

@@ -54,7 +54,7 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
+  <div class="d-flex collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       {{#if IsLoggedIn}}
 
@@ -150,9 +150,10 @@
 
       {{#if IsLoggedIn}}
       <div class="d-flex flex-row-reverse">   
-        <li class="nav-item">
-          <a class="nav-link" href="/account/unAuthenticate">Log out</a>
-        </li>
+
+         <form action="/account/unAuthenticate" method="post" class="nav-item">
+                <button class="nav-link">Log out</button>
+            </form>
       </div>
      {{/if}}
     </ul>

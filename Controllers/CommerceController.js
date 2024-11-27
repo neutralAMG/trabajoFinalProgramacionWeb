@@ -7,7 +7,7 @@ exports.GetAllCommerece = async (req,res,next) =>{
     try{
          let commerces = await commereceModel.findAll({include:[{model:commereceTypeModel}]});
          commerces = commerces.map((c) => c.dataValues);
-         //TODO: format opening and clousing type
+         //TODO: format opening and clousing times
         res.render("CommereceViews/commerece-mant",{
             commerces: commerces,
             isEmpty: commerces.length === 0,

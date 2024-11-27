@@ -163,11 +163,37 @@ exports.PostEditUser = async (req,res,next) =>{
         ConfirmPassword,
         RoleId,
         CommerceId  } = req.body;
-    const redirectUrl = req.body;
       let  Photo = req.file;
 
     try{
 
+        //TODO: test the validations
+        const userToUpdate = await userModel.findByPk(Id);
+        let userWithSameCredentials;
+
+        if (userToUpdate.dataValues.Email != Email) {
+            let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
+
+          if(userWithSameCredentials){
+              req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
+           return  res.redirect("/user/user-admin-add");
+          }
+
+        }
+        if (userToUpdate.dataValues.Email != Email) {
+            userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
+
+           if(userWithSameCredentials){
+              req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
+              return res.redirect("/user/user-admin-add");
+             }
+        } 
+
+        if(Password != ConfirmPassword){
+            req.flash(ErrorNameforFlash, "passwords dont match");
+            return  res.redirect("/user/user-admin-add");
+        }
+            
         if(Password != ConfirmPassword)
             return res.redirect("/user/user-edit/" + Id);
 
