@@ -60,7 +60,7 @@ exports.PostEditCommereceType = async (req,res,next) =>{
      await categoryModel.update({
         Name,
         Description,
-        Icon: "/"+Icon.path
+        Icon: Icon != null  ? "/"+Icon.path : PrevImage
      },{where: {Id:Id}})
 
      res.redirect("/commereceType/commereceType-mant");
