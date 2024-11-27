@@ -146,7 +146,7 @@ exports.PostRegister = async (req,res,next)=>{
 
 exports.PostChangeActiveState = async (req,res,next)=>{
     const Id = req.body.Id;
-    const Url = req.body.Url;
+
     try {
         if(Id != res.locals.UserInfo.Id){
              const userToUpdate = await User.findByPk(Id);
@@ -155,7 +155,7 @@ exports.PostChangeActiveState = async (req,res,next)=>{
             }, {where:{Id:Id}});
              // using http referrer
        
-             return res.redirect(Url);
+             return res.redirect("back");
 
         }
              return res.redirect("back");
@@ -164,7 +164,7 @@ exports.PostChangeActiveState = async (req,res,next)=>{
     } catch (err) {
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
-        res.redirect(Url);
+        res.redirect("back");
     }
 }
 

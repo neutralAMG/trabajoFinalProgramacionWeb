@@ -1,33 +1,45 @@
 const userModel = require("../Models/User");
+const orderModel = require("../Models/Order");
 const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 const bycrypt = require("bcryptjs");
 
 
 exports.GetAllUserClientMant = async (req,res,next) =>{
     try{
-        let clients = await userModel.findAll({where:{ RoleId:Roles.Client}});
+        let clients = await userModel.findAll({ include:[{model:orderModel}],where:{ RoleId:Roles.Client}});
         clients = clients.map((p) => p.dataValues);
+        console.log(clients);
 
         res.render("UserViews/user-client",{
-            clients: clients,
+            clients: clients.map((p) => {
+                p.amountOrder = p.Orders.length;
+                return p;
+               }),
             isEmpty: clients.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
+        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        res.redirect("/user/user-admin-mant");
     }
 }
 
 exports.GetAllUserDeliveryMant = async (req,res,next) =>{
     try{
-        let deliveries = await userModel.findAll({where:{ RoleId:Roles.Delivery}});
+        let deliveries = await userModel.findAll({ include:[{model:orderModel}],where:{ RoleId:Roles.Delivery}});
         deliveries = deliveries.map((p) => p.dataValues);
 
         res.render("UserViews/user-delivery",{
-            deliveries: deliveries,
+            deliveries: deliveries.map((p) => {
+                p.amountOrder = p.Orders.length;
+                return p;
+               }),
             isEmpty: deliveries.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
+        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        res.redirect("/user/user-admin-mant");
     }
 
 }
@@ -41,8 +53,10 @@ exports.GetAllAdminUserMant = async (req,res,next) =>{
             admins: admins,
             isEmpty: admins.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
+        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        res.redirect("/user/user-admin-mant");
     }
 
 }

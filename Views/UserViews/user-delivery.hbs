@@ -1,0 +1,63 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 text-center mb-4">
+      <h1 class="display-4">APP CLIENTS</h1>
+    </div>
+    <div class="col-12">
+      <!-- Table displaying admins -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Info</th>
+              <th>cnt Orders</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each deliveries as |delivery|}}
+            <tr>
+              <td>
+                <div class="d-flex text-center">
+                  <div class="ms-3">
+                    <p class="fw-bold mb-1">{{delivery.Name}} {{delivery.LastName}}</p>
+                  </div>
+                </div>
+              </td>
+            
+               <td>
+                <p class="text-muted mb-0">{{delivery.amountOrder}}</p>
+              </td>  
+              <td>
+                <p class="text-muted mb-0">{{delivery.Phone}}</p>
+              </td>
+              <td>
+                <p class="text-muted mb-0">{{delivery.Email}}</p>
+              </td>
+              <td>
+                {{#if delivery.IsActive}}
+                  <span class="badge bg-success text-white rounded-pill">Active</span>
+                {{/if}}
+                {{#unless delivery.IsActive}}
+                  <span class="badge bg-danger text-white rounded-pill">Inactive</span>
+                {{/unless}}
+              </td>
+              <td>
+                <div class="d-flex text-center gap-2">
+                    <form enctype="multipart/form-data" action="/account/change-active-state" method="post" onsubmit="confirm('You sure?');">
+                      <input type="hidden" value="{{delivery.Id}}" name="Id"/>
+                    <button class="btn btn-warning btn-sm">Change Status</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
