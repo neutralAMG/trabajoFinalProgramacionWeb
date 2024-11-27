@@ -17,5 +17,6 @@ exports.ShowLogin = (req) => {
 
 exports.getSessionUserInfo = (req) => {
   return res.locals.UserInfo;
-}
-exports.Logout = async (req) => await req.session.destroy();
+} 
+exports.Logout =  (req) =>  req.session.destroy();
+ 

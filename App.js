@@ -14,8 +14,6 @@ const User = require("./Models/User");
 const multer = require("multer");
 const {v4: uuidv4} = require("uuid")
 const csurf = require("csurf");
-const { log } = require("console");
-const crfProtecttion = csurf();
 
 // TODO: Encapsulate this part on a utils file (ConfigureEngine)
 app.engine("hbs", engine({
@@ -52,7 +50,8 @@ app.use(session({secret:"anything", resave: true, saveUninitialized: false,cooki
 
 app.use(express.urlencoded({extended: false}));
 //TODO: Make success messages too
-app.use(crfProtecttion);
+
+// app.use(csurf());
 app.use(flash());
 
 app.use(async (req, res, next)  =>{
@@ -77,7 +76,7 @@ app.use((req, res, next) =>{
     res.locals.errorMessages = errors;
     res.locals.roles = Roles;
     res.locals.hasErrors = errors.length > 0;
-    res.locals.csrfToken = req.csrfToken();
+    // res.locals.csrfToken = req.csrfToken();
     next();
 });
 // until this part
@@ -87,8 +86,8 @@ routesRegister.Register(app)
 modelRelationshipConfig.Config();
 
 app.use(function(req,res,next){
-    if(res.locals.IsLoggedIn)
-        res.status(400).send("<h1 class='text-center display-1 mt-5' ></h1>");
+    if(res.locals.IsLoggedIn){ return res.status(400).send("<h1 class='text-center display-1 mt-5' ></h1>");}
+        
     res.redirect("/account/authenticate");
 })
 connection.sync(/*{force:true}*/).then(() => {

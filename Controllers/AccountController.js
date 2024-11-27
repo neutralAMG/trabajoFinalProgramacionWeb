@@ -37,7 +37,7 @@ exports.PostAuthenticate = async (req,res,next)=>{
         }
         
         if(!UserToAuth.dataValues.IsActive){
-            if(!UserToAuth.dataValues.CommerceId){
+            if( (UserToAuth.dataValues.RoleId === Roles.Employee || UserToAuth.dataValues.RoleId === Roles.Manager )&& !UserToAuth.dataValues.CommerceId){
                 req.flash(ErrorNameforFlash, "Commerece is not active, contact and admin");
                  return  res.redirect("/account/authenticate");
             }
@@ -47,6 +47,8 @@ exports.PostAuthenticate = async (req,res,next)=>{
 
         req.session.UserInfo = UserToAuth.dataValues;
         req.session.IsLogin = true;
+        console.log(req.session.UserInfo);
+        
         req.session.save((err) => {
             if (err) {
                 req.flash(ErrorNameforFlash, "Error saving session");
@@ -55,6 +57,7 @@ exports.PostAuthenticate = async (req,res,next)=>{
             }
 
             // Redirect to home page based on the user's role
+            console.log("hey");
             return res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId));
         });
        
@@ -142,21 +145,26 @@ exports.PostRegister = async (req,res,next)=>{
 }
 
 exports.PostChangeActiveState = async (req,res,next)=>{
-
+    const Id = req.body.Id;
+    const Url = req.body.Url;
     try {
-    const id = req.params.id;
-    const userToUpdate = await userModel.findByPk(req.locals.UserInfo.CommerceId);
+        if(Id != res.locals.UserInfo.Id){
+             const userToUpdate = await User.findByPk(Id);
+             await userModel.update({
+              IsActive: userToUpdate.dataValues.IsActive === true ? false :  true,
+            }, {where:{Id:Id}});
+             // using http referrer
+       
+             return res.redirect(Url);
 
-    await userModel.update({
-        IsActive: !userToUpdate.dataValues.IsActive,
-       }, {where:{Id:id}});
-       // using http referrer
-       res.redirect("back");
-
+        }
+             return res.redirect("back");
+   
+  
     } catch (err) {
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
-        res.redirect("back");
+        res.redirect(Url);
     }
 }
 

@@ -1,5 +1,6 @@
 const userModel = require("../Models/User");
-const {Roles} = require("../Utils/ImportantENVVariables");
+const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const bycrypt = require("bcryptjs");
 
 
 exports.GetAllUserClientMant = async (req,res,next) =>{
@@ -61,6 +62,65 @@ exports.GetAllEmployeeUserMant = async (req,res,next) =>{
 
 }
 
+exports.GetAddAdmin = async (req,res,next)=> res.render("UserViews/user-add-admin",{ });
+
+
+exports.PostAddAdmin = async (req,res,next)=>{
+    try{
+        const {
+            Name,
+            LastName,
+            UserName,
+            Email,
+            Cedula,
+            Phone,
+            Password,
+            ConfirmPassword,
+        } = req.body;
+    
+
+
+        let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
+
+        if(userWithSameCredentials){
+            req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
+          return  res.redirect("/user/user-admin-add");
+        }
+
+        userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
+
+        if(userWithSameCredentials){
+            req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
+            return res.redirect("/user/user-admin-add");
+        }
+
+        if(Password != ConfirmPassword){
+            req.flash(ErrorNameforFlash, "passwords dont match");
+            return  res.redirect("/user/user-admin-add");
+        }
+            
+       const  hashPass = await bycrypt.hash(Password, 12);
+        
+     await userModel.create({
+            Name,
+            LastName,
+            UserName,
+            Email,
+            Cedula: Cedula ?? "",
+            Photo: "",
+            Phone,
+            Password: hashPass,
+            RoleId: Roles.Admin,
+        });
+    
+        res.redirect("/user/user-admin-mant");
+    }catch (err){
+        console.error("Error during registration:", err.toString().split(" at ")[0]);
+        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        res.redirect("/user/user-admin-mant");
+    }
+}
+
 exports.GetEditUser = async (req,res,next) =>{
     try{
         const id = req.params.id;
@@ -78,19 +138,19 @@ exports.GetEditUser = async (req,res,next) =>{
         }
 }
 
+
 exports.PostEditUser = async (req,res,next) =>{
     const {Id,   
         Name,
         UserName,
         Email,
         Cedula,
-        Photo, 
         Password,
         ConfirmPassword,
         RoleId,
         CommerceId  } = req.body;
     const redirectUrl = req.body;
-      let  Phone = req.file;
+      let  Photo = req.file;
 
     try{
 
@@ -102,12 +162,11 @@ exports.PostEditUser = async (req,res,next) =>{
         UserName,
         Email,
         Cedula,
-        Photo, 
-        Phone: "/"+Phone.path,
+        Photo: "/"+Photo.path,
+        Phone ,
         IsActive,
         IsBusy,
         Password,
-        ConfirmPassword,
         RoleId,
         CommerceId 
      },{where: {Id:Id}})
@@ -119,18 +178,75 @@ exports.PostEditUser = async (req,res,next) =>{
      console.error(err);
    }
 }
+exports.GetEditAdmin = async (req,res,next) =>{
+    try{
+        const id = req.params.id;
+    
+        let user = await userModel.findOne({where: {Id:id}});
+    
+        res.render("UserViews/user-add-admin",{
+            admin: user.dataValues,
+            EditMode: true,
+        });
 
-exports.PostDeleteUser = async (req,res,next) =>{
-    const Id = req.body;
+        }catch{
+           res.redirect(back);
+           console.error(err);
+        }
+}
+exports.PostEditUserAdmin = async (req,res,next) =>{
+    const {Id,   
+        Name,
+        LastName,
+        UserName,
+        Email,
+        Cedula,
+        Password,
+        PrevPassword,
+        ConfirmPassword,} = req.body;
 
-    if(Id === req.user.id){
-     return res.redirect("back")
-    }
 
     try{
-        await userModel.destroy({where: {Id:Id}});
+        let newPass = PrevPassword;
+        if(Password){
+            if(Password != ConfirmPassword){
+                return res.redirect("/user/user-admin-edit/" + Id);
+            }
+            newPass = await bycrypt.hash(Password, 12)  
+        } 
+        
+
+     await userModel.update({
+        Name,
+        LastName,
+        UserName,
+        Email,
+        Cedula,
+        Password: newPass,
+       },{where: {Id:Id}
+      });
+ 
+     res.redirect("/user/user-admin-mant")
+
+   }catch(err){
+     res.redirect("/user/user-admin-edit/" + Id)
+     console.error(err);
+   }
+}
+
+exports.PostDeleteUser = async (req,res,next) =>{
+    const Id = req.body.Id;
+
+   
+    
+
+    try{
+       if(Id === res.locals.UserInfo.Id){
+         await userModel.destroy({where: {Id:Id}});
             // make diferent by role
-        res.redirect(back);
+          return res.redirect(back);
+       }
+     return res.redirect("back")
     }catch (err){
         res.redirect("/user/user-mant");
         console.error(err);

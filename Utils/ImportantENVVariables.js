@@ -15,7 +15,7 @@ exports.OrderStatus ={
     OnDelivery: 4,
     PendingCompletionConfirmation: 5,
     Cancel: 6,
-    Completed: 7
+    Completed: 7 
 }
 
 exports.ConfigurationValueTypes ={

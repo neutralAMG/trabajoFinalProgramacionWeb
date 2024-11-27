@@ -26,15 +26,15 @@ const User = connection.define("User",{
     }, 
     Cedula:{
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     }, 
     Photo:{
        type: DataTypes.STRING,
-       allowNull: false,
+       allowNull: true,
     },
     Phone:{
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     }, 
     IsActive:{
         type: DataTypes.BOOLEAN,

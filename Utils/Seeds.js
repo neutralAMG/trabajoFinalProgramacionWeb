@@ -29,6 +29,7 @@ const rolesToSeed =[
 const DefaultAdminUser = {
  
         Name: "Admin User",
+        LastName: "Admin User",
         UserName: "admin",
         Email: "admin@example.com",
         Cedula: "1234567890",
@@ -38,7 +39,7 @@ const DefaultAdminUser = {
         IsBusy: false,
         Password: "123qwea" , 
         RoleId: 1, 
-        CommerceId: null, 
+        CommerceId: "", 
 }
 
 const Configuration = {

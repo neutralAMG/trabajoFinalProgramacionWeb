@@ -50,7 +50,7 @@
   {{/if}}
   {{#unless IsLoggedIn}}
     <a class="navbar-brand" href="/account/authenticate">AppCenar</a>
-  {{/if}}
+  {{/unless}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -58,7 +58,7 @@
     <ul class="navbar-nav">
       {{#if IsLoggedIn}}
 
-      {{#if equals (UserInfo.RoleId roles.Admin)}}
+      {{#if  (equals  UserInfo.RoleId roles.Admin)}}
       <li class="nav-item">
         <a class="nav-link" href="/home/home-admin">Home</a>
       </li>
@@ -66,7 +66,7 @@
         <a class="nav-link" href="/user/user-client-mant">Clients mant</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/user-delivery-mant">Deliveries mant</a>
+        <a class="nav-link" href="/user/user-delivery-mant">Deliveries mant</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/user/user-client-mant">Commerece mant</a>
@@ -82,7 +82,7 @@
       </li>
       {{/if }}     
       
-      {{#if equals( UserInfo.RoleId roles.Client)}}
+      {{#if (equals UserInfo.RoleId roles.Client)}}
       <li class="nav-item">
         <a class="nav-link" href="/home/home-client">Home</a>
       </li>
@@ -103,7 +103,7 @@
       </li>
       {{/if }}     
       
-      {{#if equals( UserInfo.RoleId roles.Delivery)}}
+      {{#if (equals UserInfo.RoleId roles.Delivery)}}
       <li class="nav-item">
         <a class="nav-link" href="/home/home-delivery">Home</a>
       </li>
@@ -112,7 +112,7 @@
       </li>
       {{/if }}     
       
-      {{#if equals( UserInfo.RoleId roles.Manager)}}
+      {{#if (equals UserInfo.RoleId roles.Manager)}}
       <li class="nav-item">
         <a class="nav-link" href="/home/home-commerece">Home</a>
       </li>
@@ -131,7 +131,7 @@
       {{/if }}
       
       
-      {{#if equals( UserInfo.RoleId roles.Employee)}}
+      {{#if (equals UserInfo.RoleId roles.Employee)}}
        <li class="nav-item">
         <a class="nav-link" href="/home/home-commerece">Home</a>
       </li>
