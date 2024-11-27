@@ -7,7 +7,7 @@ router.get("/commerce-add", commereceController.GetAddCommerece);
 router.post("/commerce-add", commereceController.PostAddCommerece);
 router.get("/commerce-edit/:id", commereceController.GetEditCommerece);
 router.post("/commerce-edit", commereceController.PostEditCommerece);
-router.post("/commerce-change-active-status/:id", commereceController.PostChangeActiveStateCommerece);
+router.post("/commerce-change-active-status", commereceController.PostChangeActiveStateCommerece);
 
 
 module.exports = router

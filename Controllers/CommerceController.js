@@ -156,19 +156,21 @@ exports.PostEditCommerece = async (req,res,next) =>{
     }
 }
 exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
-     const Id = req.params.id;
+     const Id = req.body.Id;
     try{
         const commereceToUpdate = await commereceModel.findByPk(Id);
        
-        const status = commereceToUpdate.dataValues.IsActive ? false :true  ;
+        const status = commereceToUpdate.dataValues.IsActive ? false : true;
 
         const Users = await User.findAll({where:{CommerceId: Id}});
-
-         Users.forEach( async (user) =>{
+        if(Users){
+            Users.forEach( async (user) =>{
            await User.update({
                 IsActive: status
             },{where:{Id: user.dataValues.Id}});
         });
+        }
+         
 
         await commereceModel.update({
            IsActive: status,
