@@ -1,49 +1,64 @@
 <div class="row justify-content-center mt-5">
   <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
-    <form enctype="multipart/form-data" action="/commerece/commerce-add" method="post">
-      <h1 class="text-center mb-4">REGISTER COMMERECE</h1>
+    <form enctype="multipart/form-data" {{#if EditMode}} action="/commerece/commerce-edit" {{/if}}  {{#unless EditMode}} action="/commerece/commerce-add" {{/unless}} method="post">
+      {{#if EditMode}} 
+       <h1 class="text-center mb-4">COMMERECE PROFILE</h1>
+       {{/if}}
+
+       {{#unless EditMode}}
+       <h1 class="text-center mb-4">REGISTER COMMERECE</h1>
+       {{/unless}}
+
        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
+
+       
+       {{#if EditMode }}
+       <input type="hidden" id="Id" name="Id" value="{{commerece.Id}}"> 
+       <input type="hidden" id="PrevLogo" name="PrevLogo" value="{{commerece.Logo}}">
+       {{/if}}
+
+      {{#unless EditMode}}
       <div class="form-outline mb-4">
         <label class="form-label" for="name">Name:</label>
-        <input type="text" id="name" name="Name" class="form-control form-control-lg" required>
+        <input type="text" id="name" name="Name" class="form-control form-control-lg"  required>
       </div> 
-
+      {{/unless}}
       <div class="form-outline mb-4">
         <label class="form-label" for="email">Email:</label>
-        <input type="email" id="email" name="Email" class="form-control form-control-lg" required>
+        <input type="email" id="email" name="Email" class="form-control form-control-lg"  {{#if EditMode}} value="{{commerece.Email}}"{{/if}}  required>
       </div>
-
+      {{#unless EditMode}}
       <div class="form-outline mb-4">
         <label class="form-label" for="phone">Phone:</label>
-        <input type="text" id="phone" name="Phone" class="form-control form-control-lg" required>
+        <input type="text" id="phone" name="Phone" class="form-control form-control-lg"  {{#if EditMode}} value="{{commerece.Phone}}"{{/if}}  required>
       </div>
-
+      {{/unless}}
       <div class="form-outline mb-4">
         <label class="form-label" for="Logo">Logo:</label>
-        <input type="file" id="Logo" name="Image" class="form-control form-control-lg" required>
+        <input type="file" id="Logo" name="Image" class="form-control form-control-lg"  {{#if EditMode}} required {{/if}}  >
       </div>
 
     <div class="form-outline mb-4">
         <label class="form-label" for="OpeningHour">Opening Hour:</label>
-        <input type="time" id="OpeningHour" name="OpeningHour" class="form-control form-control-lg" required>
+        <input type="time" id="OpeningHour" name="OpeningHour" class="form-control form-control-lg"  {{#if EditMode}} value="{{commerece.OpeningHour}}"{{/if}}  required>
       </div>
 
     <div class="form-outline mb-4">
         <label class="form-label" for="ClousingHour">Clousing Hour:</label>
-        <input type="time" id="ClousingHour" name="ClousingHour" class="form-control form-control-lg" required>
+        <input type="time" id="ClousingHour" name="ClousingHour" class="form-control form-control-lg"  {{#if EditMode}} value="{{commerece.ClousingHour}}"{{/if}}  required>
       </div>
 
-    
+    {{#unless EditMode}}
       <div class="form-outline mb-4">
         <label class="form-label" for="CommerceTypeId">Commerce Type:</label>
         <select id="role" name="CommerceTypeId" class="form-control form-control-lg" required>
           <option value="">Select Role</option>
           {{#each commerceTypes as |commerceType|}}
-             <option value="{{commerceType.Id}}">{{commerceType.Name}}</option>
+             <option value="{{commerceType.Id}}" >{{commerceType.Name}}</option>
           {{/each}}
         </select>
       </div>
-
+      {{/unless}}
       <button type="submit" class="btn btn-primary w-100 btn-block mb-4">Create commerece</button>
 
 

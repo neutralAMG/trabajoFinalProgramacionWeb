@@ -112,9 +112,9 @@ exports.PostAddCommerece = async (req,res,next) =>{
 
 exports.GetEditCommerece = async (req,res,next) =>{
     try {
-     const commereceToUpdate =   await commereceModel.findByPk(req.user.CommerceId);
+     const commereceToUpdate =   await commereceModel.findByPk(res.locals.UserInfo.CommerceId);
      const commerceTypes = commereceTypeModel.findAll();
-      res.render("CommerceViews/commerece-add",{
+      res.render("CommerceViews/commerce-add",{
         commerece: commereceToUpdate.dataValues,
         commerceTypes: (await commerceTypes).map((c) => c.dataValues),
         userPendingToSave: null,
@@ -132,29 +132,26 @@ exports.GetEditCommerece = async (req,res,next) =>{
 exports.PostEditCommerece = async (req,res,next) =>{
     try {
         const 
-    {NameC, 
+    {
      Phone, 
      Email, 
-    IsActive,
+     PrevLogo,
     OpeningHour, 
     ClousingHour, 
-     CommerceTypeId,
     } = req.body;
 
 
     const logo = req.file
     await commereceModel.update({
-     Name:NameC, 
      Phone, 
      Email, 
-     Logo: "/" + logo.path, 
+     Logo: logo != null ? "/" + logo.path : PrevLogo, 
      IsActive,
      OpeningHour, 
      ClousingHour, 
-     CommerceTypeId,
-    }, {where:{Id: req.user.CommerceId}});
+    }, {where:{Id: res.locals.UserInfo.CommerceId}});
 
-    res.redirect("/commerece/commerece-edit/"+ req.user.CommerceId);
+    res.redirect("/commerece/commerece-edit/"+res.locals.UserInfo.CommerceId);
     } catch (error) {
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);

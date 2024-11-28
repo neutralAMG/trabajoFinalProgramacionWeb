@@ -116,9 +116,12 @@
       <li class="nav-item">
         <a class="nav-link" href="/home/home-commerece">Home</a>
       </li>
+      {{#if UserInfo.CommerceId}}
       <li class="nav-item">
-        <a class="nav-link" href="/user/user-edit/{{UserInfo.Id}}">Profile</a>
+        <a class="nav-link" href="/commerece/commerce-edit/{{UserInfo.CommerceId}}">Profile</a>
       </li>
+      {{/if}}
+      
       <li class="nav-item">
         <a class="nav-link" href="/user/user-employee-mant">Employees</a>
       </li>
@@ -134,9 +137,6 @@
       {{#if (equals UserInfo.RoleId roles.Employee)}}
        <li class="nav-item">
         <a class="nav-link" href="/home/home-commerece">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/user/user-edit/{{UserInfo.Id}}">Profile</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/category/category-mant">Categories</a>
