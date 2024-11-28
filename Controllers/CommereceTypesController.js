@@ -39,11 +39,11 @@ exports.PostAddCommereceType = async (req,res,next) =>{
        Description,
        Icon: "/"+Icon.path
     });
-        res.redirect("/commerceType/commerceType-mant");
+        res.redirect("/commereceType/commerceType-mant");
     }catch(err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
        console.error(err);
-      res.redirect("/commerceType/commerceType-add");
+      res.redirect("/commereceType/commerceType-add");
       
   }
 }
@@ -60,7 +60,7 @@ exports.GetEditCommereceType = async (req,res,next) =>{
         });
     }catch (err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
-       res.redirect("/commerceType/commerceType-mant");
+       res.redirect("/commereceType/commerceType-mant");
        console.error(err);
      }
 }

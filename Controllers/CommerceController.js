@@ -37,7 +37,7 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
         }});
         commerces = commerces.map((c) => c.dataValues);
 
-       res.render("CommereceViews/commerece-ctype",{
+       res.render("CommerceViews/commerece-ctype",{
            commerces: commerces,
            isEmpty: commerces.length === 0,
        } );
@@ -50,9 +50,9 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
 
 exports.GetAddCommerece = async (req,res,next) =>{
     try{
-        const commerceTypes = commereceTypeModel.findAll();
-        res.render("CommereceViews/commerece-add",{
-            commerceTypes: (await commerceTypes).map((c) => c.dataValues),
+        const commerceTypes = await commereceTypeModel.findAll();
+        res.render("CommerceViews/commerce-add",{
+            commerceTypes: commerceTypes.map((c) => c.dataValues),
             EditMode: false,
         })
 
@@ -74,7 +74,7 @@ exports.PostAddCommerece = async (req,res,next) =>{
          CommerceTypeId,
         } = req.body;
 
-        const logo = Logo.file
+        const logo = req.file
        const newCommerece =  await commereceModel.create({
          Name, 
          Phone, 
@@ -87,14 +87,20 @@ exports.PostAddCommerece = async (req,res,next) =>{
         });
 
         await userModel.update({
-            CommerceId: newCommerece.Id, 
-        },{where:{Id: req.user.Id}});
+            CommerceId: newCommerece.dataValues.Id, 
+        },{where:{Id: res.locals.UserInfo.Id}});
         
-        const UserInfo = req.user;
-        UserInfo.CommerceId = newCommerece.Id;
+        const UserInfo = res.locals.UserInfo;
+        UserInfo.CommerceId = newCommerece.dataValues.Id;
 
-        await SessionManager.Logout(res);
-        await SessionManager.Login(req, UserInfo);
+        req.session.UserInfo = UserInfo;
+        req.session.IsLogin = true;
+        
+        req.session.save((err) => {
+            if (err) {
+                req.flash(ErrorNameforFlash, "Error saving session");
+                return res.redirect("/account/authenticate");
+            }})
 
        res.status(201).redirect("/home/home-commerece");
     }catch (err){
@@ -108,7 +114,7 @@ exports.GetEditCommerece = async (req,res,next) =>{
     try {
      const commereceToUpdate =   await commereceModel.findByPk(req.user.CommerceId);
      const commerceTypes = commereceTypeModel.findAll();
-      res.render("CommereceViews/commerece-add",{
+      res.render("CommerceViews/commerece-add",{
         commerece: commereceToUpdate.dataValues,
         commerceTypes: (await commerceTypes).map((c) => c.dataValues),
         userPendingToSave: null,

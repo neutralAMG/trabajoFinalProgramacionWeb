@@ -1,0 +1,55 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
+    <form enctype="multipart/form-data" action="/commerece/commerce-add" method="post">
+      <h1 class="text-center mb-4">REGISTER COMMERECE</h1>
+       <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
+      <div class="form-outline mb-4">
+        <label class="form-label" for="name">Name:</label>
+        <input type="text" id="name" name="Name" class="form-control form-control-lg" required>
+      </div> 
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="email">Email:</label>
+        <input type="email" id="email" name="Email" class="form-control form-control-lg" required>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="phone">Phone:</label>
+        <input type="text" id="phone" name="Phone" class="form-control form-control-lg" required>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="Logo">Logo:</label>
+        <input type="file" id="Logo" name="Image" class="form-control form-control-lg" required>
+      </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="OpeningHour">Opening Hour:</label>
+        <input type="time" id="OpeningHour" name="OpeningHour" class="form-control form-control-lg" required>
+      </div>
+
+    <div class="form-outline mb-4">
+        <label class="form-label" for="ClousingHour">Clousing Hour:</label>
+        <input type="time" id="ClousingHour" name="ClousingHour" class="form-control form-control-lg" required>
+      </div>
+
+    
+      <div class="form-outline mb-4">
+        <label class="form-label" for="CommerceTypeId">Commerce Type:</label>
+        <select id="role" name="CommerceTypeId" class="form-control form-control-lg" required>
+          <option value="">Select Role</option>
+          {{#each commerceTypes as |commerceType|}}
+             <option value="{{commerceType.Id}}">{{commerceType.Name}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 btn-block mb-4">Create commerece</button>
+
+
+      <div class="text-center">
+        <p>Got an account? <a href="/account/authenticate">Login</a></p>
+      </div>
+    </form>
+  </div>
+</div>

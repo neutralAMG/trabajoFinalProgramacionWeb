@@ -1,16 +1,16 @@
 const categoryModel = require("../Models/Category");
-const user = require("../Models/User");
+const Commerce = require("../Models/Commerce");
 const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 
 exports.GetAllCategory = async (req,res,next) =>{
 
     try{
-        let categories = await categoryModel.findAll({include:[{model:user }],where:{ CommerceId: req.user.CommerceId}});
+        let categories = await categoryModel.findAll({include:[{model:Commerce }],where:{ CommerceId: res.locals.UserInfo.CommerceId}});
          categories = categories.map((c) => c.dataValues);
 
          categories = categories.map((c) => {
-            c.amountProduct = c.Users.length;
+            c.amountProduct = c.Commerces.length;
             return c;
          });
 
@@ -18,7 +18,7 @@ exports.GetAllCategory = async (req,res,next) =>{
             categories: categories,
             isEmpty: categories.length === 0,
         } );
-    }catch{
+    }catch (err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
         res.redirect("back");

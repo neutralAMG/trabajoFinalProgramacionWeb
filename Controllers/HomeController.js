@@ -24,13 +24,13 @@ exports.GetClientHome = async  (req,res,next)=>{
 exports.GetDeliveryHome = async  (req,res,next)=>{
     try{
         let orders = await orderModel.findAll({
+            
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ CommerceId: req.user.CommerceId},
-        order:["createdAt", "DESC"] });
+            where:{ Delivery: res.locals.UserInfo.Id}});
         orders = orders.map((p) => p.dataValues);
 
-        res.render("HomeViews/home-commerece",{
-            orders: orders,
+        res.render("HomeViews/home-delivery",{
+            orders: orders.sort((a,b) => b.createdAt - a.createdAt),
             isEmpty: orders.length === 0,
         } );
     }catch (err){
@@ -44,13 +44,12 @@ exports.GetCommereceHome = async (req,res,next)=>{
 
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ DeliveryId: req.user.Id},
-            order:["createdAt", "DESC"] });
+            where:{ Id: res.locals.UserInfo.CommerceId}});
         orders = orders.map((p) => p.dataValues);
         const statuses =  await orderStatusModel.findAll();
 
-        res.render("HomeViews/home-delivery",{
-            orders: orders,
+        res.render("HomeViews/home-commerce",{
+            orders: orders.sort((a,b) => b.createdAt - a.createdAt),
             statuses: statuses.map((s) => s.dataValues),
             isEmpty: orders.length === 0,
         } );
