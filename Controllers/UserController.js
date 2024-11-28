@@ -63,10 +63,10 @@ exports.GetAllAdminUserMant = async (req,res,next) =>{
 
 exports.GetAllEmployeeUserMant = async (req,res,next) =>{
     try{
-        let employees = await userModel.findAll({where:{ RoleId: {[Op.or]:[Roles.Employee, Roles.Manager]}, CommerceId: req.user.CommerceId}});
+        let employees = await userModel.findAll({where:{ RoleId: {[Op.or]:[Roles.Employee, Roles.Manager]}, CommerceId: res.locals.UserInfo.CommerceId}});
         employees = employees.map((p) => p.dataValues);
 
-        res.render("UserViews/user-admin",{
+        res.render("UserViews/user-employee",{
             employees: employees,
             isEmpty: employees.length === 0,
         } );

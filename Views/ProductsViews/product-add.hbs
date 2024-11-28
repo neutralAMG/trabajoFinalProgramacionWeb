@@ -1,6 +1,6 @@
 <div class="row justify-content-center mt-5">
   <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
-    <form enctype="multipart/form-data" {{#if EditMode }} action="/product/product-edit" {{/if}} {{#unless EditMode }} action="/product/product-add" {{/unless}}  method="post" onsubmit="return confirm('You sure you whant to create this admin?');">
+    <form enctype="multipart/form-data" {{#if EditMode }} action="/product/prod-edit" {{/if}} {{#unless EditMode }} action="/product/prod-add" {{/unless}}  method="post" onsubmit="return confirm('You sure you whant to save this product?');">
       <h1 class="text-center mb-4">SAVE ADMIN</h1>
        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
 
@@ -20,7 +20,7 @@
       
       <div class="form-outline mb-4">
         <label class="form-label" for="Price">Price:</label>
-        <input type="text" id="Price" name="Price" class="form-control form-control-lg" {{#if EditMode }} value="{{product.Price}}" {{/if}}  required>
+        <input type="number" id="Price" name="Price" class="form-control form-control-lg" {{#if EditMode }} value="{{product.Price}}" {{/if}}  required>
       </div> 
       <div class="form-outline mb-4">
         <label class="form-label" for="Photo">Photo:</label>
@@ -30,9 +30,14 @@
       <div class="form-outline mb-4">
         <label class="form-label" for="CategoryId">Category:</label>
         <select id="CategoryId" name="CategoryId" class="form-control form-control-lg" required>
-          <option value="">Select Role</option>
-          {{#each roles as |role|}}
-             <option value="{{categories.Id}}" {{#if EditMode }} {{#if (equals categories.Id product.CategoryId)}} selected  {{/if}}  {{/if}}>{{categories.Name}}</option>
+          <option value="">Select category</option>
+          {{#each categories as |category|}}
+             <option value="{{category.Id}}" 
+             {{#if ../EditMode }} 
+                  {{#if (equals category.Id   ../product.CategoryId)}} 
+                  selected  
+                  {{/if}}  
+             {{/if}}>{{category.Name}}</option>
           {{/each}}
         </select>
       </div>

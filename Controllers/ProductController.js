@@ -6,7 +6,10 @@ exports.GetAllProducts = async (req,res,next) =>{
     try{
         let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CommerceId: res.locals.UserInfo.CommerceId}});
         products = products.map((p) => p.dataValues);
-
+        products = products.map((p) => {
+            p.Discount = p.Discount  ? (Number(p.Discount * 100)) : 0;
+            return p;
+        });
         res.render("ProductsViews/product-mant",{
             products: products,
             isEmpty: products.length === 0,
@@ -20,12 +23,16 @@ exports.GetAllProductsByCommerceId = async (req,res,next) =>{
     try{
         let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CommerceId:CommerceId}});
         products = products.map((p) => p.dataValues);
+        products = products.map((p) => {
+            p.Discount = p.Discount  ? (Number(p.Discount * 100)) : 0;
+            return p;
+        });
 
         res.render("ProductsViews/product-commerece",{
             products: products,
             isEmpty: products.length === 0,
         } );
-    }catch{
+    }catch(err){
         console.error(err);
     }
 }
@@ -40,7 +47,7 @@ exports.GetAllProductsByCategory = async (req,res,next) =>{
             products: products,
             isEmpty: products.length === 0,
         } );
-    }catch{
+    }catch(err){
         console.error(err);
     }
 }
@@ -53,14 +60,14 @@ exports.GetProductById = async (req,res,next) =>{
         res.render("ProductsViews/product-detail",{
             product: product.dataValues,
         } );
-    }catch{
+    }catch(err){
         console.error(err);
     }
 }
 
 
 exports.GetAddProduct = async (req,res,next) => {
-    let categories = await productModel.findAll({where: { CommerceId:res.locals.UserInfo.CommerceId }});
+    let categories = await categoryModel.findAll({where: { CommerceId:res.locals.UserInfo.CommerceId }});
     res.render("ProductsViews/product-add",{  
     product: null,
     categories: categories.map((c) => c.dataValues),
@@ -79,12 +86,12 @@ exports.PostAddProduct = async (req,res,next) =>{
         Discount,
         Photo: "/" + Photo.path ,
         CategoryId,
-        CommerceId: req.locals.UserInfo.CommerceId
+        CommerceId: res.locals.UserInfo.CommerceId
      })
 
-     res.redirect("/product/product-mant");
+     res.redirect("/product/prod-mant");
    }catch(err){
-    res.redirect("/product/product-add");
+    res.redirect("/product/prod-add");
     console.error(err);
    }
 }
@@ -94,15 +101,14 @@ exports.GetEditProduct = async (req,res,next) =>{
         const id = req.params.id;
     
         let product = await productModel.findOne({where: {Id:id, CommerceId:res.locals.UserInfo.CommerceId }});
-        let categories = await productModel.findAll({where: { CommerceId: res.locals.UserInfo.CommerceId }});
-    
+        let categories = await categoryModel.findAll({where: { CommerceId: res.locals.UserInfo.CommerceId }});
         res.render("ProductsViews/product-add",{
             product: product.dataValues,
             categories: categories.map((c) => c.dataValues),
             EditMode: true,
         });
-    }catch{
-        res.redirect("/product/product-mant");
+    }catch(err){
+        res.redirect("/product/prod-mant");
         console.error(err);
     }
 }
@@ -121,10 +127,10 @@ exports.PostEditProduct = async (req,res,next) =>{
         CategoryId,
      },{where: {Id:Id, CommerceId: res.locals.UserInfo.CommerceId }})
 
-     res.redirect("/product/product-mant")
+     res.redirect("/product/prod-mant")
 
    }catch(err){
-     res.redirect("/product/product-edit/" + Id)
+     res.redirect("/product/prod-edit/" + Id)
      console.error(err);
    }
 }
@@ -137,9 +143,9 @@ exports.PostAddDiscoundProduct = async (req,res,next) =>{
             Discount: (Discount / 100)
          },{where: {Id:Id, CommerceId: res.locals.UserInfo.CommerceId }});
 
-         res.redirect("/product/product-mant");
+         res.redirect("/product/prod-mant");
     }catch{
-        res.redirect("/product/product-mant");
+        res.redirect("/product/prod-mant");
         console.error(err);
     }
 }
@@ -150,9 +156,9 @@ exports.PostDeleteProduct = async (req,res,next) =>{
     try{
         await productModel.destroy({where: {Id:Id, CommerceId: res.locals.UserInfo.CommerceId }});
 
-        res.redirect("/product/product-mant");
+        res.redirect("/product/prod-mant");
     }catch (err){
-        res.redirect("/product/product-mant");
+        res.redirect("/product/prod-mant");
         console.error(err);
     }
 }

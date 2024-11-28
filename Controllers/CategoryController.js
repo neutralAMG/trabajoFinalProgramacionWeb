@@ -1,16 +1,18 @@
 const categoryModel = require("../Models/Category");
 const Commerce = require("../Models/Commerce");
+const Product = require("../Models/Product");
 const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 
 exports.GetAllCategory = async (req,res,next) =>{
 
     try{
-        let categories = await categoryModel.findAll({include:[{model:Commerce }],where:{ CommerceId: res.locals.UserInfo.CommerceId}});
+        let categories = await categoryModel.findAll({include:[{model:Product }],where:{ CommerceId: res.locals.UserInfo.CommerceId}});
          categories = categories.map((c) => c.dataValues);
-
+     
+         
          categories = categories.map((c) => {
-            c.amountProduct = c.Commerces.length;
+            c.amountProduct = c.Products.length;
             return c;
          });
 
@@ -21,7 +23,7 @@ exports.GetAllCategory = async (req,res,next) =>{
     }catch (err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
-        res.redirect("back");
+        res.location(req.get("Referrer") || "/") 
     }
     
 
@@ -58,13 +60,13 @@ exports.GetEditCategory = async (req,res,next) =>{
     try{
     const id = req.params.id;
 
-    let category = await categoryModel.findOne({where: {Id:id, CommerceId:req.user.CommerceId}});
+    let category = await categoryModel.findOne({where: {Id:id, CommerceId:res.locals.UserInfo.CommerceId}});
 
     res.render("CategoryViews/category-add",{
         category: category.dataValues,
         EditMode: true,
     });
-    }catch{
+    }catch (err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
        res.redirect("/category/category-mant");
        console.error(err);
@@ -80,7 +82,7 @@ exports.PostEditCategory = async (req,res,next) =>{
      await categoryModel.update({
         Name,
         Description,
-     },{where: {Id:Id, CommerceId:req.user.CommerceId }});
+     },{where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId }});
 
      res.redirect("/category/category-mant");
 
@@ -95,7 +97,7 @@ exports.PostDeleteCategory = async (req,res,next) =>{
     const Id = req.body.Id;
 
     try{
-        await categoryModel.destroy({where: {Id:Id, CommerceId:req.user.CommerceId}});
+        await categoryModel.destroy({where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId}});
         res.redirect("/category/category-mant");
     }catch (err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
