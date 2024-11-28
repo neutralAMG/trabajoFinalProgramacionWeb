@@ -1,0 +1,9 @@
+<body>
+    <div class="container mt-5">
+            <h4>Activate your account</h4>
+        <form action="/account/activate-user/" method="post">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            <input type="hidden" name="Id" id="Id" value="{{Id}}">
+            <button class="btn btn-success" type="submit">Yes, Confirm</button>
+        </form>
+    </div>

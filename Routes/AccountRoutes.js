@@ -15,6 +15,7 @@ router.get("/reset-password", isNotAuth, accountController.GetReset);
 router.get("/reset-password/:token", isNotAuth, accountController.GetReset);
 router.get("/reset-password", isNotAuth, accountController.GetNewPassword);
 router.post("/reset-password",  isNotAuth, accountController.PostNewPassword);
-router.post("/activate-user/:id", isNotAuth, accountController.PostNewPassword);
+router.get("/activate-user/:id", isNotAuth, accountController.GetActivateUser);
+router.post("/activate-user/", isNotAuth, accountController.PostActivateUser);
 
 module.exports = router

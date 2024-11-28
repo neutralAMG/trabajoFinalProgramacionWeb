@@ -127,16 +127,20 @@ exports.PostRegister = async (req,res,next)=>{
             Password: hashPass,
             RoleId,
         });
-        console.log(newUser);
-        
+
          transporter.sendMail({
             from: "alejandrodanielmoscosoguerrero@gmail.com",
             to: newUser.dataValues.Email,
             subject: "Activate your account",
-            html: `<h1><a href='http://localhost:8001/account/activate-user/${newUser.Id}'>  Click this link to activate your account</a></h1>`
+            html: `  <h1>Activate Your Account</h1>
+            <p>Click the button below to activate your account:</p>
+            <a href="http://localhost:8001/account/activate-user/${newUser.Id}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+                ACTIVATE
+            </a>
+            `
         }, (err) =>{console.error("Error during registration:", err.toString().split(" at ")[0]); });
     
-        res.redirect("/account/register");
+        res.redirect("/account/authenticate");
     }catch (err){
         console.error("Error during registration:", err.toString().split(" at ")[0]);
         req.flash(ErrorNameforFlash, "An unexpected error happed");
@@ -282,14 +286,28 @@ exports.PostNewPassword  = async (req,res,next)=>{
 
 }  
 
+
+exports.GetActivateUser  = async (req,res,next)=>{
+    try{
+        const Id = req.params.id;
+
+        res.render("Auth/activate",{
+            Id: Id
+        });
+      
+
+    }catch(err){
+        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        res.redirect("/account/authenticate");
+    }
+
+}  
+
 exports.PostActivateUser  = async (req,res,next)=>{
     try{
-        const Id = req.params.Id;
+        const Id = req.body.Id;
 
-       if(newPass != confirmPass){
-        req.flash(ErrorNameforFlash, "password dont match");
-        return res.redirect("/account/reset-password");
-       }
+
        const user = await User.findOne({where:{Id: Id}});
 
        if(!user){

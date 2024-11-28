@@ -16,7 +16,7 @@ exports.GetClientHome = async  (req,res,next)=>{
             commereceTypes: commereceTypes,
             isEmpty: commereceTypes.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
     }
 }
@@ -33,7 +33,7 @@ exports.GetDeliveryHome = async  (req,res,next)=>{
             orders: orders,
             isEmpty: orders.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
     }
 
@@ -54,7 +54,7 @@ exports.GetCommereceHome = async (req,res,next)=>{
             statuses: statuses.map((s) => s.dataValues),
             isEmpty: orders.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
     }
 }
