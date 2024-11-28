@@ -1,4 +1,5 @@
 const userModel = require("../Models/User");
+const roleModel = require("../Models/Role");
 const orderModel = require("../Models/Order");
 const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 const bycrypt = require("bcryptjs");
@@ -63,20 +64,25 @@ exports.GetAllAdminUserMant = async (req,res,next) =>{
 
 exports.GetAllEmployeeUserMant = async (req,res,next) =>{
     try{
-        let employees = await userModel.findAll({where:{ RoleId: {[Op.or]:[Roles.Employee, Roles.Manager]}, CommerceId: res.locals.UserInfo.CommerceId}});
+        let employees = await userModel.findAll({include: [{model:roleModel }],where:{ RoleId: {[Op.or]:[Roles.Employee, Roles.Manager]}, CommerceId: res.locals.UserInfo.CommerceId}});
         employees = employees.map((p) => p.dataValues);
 
         res.render("UserViews/user-employee",{
             employees: employees,
             isEmpty: employees.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
+        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        res.redirect("/home/home-commerece");
     }
 
 }
 
-exports.GetAddAdmin = async (req,res,next)=> res.render("UserViews/user-add-admin",{ });
+exports.GetAddAdmin = async (req,res,next)=> res.render("UserViews/user-add-admin",{
+    user: user.dataValues,
+    EditMode: false, 
+});
 
 
 exports.PostAddAdmin = async (req,res,next)=>{

@@ -172,6 +172,32 @@ exports.PostChangeActiveState = async (req,res,next)=>{
     }
 }
 
+exports.PostChangeEmployeeRole = async (req,res,next)=>{
+    const Id = req.body.Id;
+    const RoleId = req.body.RoleId;
+
+    try {
+        const userToUpdate = await User.findByPk(Id);
+        if(Id != res.locals.UserInfo.Id && userToUpdate.dataValues.CommerceId === res.locals.UserInfo.CommerceId){
+             
+             await userModel.update({
+              RoleId: RoleId,
+            }, {where:{Id:Id}});
+             // using http referrer
+       
+             return res.redirect("back");
+
+        }
+             return res.redirect("back");
+   
+  
+    } catch (err) {
+        req.flash(ErrorNameforFlash, "Error while processing the request");
+        console.error(err);
+        res.redirect("back");
+    }
+}
+
 const GetRoleHomeUrl = (role) =>{
     let url; 
     if (role === Roles.Admin) {

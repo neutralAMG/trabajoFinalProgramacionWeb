@@ -159,13 +159,13 @@ exports.PostEditCommerece = async (req,res,next) =>{
     }
 }
 exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
-     const Id = req.body.Id;
+     const CommerceId = req.body.CommerceId;
     try{
-        const commereceToUpdate = await commereceModel.findByPk(Id);
+        const commereceToUpdate = await commereceModel.findByPk(CommerceId);
        
         const status = commereceToUpdate.dataValues.IsActive ? false : true;
 
-        const Users = await User.findAll({where:{CommerceId: Id}});
+        const Users = await User.findAll({where:{CommerceId: CommerceId}});
         if(Users){
             Users.forEach( async (user) =>{
            await User.update({
@@ -177,7 +177,7 @@ exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
 
         await commereceModel.update({
            IsActive: status,
-        }, {where:{Id:req.user.CommerceId}});
+        }, {where:{Id:CommerceId}});
 
        res.redirect("back")
 
