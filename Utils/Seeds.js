@@ -39,7 +39,7 @@ const DefaultAdminUser = {
         IsBusy: false,
         Password: "123qwea" , 
         RoleId: 1, 
-        CommerceId: "", 
+        CommerceId: null, 
 }
 
 const Configuration = {

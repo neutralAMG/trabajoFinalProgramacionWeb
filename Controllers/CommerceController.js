@@ -16,7 +16,7 @@ exports.GetAllCommerece = async (req,res,next) =>{
             return c;
          })
          //TODO: format opening and clousing times
-        res.render("CommereceViews/commerece-mant",{
+        res.render("CommerceViews/commerce-mant",{
             commerces: commerces,
             isEmpty: commerces.length === 0,
         });
