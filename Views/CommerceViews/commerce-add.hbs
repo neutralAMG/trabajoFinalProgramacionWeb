@@ -20,7 +20,7 @@
       {{#unless EditMode}}
       <div class="form-outline mb-4">
         <label class="form-label" for="name">Name:</label>
-        <input type="text" id="name" name="Name" class="form-control form-control-lg"  required>
+        <input type="text" id="name" name="Name" class="form-control form-control-lg" required >
       </div> 
       {{/unless}}
       <div class="form-outline mb-4">
@@ -35,7 +35,7 @@
       {{/unless}}
       <div class="form-outline mb-4">
         <label class="form-label" for="Logo">Logo:</label>
-        <input type="file" id="Logo" name="Image" class="form-control form-control-lg"  {{#if EditMode}} required {{/if}}  >
+        <input type="file" id="Logo" name="Image" class="form-control form-control-lg"  {{#unless EditMode}} required {{/unless}}  >
       </div>
 
     <div class="form-outline mb-4">

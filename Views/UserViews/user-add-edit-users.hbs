@@ -1,0 +1,67 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
+    <form enctype="multipart/form-data" {{#if EditMode }} action="/user/user-edit" {{/if}} {{#unless EditMode }} action="/user/user-employee-add" {{/unless}}   method="post" onsubmit=" return confirm('You sure you want to save ?');">
+      <h1 class="text-center mb-4">{{title}}</h1>
+
+
+       {{#if EditMode }}
+       <input type="hidden" id="Id" name="Id" value="{{userToUpdate.Id}}"> 
+       <input type="hidden" id="PrevPassword" name="PrevPassword" value="{{userToUpdate.Password}}">
+       {{/if}}
+       
+      <div class="form-outline mb-4">
+        <label class="form-label" for="name">Name:</label>
+        <input type="text" id="name" name="Name" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.Name}}" {{/if}} required>
+      </div> 
+      <div class="form-outline mb-4">
+        <label class="form-label" for="LastName">Last Name:</label>
+        <input type="text" id="LastName" name="LastName" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.LastName}}" {{/if}}  required>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="username">Username:</label> 
+        <input type="text" id="username" name="UserName" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.UserName}}" {{/if}}  required>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="email">Email:</label>
+        <input type="email" id="email" name="Email" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.Email}}" {{/if}}  required>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="phone">Phone:</label>
+        <input type="text" id="phone" name="Phone" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.Phone}}" {{/if}}   required>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="photo">Photo:</label>
+        <input type="file" id="photo" name="Image" class="form-control form-control-lg" {{#unless EditMode}}  required {{/unless}}>
+      </div>
+
+      {{#if roles}}
+        <div class="form-outline mb-4">
+        <label class="form-label" for="role">Role:</label>
+        <select id="role" name="RoleId" class="form-control form-control-lg" required>
+          <option value="">Select Role</option>
+          {{#each rolesToUse as |role|}}
+             <option value="{{role.Id}}" {{#if ../EditMode }} {{#if (equals roles.Id  ../userToUpdate.RoleId) }} selected {{/if}}  {{/if}} >{{role.Name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{/if}}
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="password">Password:</label>
+        <input type="password" id="password" name="Password" class="form-control form-control-lg"  {{#unless EditMode }} required {{/unless}}>
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="ConfirmPassword">Confirm Password:</label>
+        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control form-control-lg" {{#unless EditMode }} required {{/unless}}>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 btn-block mb-4">SAVE</button>
+      <a href="javascript:history.back()"  class="btn btn-info w-100 btn-block mb-4"> Go back</a>
+    </form>
+  </div>
+</div>

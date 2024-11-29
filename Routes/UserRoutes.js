@@ -9,9 +9,14 @@ router.get("/user-admin-mant", middlewares.AdminMiddleware, userController.GetAl
 
 router.get("/user-admin-add" , middlewares.AdminMiddleware, userController.GetAddAdmin);
 router.post("/user-admin-add", middlewares.AdminMiddleware, userController.PostAddAdmin);
+
+router.get("/user-employee-add" , middlewares.ManagerMiddleware, userController.GetAddEmployee);
+router.post("/user-employee-add", middlewares.ManagerMiddleware, userController.PostAddEmployee);
+
 router.get("/user-edit/:id", userController.GetEditUser);
 router.get("/user-admin-edit/:id", userController.GetEditAdmin);
 router.post("/user-edit", userController.PostEditUser);
+
 router.post("/user-admin-edit", userController.PostEditUserAdmin);
 router.post("/user-delete", middlewares.AdminMiddleware, userController.PostDeleteUser);
 

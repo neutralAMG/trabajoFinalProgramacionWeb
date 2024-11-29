@@ -2,7 +2,7 @@ const isAuth = require("./IsAuth");
 const isActive = require("./IsAuth");
 const createCommerece = require("./needToCreateCommerece");
 const noNeddCreateCommerece = require("./commereceIsCreated");
-const {Roles} = require("../Utils/ImportantENVVariables");
+const {Roles, ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 const RoleMiddle = (AllowRoles) =>{ 
     return [
@@ -19,6 +19,8 @@ const RoleMiddle = (AllowRoles) =>{
 
 exports.AdminMiddleware = RoleMiddle([Roles.Admin])
 
+exports.ImportantUsersMiddleware = RoleMiddle([Roles.Admin, Roles.Manager])
+
 
 
 exports.ClientMiddleware = RoleMiddle([Roles.Client])
@@ -28,7 +30,6 @@ exports.DeliveryMiddleware = RoleMiddle([Roles.Delivery])
 
 const middlewareCommerece = RoleMiddle([Roles.Manager])
 exports.ManagerMiddleware = middlewareCommerece
-
 exports.ManagerMiddlewareWithCommerece = [middlewareCommerece[0], noNeddCreateCommerece, middlewareCommerece[1]]
 
 const middlewaresCommerece = RoleMiddle([Roles.Manager,Roles.Employee]);

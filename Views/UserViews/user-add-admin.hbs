@@ -1,6 +1,6 @@
 <div class="row justify-content-center mt-5">
   <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center mt-5">
-    <form enctype="multipart/form-data" {{# if EditMode }} action="/user/user-admin-edit" {{/if}} {{#unless EditMode }} action="/user/user-admin-add" {{/unless}}   action="/user/user-admin-add" method="post" onsubmit=" return confirm('You sure you whant to create this admin?');">
+    <form enctype="multipart/form-data" {{#if EditMode }} action="/user/user-admin-edit" {{/if}} {{#unless EditMode }} action="/user/user-admin-add" {{/unless}}   action="/user/user-admin-add" method="post" onsubmit=" return confirm('You sure you whant to create this admin?');">
       <h1 class="text-center mb-4">SAVE ADMIN</h1>
        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
 
@@ -11,26 +11,26 @@
        
       <div class="form-outline mb-4">
         <label class="form-label" for="name">Name:</label>
-        <input type="text" id="name" name="Name" class="form-control form-control-lg" {{# if EditMode }} value="{{admin.Name}}" {{/if}} required>
+        <input type="text" id="name" name="Name" class="form-control form-control-lg" {{#if EditMode }} value="{{admin.Name}}" {{/if}} required>
       </div> 
       <div class="form-outline mb-4">
         <label class="form-label" for="LastName">Last Name:</label>
-        <input type="text" id="LastName" name="LastName" class="form-control form-control-lg" {{# if EditMode }} value="{{admin.LastName}}" {{/if}}  required>
+        <input type="text" id="LastName" name="LastName" class="form-control form-control-lg" {{#if EditMode }} value="{{admin.LastName}}" {{/if}}  required>
       </div>
 
       <div class="form-outline mb-4">
         <label class="form-label" for="username">Username:</label> 
-        <input type="text" id="username" name="UserName" class="form-control form-control-lg" {{# if EditMode }} value="{{admin.UserName}}" {{/if}}  required>
+        <input type="text" id="username" name="UserName" class="form-control form-control-lg" {{#if EditMode }} value="{{admin.UserName}}" {{/if}}  required>
       </div>
 
       <div class="form-outline mb-4">
         <label class="form-label" for="email">Email:</label>
-        <input type="email" id="email" name="Email" class="form-control form-control-lg" {{# if EditMode }} value="{{admin.Email}}" {{/if}}  required>
+        <input type="email" id="email" name="Email" class="form-control form-control-lg" {{#if EditMode }} value="{{admin.Email}}" {{/if}}  required>
       </div>
 
       <div class="form-outline mb-4">
         <label class="form-label" for="phone">Cedula:</label>
-        <input type="text" id="Cedula" name="Cedula" class="form-control form-control-lg" {{# if EditMode }} value="{{admin.Cedula}}" {{/if}}  required>
+        <input type="text" id="Cedula" name="Cedula" class="form-control form-control-lg" {{#if EditMode }} value="{{admin.Cedula}}" {{/if}}  required>
       </div>
 
       <div class="form-outline mb-4">

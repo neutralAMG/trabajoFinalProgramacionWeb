@@ -146,13 +146,12 @@ exports.PostEditCommerece = async (req,res,next) =>{
      Phone, 
      Email, 
      Logo: logo != null ? "/" + logo.path : PrevLogo, 
-     IsActive,
      OpeningHour, 
      ClousingHour, 
     }, {where:{Id: res.locals.UserInfo.CommerceId}});
 
-    res.redirect("/commerece/commerece-edit/"+res.locals.UserInfo.CommerceId);
-    } catch (error) {
+    res.redirect("/commerece/commerce-edit/"+res.locals.UserInfo.CommerceId);
+    } catch (err) {
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
         res.redirect("back");

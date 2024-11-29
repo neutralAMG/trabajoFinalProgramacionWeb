@@ -10,7 +10,9 @@ router.post("/authenticate", isNotAuth, accountController.PostAuthenticate);
 router.post("/unAuthenticate", isAuth ,accountController.PostUnAuthenticate);
 router.get("/register", isNotAuth, accountController.GetRegister);
 router.post("/register", isNotAuth, accountController.PostRegister);
-router.post("/change-active-state",middlewares.AdminMiddleware, accountController.PostChangeActiveState);
+
+router.post("/change-active-state",middlewares.ImportantUsersMiddleware, accountController.PostChangeActiveState);
+
 router.post("/change-role",middlewares.ManagerMiddleware, accountController.PostChangeEmployeeRole);
 router.get("/reset-password", isNotAuth, accountController.GetReset);
 router.get("/reset-password/:token", isNotAuth, accountController.GetReset);

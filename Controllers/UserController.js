@@ -2,6 +2,7 @@ const userModel = require("../Models/User");
 const roleModel = require("../Models/Role");
 const orderModel = require("../Models/Order");
 const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {Op} = require("sequelize")
 const bycrypt = require("bcryptjs");
 
 
@@ -64,7 +65,7 @@ exports.GetAllAdminUserMant = async (req,res,next) =>{
 
 exports.GetAllEmployeeUserMant = async (req,res,next) =>{
     try{
-        let employees = await userModel.findAll({include: [{model:roleModel }],where:{ RoleId: {[Op.or]:[Roles.Employee, Roles.Manager]}, CommerceId: res.locals.UserInfo.CommerceId}});
+        let employees = await userModel.findAll({include: [{model:roleModel }],where:{ [Op.or]:[{RoleId: Roles.Employee},{ RoleId: Roles.Manager}], CommerceId: res.locals.UserInfo.CommerceId}});
         employees = employees.map((p) => p.dataValues);
 
         res.render("UserViews/user-employee",{
@@ -80,7 +81,6 @@ exports.GetAllEmployeeUserMant = async (req,res,next) =>{
 }
 
 exports.GetAddAdmin = async (req,res,next)=> res.render("UserViews/user-add-admin",{
-    user: user.dataValues,
     EditMode: false, 
 });
 
@@ -140,6 +140,81 @@ exports.PostAddAdmin = async (req,res,next)=>{
         res.redirect("/user/user-admin-mant");
     }
 }
+
+
+exports.GetAddEmployee = async (req,res,next)=> {
+    let roles = await roleModel.findAll({where:{Id:{[Op.or]:[
+        Roles.Employee,
+        Roles.Manager
+    ] }} });
+
+    roles = roles.map((r) => r.dataValues);
+
+    res.render("UserViews/user-add-edit-users",{
+    userToUpdate: {},
+    rolesToUse: roles,
+    title: "SAVE EMPLOYEE",
+    EditMode: false, 
+});
+}
+
+
+exports.PostAddEmployee = async (req,res,next)=>{
+    try{
+        const {
+            Name,
+            LastName,
+            UserName,
+            RoleId,
+            Email,
+            Phone,
+            Password,
+            ConfirmPassword,
+        } = req.body;
+        const Photo = req.file;
+
+        let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
+
+        if(userWithSameCredentials){
+            req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
+          return  res.redirect("/user/user-employee-add");
+        }
+
+        userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
+
+        if(userWithSameCredentials){
+            req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
+            return res.redirect("/user/user-employee-add");
+        }
+
+        if(Password != ConfirmPassword){
+            req.flash(ErrorNameforFlash, "passwords dont match");
+            return  res.redirect("/user/user-employee-add");
+        }
+            
+       const  hashPass = await bycrypt.hash(Password, 12);
+        
+     await userModel.create({
+            Name,
+            LastName,
+            UserName,
+            Email,
+            Cedula: "",
+            Photo: "/" + Photo.path,
+            Phone,
+            CommerceId: res.locals.UserInfo.CommerceId,
+            Password: hashPass,
+            RoleId: RoleId,
+        });
+    
+        res.redirect("/user/user-employee-mant");
+    }catch (err){
+        console.error("Error during registration:", err.toString().split(" at ")[0]);
+        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        res.redirect("/user/user-employee-mant");
+    }
+}
+
 
 exports.GetEditUser = async (req,res,next) =>{
     try{
