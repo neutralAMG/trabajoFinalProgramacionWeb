@@ -220,15 +220,18 @@ exports.GetEditUser = async (req,res,next) =>{
     try{
         const id = req.params.id;
     
-        let user = await userModel.findOne({where: {Id:id ?? req.user.Id}});
+        let user = await userModel.findOne({where: {Id:id ?? res.locals.UserInfo.Id}});
     
-        res.render("UserViews/user-edit",{
-            user: user.dataValues,
+        res.render("UserViews/user-add-edit-users",{
+            userToUpdate: user.dataValues,
             EditMode: true,
+            rolesToUse: null,
+            title: "UPDATE INFO",
+            EditMode: true, 
         });
 
         }catch{
-           res.redirect(back);
+           res.redirect("back");
            console.error(err);
         }
 }
@@ -239,11 +242,12 @@ exports.PostEditUser = async (req,res,next) =>{
         Name,
         UserName,
         Email,
+        Phone,
+        PrevImage,
         Cedula,
         Password,
         ConfirmPassword,
-        RoleId,
-        CommerceId  } = req.body;
+        PrevPassword } = req.body;
       let  Photo = req.file;
 
     try{
@@ -261,7 +265,7 @@ exports.PostEditUser = async (req,res,next) =>{
           }
 
         }
-        if (userToUpdate.dataValues.Email != Email) {
+        if (userToUpdate.dataValues.UserName != UserName) {
             userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
 
            if(userWithSameCredentials){
@@ -272,24 +276,20 @@ exports.PostEditUser = async (req,res,next) =>{
 
         if(Password != ConfirmPassword){
             req.flash(ErrorNameforFlash, "passwords dont match");
-            return  res.redirect("/user/user-admin-add");
+            return  res.redirect("back");
         }
-            
-        if(Password != ConfirmPassword)
-            return res.redirect("/user/user-edit/" + Id);
+        
+
+        const newPass = Password != null ? await bycrypt.hash(Password, 12) : PrevPassword
 
      await userModel.update({
         Name,
         UserName,
         Email,
         Cedula,
-        Photo: "/"+Photo.path,
+        Photo: Photo !=null? "/"+Photo.path : PrevImage,
         Phone ,
-        IsActive,
-        IsBusy,
-        Password,
-        RoleId,
-        CommerceId 
+        Password: newPass,
      },{where: {Id:Id}})
 
      res.redirect("back")

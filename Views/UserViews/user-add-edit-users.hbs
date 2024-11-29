@@ -7,6 +7,7 @@
        {{#if EditMode }}
        <input type="hidden" id="Id" name="Id" value="{{userToUpdate.Id}}"> 
        <input type="hidden" id="PrevPassword" name="PrevPassword" value="{{userToUpdate.Password}}">
+       <input type="hidden" id="PrevImage" name="PrevImage" value="{{userToUpdate.Photo}}">
        {{/if}}
        
       <div class="form-outline mb-4">
@@ -38,7 +39,7 @@
         <input type="file" id="photo" name="Image" class="form-control form-control-lg" {{#unless EditMode}}  required {{/unless}}>
       </div>
 
-      {{#if roles}}
+      {{#unless EditMode}}
         <div class="form-outline mb-4">
         <label class="form-label" for="role">Role:</label>
         <select id="role" name="RoleId" class="form-control form-control-lg" required>
@@ -48,7 +49,7 @@
           {{/each}}
         </select>
       </div>
-      {{/if}}
+      {{/unless}}
 
       <div class="form-outline mb-4">
         <label class="form-label" for="password">Password:</label>
