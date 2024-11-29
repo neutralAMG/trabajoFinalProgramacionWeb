@@ -1,6 +1,7 @@
 const commereceModel = require("../Models/Commerce");
 const commereceTypeModel = require("../Models/CommerceType");
 const userModel = require("../Models/User");
+const orderModel = require("../Models/Order");
 const SessionManager = require("../Utils/SessionManager");
 const User = require("../Models/User");
 const { Op } = require("sequelize");
@@ -8,19 +9,18 @@ const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 
 exports.GetAllCommerece = async (req,res,next) =>{
     try{
-         let commerces = await commereceModel.findAll({include:[{model:commereceTypeModel}, {model:User}]});
+         let commerces = await commereceModel.findAll({include:[{model:commereceTypeModel} , {model: orderModel}, {model:User}]});
          commerces = commerces.map((c) => c.dataValues);
          commerces = commerces.map((c) =>{
-            c.amountOrders = c.dataValues.CommereceTypes;
-            c.amountEmployees = c.dataValues.Users;
+            c.amountOrders = c.Orders.length;
+            c.amountEmployees = c.Users.length;
             return c;
          })
-         //TODO: format opening and clousing times
         res.render("CommerceViews/commerce-mant",{
             commerces: commerces,
             isEmpty: commerces.length === 0,
         });
-    }catch{
+    }catch (err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
         res.redirect("back");

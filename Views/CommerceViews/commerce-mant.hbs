@@ -12,6 +12,7 @@
                             <th class="th-lg">Op hour</th>
                             <th class="th-lg">Cl hour</th>
                             <th class="th-lg">Email</th>
+                            <th class="th-lg">Status</th>
                             <th class="th-lg">Actions</th>
                         </tr>
                 </thead>
@@ -35,6 +36,14 @@
                             <td>{{commerce.OpeningHour}}</td>
                             <td>{{commerce.ClousingHour}}</td>
                             <td>{{commerce.Email}}</td>
+                            <td>
+                                {{#if commerce.IsActive}}
+                                <span class="badge bg-success d-flex justify-content-center text-white rounded-pill">Active</span>
+                               {{/if}}
+                              {{#unless commerce.IsActive}}
+                             <span class="badge bg-danger d-flex justify-content-center text-white rounded-pill">Inactive</span>
+                               {{/unless}}
+                               </td>
                             <td><div class="d-flex justify-content-center text-center">
                                <form enctype="multipart/form-data" action="/commerece/commerce-change-active-status" method="post" onsubmit=" return confirm('You sure?');">
                                  <input type="hidden" value="{{commerce.Id}}" id="CommerceId" name="CommerceId"/>
