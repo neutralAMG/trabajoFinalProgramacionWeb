@@ -1,0 +1,25 @@
+
+ <h1 class="display-2 text-center p-2">COMMERECE TYPES</h1>
+<div class="row justify-content-center">
+   
+    <div class="col-12 col-md-9 col-xs-8 mx-auto">
+        {{#if IsEmpty}}
+            <h3 class="text-center text-muted">There are no commerece types, seriosly what are the admins doing...</h3>
+        {{else}}
+            <div class="row">
+                {{#each commereceTypes as  |commereceType|}}
+                    <div class="col-lg-4 col-md-64 mt-5 ">
+                        <div class="card h-100 shadow-sm background mask mx-2">
+                            <a href="/commerece/commerce-index/{{commereceType.Id}}" class="text-decoration-none">        
+                                <div class="card-body d-flex justify-content-center "> 
+                                    <img src="{{commereceType.Icon}}" alt="{{commereceType.Name}}" style="height: 50px; width: 50px;" class=" img-fluid rounded-circle img-responsive">
+                                    <h5 class="card-title text-center mt-2 text-primary">{{commereceType.Name}}</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{/if}}
+    </div>
+</div>

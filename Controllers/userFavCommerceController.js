@@ -4,45 +4,53 @@ const commerceModel = require("../Models/Commerce");
 
 exports.GetAllUserFavCommerces = async (req,res,next) =>{
     try{
-        let userFavCommerce = await userFavCommerceModel.findAll({include:[{model:commerceModel}],where: {UserId: req.user.id}});
-        userFavCommerce = userFavCommerce.map((c) => c.dataValues);
+        let userFavCommerce = await userFavCommerceModel.findAll({include:[{model:commerceModel}],where: {UserId: res.locals.UserInfo.Id}});
+        userFavCommerce = userFavCommerce.map((c) => c.dataValues.Commerce.dataValues);
+        const currentTime = new Date().toLocaleTimeString("en-US",{hour12: false, hour: "2-digit", minute: "2-digit" } );
 
+        userFavCommerce = userFavCommerce.map((c) => {
+            c.IsClose = (c.ClousingHour > currentTime || c.OpeningHour < currentTime);
+            return c;
+        });
+
+        
+        
         res.render("UserFavCommereceViews/favCommerce-index",{
             userFavCommerce: userFavCommerce,
             isEmpty: userFavCommerce.length === 0,
         } );
-    }catch{
+    }catch (err){
         console.error(err);
     }
 }
 
 exports.PostAddUserFavCommerces = async (req,res,next) =>{
     try{
-        const id = req.params.id;
+        const Id = req.body.Id;
 
       await  userFavCommerceModel.create({
-            UserId: req.user.id, 
-            CommerceId: id,
+            UserId: res.locals.UserInfo.Id, 
+            CommerceId: Id,
         })
+console.log(commerces);
+        res.redirect("back");
 
-        res.redirect("/commerece/commerece-Index");
-
-        }catch{
-           res.redirect("/commerece/commerece-Index");
+        }catch (err){
+           res.redirect("back");
            console.error(err);
         }
 }
 
 exports.PostDeleteUserFavCommerces = async (req,res,next) =>{
     try{
-        const id = req.params.id;
+        const Id = req.body.Id;
 
-        await  userFavCommerceModel.destroy({where:{UserId: req.user.id,  CommerceId: id} });
+        await  userFavCommerceModel.destroy({where:{UserId: res.locals.UserInfo.Id,  CommerceId: Id} });
 
-        res.redirect("/favCommerce/favCommerce-Index");
+        res.redirect("back");
 
         }catch{
-           res.redirect("/favCommerce/favCommerce-Index");
+           res.redirect("back");
            console.error(err);
         }
 }

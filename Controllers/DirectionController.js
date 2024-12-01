@@ -2,7 +2,7 @@ const directionModel = require("../Models/Direction");
 
 exports.GetAllUserDirection = async (req,res,next) =>{
     try{
-        let directions = await directionModel.findAll({where: {UserId: req.user.id}});
+        let directions = await directionModel.findAll({where: {UserId: res.locals.UserInfo.Id}});
         directions = directions.map((c) => c.dataValues);
 
         res.render("DirectionViews/direction-mant",{
@@ -25,7 +25,7 @@ exports.PostAddDirection = async (req,res,next) =>{
      await directionModel.create({
         Name,
         Description,
-        UserId: req.locals.UserInfo.Id
+        UserId: res.locals.UserInfo.Id
      })
 
      res.redirect("/direction/direction-mant");
@@ -38,15 +38,15 @@ exports.PostAddDirection = async (req,res,next) =>{
 exports.GetEditDirection = async (req,res,next) =>{
 
     try{
-        const id = req.params.id;
+        const Id = req.params.id;
     
-        let direction = await directionModel.findOne({where: {Id:id, UserId:req.user.id }});
+        let direction = await directionModel.findOne({where: {Id:Id, UserId:res.locals.UserInfo.Id }});
     
         res.render("DirectionViews/direction-add",{
             direction: direction.dataValues,
             EditMode: true
         });
-        }catch{
+        }catch (err){
            res.redirect("/direction/direction-mant");
            console.error(err);
     }
@@ -61,7 +61,7 @@ exports.PostEditDirection = async (req,res,next) =>{
      await directionModel.update({
         Name,
         Description,
-     },{where: {Id:Id, UserId:req.user.id}})
+     },{where:{Id:Id, UserId:res.locals.UserInfo.Id}})
 
      res.redirect("/direction/direction-mant")
 
@@ -72,10 +72,10 @@ exports.PostEditDirection = async (req,res,next) =>{
 }
 
 exports.PostDeleteDirection = async (req,res,next) =>{
-    const Id = req.body;
+    const Id = req.body.Id;
 
     try{
-        await directionModel.destroy({where: {Id:Id, UserId: req.user.id }});
+        await directionModel.destroy({where: {Id:Id, UserId: res.locals.UserInfo.Id }});
 
         res.redirect("/direction/direction-mant");
     }catch (err){

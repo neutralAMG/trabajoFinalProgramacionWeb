@@ -51,7 +51,7 @@ const Configuration = {
 exports.GenerateSeeds = async ()=>{
 
     try{
-       const orderstatuses = await OrderStatuses.findOne();
+    const orderstatuses = await OrderStatuses.findOne();
     const roles = await Role.findOne();
     const users = await User.findOne({where: {UserName: DefaultAdminUser.UserName}});
     const configs = await Config.findOne();

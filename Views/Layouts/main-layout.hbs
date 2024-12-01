@@ -47,10 +47,10 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   {{#if IsLoggedIn}}
-    <a class="navbar-brand" href="#">AppCenar</a>
+    <a class="navbar-brand  mx-4" href="#">AppCenar</a>
   {{/if}}
   {{#unless IsLoggedIn}}
-    <a class="navbar-brand" href="/account/authenticate">AppCenar</a>
+    <a class="navbar-brand mx-4" href="/account/authenticate">AppCenar</a>
   {{/unless}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -88,16 +88,13 @@
         <a class="nav-link" href="/home/home-client">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/commereceType/commerceType-Index">Commerces</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/user/user-edit/{{UserInfo.Id}}">Profile</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/order/order-index">My Orders</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/direction/direction-man">My Directions</a>
+        <a class="nav-link" href="/direction/direction-mant">My Directions</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/favCommerce/favCommerce-index">My favs</a>
@@ -153,10 +150,10 @@
       </li>
       {{/if }}
       
-       <div class="d-flex flex-row-reverse">   
+       <div class=" flex-row-reverse">   
 
          <form action="/account/unAuthenticate" method="post" class="nav-item">
-                <button class="nav-link">Log out</button>
+                <button class="btn nav-link text-danger">Log out</button>
             </form>
       </div>
 

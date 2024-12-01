@@ -2,7 +2,7 @@ const commereceModel = require("../Models/Commerce");
 const commereceTypeModel = require("../Models/CommerceType");
 const userModel = require("../Models/User");
 const orderModel = require("../Models/Order");
-const SessionManager = require("../Utils/SessionManager");
+const userFave = require("../Models/UserFavCommerce")
 const User = require("../Models/User");
 const { Op } = require("sequelize");
 const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
@@ -29,19 +29,26 @@ exports.GetAllCommerece = async (req,res,next) =>{
 exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
     const cTypeId = req.params.cTypeId
     try{
-        let commerces = await commereceModel.findAll({
+        let commerces = await commereceModel.findAll({ 
+            include:[{model:userFave}],
             where:{CommerceTypeId:cTypeId, 
-            ClousingHour:{[Op.gt]:[new Date().getTime]}, 
-            OpeningHour:{[Op.lt]:[new Date().getTime]},
             IsActive: true,
         }});
         commerces = commerces.map((c) => c.dataValues);
+        const currentTime = new Date().toLocaleTimeString("en-US",{hour12: false, hour: "2-digit", minute: "2-digit" } );
+
+        commerces = commerces.map((c) => {
+            c.IsFav = c.UserFavCommerces.length != 0;
+            c.IsClose = (c.ClousingHour > currentTime || c.OpeningHour < currentTime);
+            return c;
+        });
 
        res.render("CommerceViews/commerece-ctype",{
            commerces: commerces,
            isEmpty: commerces.length === 0,
        } );
-   }catch{
+
+   }catch (err){
     req.flash(ErrorNameforFlash, "Error while processing the request");
     console.error(err);
     res.redirect("/commerceType/commerceType-Index");

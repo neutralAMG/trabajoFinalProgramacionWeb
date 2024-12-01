@@ -6,7 +6,7 @@ router.get("/direction-mant", middlewares.ClientMiddleware, directionController.
 router.get("/direction-add", middlewares.ClientMiddleware, directionController.GetAddDirection);
 router.post("/direction-add", middlewares.ClientMiddleware, directionController.PostAddDirection);
 router.get("/direction-edit/:id", middlewares.ClientMiddleware, directionController.GetEditDirection);
-router.post("/direction-edit", middlewares.ClientMiddleware, directionController.GetEditDirection);
+router.post("/direction-edit", middlewares.ClientMiddleware, directionController.PostEditDirection);
 router.post("/direction-delete", middlewares.ClientMiddleware, directionController.PostDeleteDirection);
 
 

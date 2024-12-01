@@ -9,6 +9,6 @@ router.get("/category-edit/:id",middlewares.CommereceMiddleware, categoryControl
 router.post("/category-edit",middlewares.CommereceMiddleware, categoryController.PostEditCategory);
 router.post("/category-delete",middlewares.CommereceMiddleware, categoryController.PostDeleteCategory);
 
-
+ 
 module.exports = router
 

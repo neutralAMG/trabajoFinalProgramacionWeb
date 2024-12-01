@@ -9,21 +9,21 @@ const {Roles,OrderStatus} = require("../Utils/ImportantENVVariables");
 const Order = require("../Models/Order");
 const config = require("../Models/Configuration");
 const OrderDetails = require("../Models/OrderDetail");
+const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables")
 
 exports.GetAllUserOrders = async (req,res,next) => {
     try{
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
-            where:{ ClientId: req.user.id},
-        order:["createdAt", "DESC"] });
+            where:{ ClientId: res.locals.UserInfo.Id}});
         orders = orders.map((p) => p.dataValues);
-
+        orders.sort((a,b) => b - a)
         res.render("OrdersViews/order-user-order",{
-            orders: orders,
+            orders: orders.sort((a,b) => b.createdAt - a.createdAt),
             isEmpty: orders.length === 0,
         } );
 
-    }catch{
+    }catch(err){
         req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
         res.redirect("/home/home-client");
