@@ -3,6 +3,7 @@ const orderDetailModel = require("../Models/OrderDetail");
 const orderStatusModel = require("../Models/OrderStatus");
 const orderUpdateModel = require("../Models/OrderUpdate");
 const productModel = require("../Models/Product");
+const  directionModel = require("../Models/Direction");
 const categoryModel = require("../Models/Category");
 const userModel = require("../Models/User");
 const {Roles,OrderStatus} = require("../Utils/ImportantENVVariables");
@@ -45,6 +46,7 @@ exports.GetOrderDetail = async (req,res,next) =>{
 exports.GetAddOrder = async (req,res,next) =>{
     const id = req.params.id;
     try{
+        let directions = await directionModel.findAll({where:{UserId: res.locals.UserInfo.Id}})
         let categories = await categoryModel.findAll({where:{ CommerceId:id}});
         categories =  categories.map((c) => c.dataValues);
 
@@ -61,6 +63,7 @@ exports.GetAddOrder = async (req,res,next) =>{
         res.render("OrdersViews/order-add",{
             products: products,
             categories: categories,
+            directions: directions.map((d) => d.dataValues),
             CommerceId: id,
             currentTax: Number((await config.findByPk(1)).dataValues.Value),
             isEmpty: products.length === 0,
@@ -91,7 +94,7 @@ exports.PostAddOrder = async (req,res,next) =>{
         Direction,
         OrderStatusId: OrderStatus.Created, 
         CommerceId, 
-        ClientId: req.user.id,
+        ClientId: res.locals.UserInfo.Id,
         });
     
         const fullOrderDetails = OrderItems.map((o) => o.OrderId = newOrder.Id)
@@ -110,17 +113,13 @@ exports.PostAddOrder = async (req,res,next) =>{
 
 exports.PostUpdateOrderStatus = async (req,res,next) =>{
     try{
-       const {id, OrderStatusId, prevOrderStatus, Comment} = req.body;
-      if(OrderStatusId){
-          await orderModel.update({
-              OrderStatusId,
-          },{where: {Id:id}});
-      }
+       const {Id, OrderStatusId, Comment} = req.body;
+
 
       await orderUpdateModel.create({
-          NewStatusId: OrderStatusId ?? prevOrderStatus ,
+          NewStatusId: OrderStatusId ?? null ,
           Comment: Comment ?? "",
-          OrderId: id,
+          OrderId: Id,
       })
     
       res.redirect("/home/home-delivery"); 
@@ -134,7 +133,7 @@ exports.PostUpdateOrderStatus = async (req,res,next) =>{
 
 exports.PostAssingOrder = async (req,res,next) =>{
     try{
-       const freeDeliveries = userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery}});
+       const freeDeliveries = await userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery}});
 
     if(!freeDeliveries){
         req.flash(ErrorNameforFlash, "There are no free deliveries");
@@ -143,7 +142,7 @@ exports.PostAssingOrder = async (req,res,next) =>{
         
 
         await orderModel.update({
-            DeliveryId: (await freeDeliveries).map((d) => d.dataValues)[0].Id,
+            DeliveryId: await freeDeliveries.map((d) => d.dataValues)[0].Id,
             HasBeenAssinged: true,
         },{where: {Id:id}});
         res.redirect("/home/home-Commerece");  

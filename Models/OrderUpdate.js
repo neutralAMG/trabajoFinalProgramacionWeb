@@ -8,7 +8,7 @@ const orderUpdates = connection.define("orderUpdates",{
     },  
     NewStatusId:{
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
     Comment:{
         type: DataTypes.STRING,

@@ -50,6 +50,15 @@
                                     <li class="list-group-item text-muted">No items selected</li>
                                 </ul>
                                 <div class="text-center mt-4">
+                                     <div class="form-outline mb-4">
+                                          <label class="form-label" for="Direction">Category:</label>
+                                             <select id="Direction" name="Direction" class="form-control form-control-lg" required>
+                                               <option value="">Select Direction</option>
+                                                  {{#each directions as |direction|}}
+                                                  <option value="{{direction.Description}}" >{{direction.Name}}</option>
+                                                   {{/each}}
+                                             </select>
+                                       </div>
                                     <button  class="btn btn-success w-100" id="checkout-button" disabled>Checkout</button>
                                 </div>
                             </div>
