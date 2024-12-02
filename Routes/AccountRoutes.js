@@ -15,9 +15,9 @@ router.post("/change-active-state",middlewares.ImportantUsersMiddleware, account
 
 router.post("/change-role",middlewares.ManagerMiddleware, accountController.PostChangeEmployeeRole);
 router.get("/reset-password", isNotAuth, accountController.GetReset);
-router.get("/reset-password/:token", isNotAuth, accountController.GetReset);
-router.get("/reset-password", isNotAuth, accountController.GetNewPassword);
-router.post("/reset-password",  isNotAuth, accountController.PostNewPassword);
+router.post("/reset-password", isNotAuth, accountController.PostReset);
+router.get("/reset-password/:token", isNotAuth, accountController.GetNewPassword);
+router.post("/new-password",  isNotAuth, accountController.PostNewPassword);
 router.get("/activate-user/:id", isNotAuth, accountController.GetActivateUser);
 router.post("/activate-user/", isNotAuth, accountController.PostActivateUser);
 

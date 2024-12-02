@@ -2,7 +2,7 @@ const userModel = require("../Models/User");
 const roleModel = require("../Models/Role");
 const SessionManager = require("../Utils/SessionManager");
 const bycrypt = require("bcryptjs");
-const {Op, where} = require("sequelize");
+const {Op} = require("sequelize");
 const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 const crypto = require("crypto");
 const User = require("../Models/User");
@@ -218,7 +218,8 @@ exports.GetReset = async (req,res,next)=>{
 }
 exports.PostReset = async (req,res,next)=>{
     try{
-        const email = req.body.email;
+        const Email = req.body.Email;
+;
 
         crypto.randomBytes(32, async (err, buffer) =>{
             if(err){
@@ -228,23 +229,28 @@ exports.PostReset = async (req,res,next)=>{
             };
             const token = buffer.toString("hex");
 
-           const user =  await User.findOne({where:{Email: email}});
+           const user =  await User.findOne({where:{Email: Email}});
 
            if(!user){
             req.flash(ErrorNameforFlash, "There is no user with that email");
             return res.render("/account/reset-password");
            }
 
-           user.ResetToken = token;
-           user.ResetTokenExpiration = Date.now() + 3000000;
+
             
+           await User.update(
+            {ResetToken: token,
+                ResetTokenExpiration: Date.now() + 3000000
+            },{where:{Id: user.dataValues.Id}}
+
+           )
           await transporter.sendMail({
             from: "alejandrodanielmoscosoguerrero@gmail.com",
-            to: user.Email,
+            to: user.dataValues.Email,
             subject: "change password",
-            html: `<h1><a href='http://localhost:8001/account/reset/${token}'>  Click this link to reset your password </a></h1>`
+            html: `<h1><a href='http://localhost:8001/account/reset-password/${token}'>  Click this link to reset your password </a></h1>`
            });
-           res.render("/account/authenticate");
+           res.redirect("/account/authenticate");
         })
         
        
@@ -283,7 +289,7 @@ exports.PostNewPassword  = async (req,res,next)=>{
 
        if(newPass != confirmPass){
         req.flash(ErrorNameforFlash, "password dont match");
-         return res.redirect("/account/reset-password");
+         return res.redirect("/account/reset-password/" + passToken);
        }
        const user = await User.findOne({where:{Id: userId,ResetToken: passToken, ResetTokenExpiration: {
         [Op.gte]: Date.now(),
@@ -292,11 +298,11 @@ exports.PostNewPassword  = async (req,res,next)=>{
        if(!user){
        req.flash(ErrorNameforFlash, "invalid token");
        return res.redirect("/account/reset-password");
-       } 
+       }  
 
        const newHashPass = await bycrypt.hash(newPass, 12);
 
-       await user.update({
+       await User.update({
          Password: newHashPass,
         ResetToken: null,
         ResetTokenExpiration: null,
@@ -307,7 +313,7 @@ exports.PostNewPassword  = async (req,res,next)=>{
     }catch(err){
         req.flash(ErrorNameforFlash, "Error while processing the request");
         console.error(err);
-        res.redirect("/account/reset-password");
+        res.redirect("/account/new-password");
     }
 
 }  

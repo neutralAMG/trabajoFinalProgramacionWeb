@@ -151,7 +151,7 @@ exports.PostAddDiscoundProduct = async (req,res,next) =>{
 }
 
 exports.PostDeleteProduct = async (req,res,next) =>{
-    const Id = req.body;
+    const Id = req.body.Id;
 
     try{
         await productModel.destroy({where: {Id:Id, CommerceId: res.locals.UserInfo.CommerceId }});

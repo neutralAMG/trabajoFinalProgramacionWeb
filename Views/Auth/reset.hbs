@@ -1,0 +1,23 @@
+<div class="row col-12 justify-content-center mt-5">
+
+<div class="col-6 d-flex justify-content-center mt-5">
+<form action="/account/reset-password"  method="post">
+
+  <h1 class="text-center">FIND YOUR USER</h1>
+    <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}">
+  <div  class="form-outline mb-4"> 
+    <label class="form-label" for="Email">Email: </label>
+    <input type="text" name="Email" id="Email" class="form-control" required/>
+   
+  </div>
+
+  <button  type="submit"  class="btn btn-primary w-100 btn-block mb-4">Search your account with the email</button>
+
+  <div class="text-center">
+    <p>Not a member? <a href="/account/authenticate">Login</a></p>
+  </div>
+</form>
+
+</div>
+
+</div>

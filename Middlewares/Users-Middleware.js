@@ -29,7 +29,7 @@ exports.ClientMiddleware = RoleMiddle([Roles.Client])
 exports.DeliveryMiddleware = RoleMiddle([Roles.Delivery])
 
 const middlewareCommerece = RoleMiddle([Roles.Manager])
-exports.ManagerMiddleware = middlewareCommerece
+exports.ManagerMiddleware =  [middlewareCommerece[0], createCommerece, middlewareCommerece[1]]
 exports.ManagerMiddlewareWithCommerece = [middlewareCommerece[0], noNeddCreateCommerece, middlewareCommerece[1]]
 
 const middlewaresCommerece = RoleMiddle([Roles.Manager,Roles.Employee]);

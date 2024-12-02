@@ -240,56 +240,19 @@ exports.GetEditUser = async (req,res,next) =>{
 exports.PostEditUser = async (req,res,next) =>{
     const {Id,   
         Name,
-        UserName,
-        Email,
+        LastName,
         Phone,
-        PrevImage,
-        Cedula,
-        Password,
-        ConfirmPassword,
-        PrevPassword } = req.body;
+        PrevImage,} = req.body;
       let  Photo = req.file;
 
     try{
 
-        //TODO: test the validations
-        const userToUpdate = await userModel.findByPk(Id);
-        let userWithSameCredentials;
-
-        if (userToUpdate.dataValues.Email != Email) {
-            let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
-
-          if(userWithSameCredentials){
-              req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
-           return  res.redirect("/user/user-admin-add");
-          }
-
-        }
-        if (userToUpdate.dataValues.UserName != UserName) {
-            userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
-
-           if(userWithSameCredentials){
-              req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
-              return res.redirect("/user/user-admin-add");
-             }
-        } 
-
-        if(Password != ConfirmPassword){
-            req.flash(ErrorNameforFlash, "passwords dont match");
-            return  res.redirect("back");
-        }
-        
-
-        const newPass = Password != null ? await bycrypt.hash(Password, 12) : PrevPassword
-
+      
      await userModel.update({
         Name,
-        UserName,
-        Email,
-        Cedula,
+        LastName,
         Photo: Photo !=null? "/"+Photo.path : PrevImage,
         Phone ,
-        Password: newPass,
      },{where: {Id:Id}})
 
      res.redirect("back")

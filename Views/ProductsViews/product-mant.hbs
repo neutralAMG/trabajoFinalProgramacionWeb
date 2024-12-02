@@ -35,7 +35,7 @@
                             <td>{{product.Description}}</td>
                             <td>{{product.Category.dataValues.Name}}</td>
                             <td>{{product.Price}}</td>
-                             {{#if (equals ../roles.Manager UserInfo.RoleId)}}
+                             {{#if (equals ../roles.Manager  ../UserInfo.RoleId)}}
                              <td>
                               <div class="d-flex justify-content-center text-center"> 
                                 <form action="/product/prod-add-discount" method="post" class="d-flex align-items-center gap-2" onsubmit=" return confirm('You sure you want to change discount?');" >

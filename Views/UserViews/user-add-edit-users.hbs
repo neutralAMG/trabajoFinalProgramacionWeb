@@ -10,6 +10,7 @@
        <input type="hidden" id="PrevImage" name="PrevImage" value="{{userToUpdate.Photo}}">
        {{/if}}
        
+       
       <div class="form-outline mb-4">
         <label class="form-label" for="name">Name:</label>
         <input type="text" id="name" name="Name" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.Name}}" {{/if}} required>
@@ -18,7 +19,7 @@
         <label class="form-label" for="LastName">Last Name:</label>
         <input type="text" id="LastName" name="LastName" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.LastName}}" {{/if}}  required>
       </div>
-
+      {{#unless EditMode }}
       <div class="form-outline mb-4">
         <label class="form-label" for="username">Username:</label> 
         <input type="text" id="username" name="UserName" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.UserName}}" {{/if}}  required>
@@ -28,7 +29,7 @@
         <label class="form-label" for="email">Email:</label>
         <input type="email" id="email" name="Email" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.Email}}" {{/if}}  required>
       </div>
-
+      {{/unless}}
       <div class="form-outline mb-4">
         <label class="form-label" for="phone">Phone:</label>
         <input type="text" id="phone" name="Phone" class="form-control form-control-lg" {{#if EditMode }} value="{{userToUpdate.Phone}}" {{/if}}   required>
@@ -51,6 +52,7 @@
       </div>
       {{/unless}}
 
+      {{#unless EditMode}}
       <div class="form-outline mb-4">
         <label class="form-label" for="password">Password:</label>
         <input type="password" id="password" name="Password" class="form-control form-control-lg"  {{#unless EditMode }} required {{/unless}}>
@@ -60,7 +62,7 @@
         <label class="form-label" for="ConfirmPassword">Confirm Password:</label>
         <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control form-control-lg" {{#unless EditMode }} required {{/unless}}>
       </div>
-
+      {{/unless}}
       <button type="submit" class="btn btn-primary w-100 btn-block mb-4">SAVE</button>
       <a href="javascript:history.back()"  class="btn btn-info w-100 btn-block mb-4"> Go back</a>
     </form>
