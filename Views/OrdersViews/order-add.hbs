@@ -1,0 +1,159 @@
+<h1 class="display-2 text-center p-2">ORDER</h1>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-9 col-xs-8 mx-auto">
+        {{#if IsEmpty}}
+            <h3 class="text-center text-muted">There are no products, seriously, what are the managers doing...</h3>
+        {{else}}
+            <div class="row">
+                <!-- Left Column: Products -->
+                <div class="col-12 col-lg-8">
+                    {{#each categories as |category|}}
+                        <h2 class="display-4 text-center p-2">{{category.Name}}</h2>
+                        <div class="row">
+                            {{#each ../products as |product|}}
+                                {{#if (equals category.Id product.CategoryId)}}
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card h-100 shadow-sm bg-light rounded">
+                                            <img src="{{product.Photo}}" alt="{{product.Name}}" class="card-img-top img-fluid rounded-top">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-center text-primary">{{product.Name}}</h5>
+                                                <h6 class="card-subtitle text-center text-secondary">{{product.Description}}</h6>
+                                                <hr>
+                                                <p class="text-muted mb-1"><strong>Price:</strong> ${{product.Price}}</p>
+                                                {{#unless (equals product.Discount 0)}}
+                                                    <p class="text-success mb-1"><strong>Discount:</strong> -{{product.IntDiscount}}%</p>
+                                                {{/unless}}
+                                                <button class="btn btn-outline-primary w-100" onclick="addToOrder({{product.Id}}, '{{product.Name}}', {{product.Price}}, {{product.Discount}});">Add to Order</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                            {{/each}}
+                        </div>
+                    {{/each}}
+                </div>
+
+                <!-- Right Column: Order Summary -->
+                <div class="col-12 col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header text-center">
+                            <h4>Order Summary</h4>
+                        </div>
+                        <form action="/order/order-add" method="post" id="formOrder">
+
+                            <input type="hidden" name="currentTax" id="currentTax" value="{{currentTax}}">
+                            <div class="card-body">
+                                <ul id="order-summary" class="list-group">
+                                    <li class="list-group-item text-muted">No items selected</li>
+                                </ul>
+                                <div class="text-center mt-4">
+                                    <button  class="btn btn-success w-100" id="checkout-button" disabled>Checkout</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+
+<script>
+    const OrderItems = [];
+
+     function addToOrder(ProductId, ProductName, ProductCost, Discount ){
+
+      OrderItems.push({
+               ProductId: ProductId, 
+               ProductName: ProductName,
+              ProductCost: ProductCost, 
+              Discount: Discount,
+              AmountOfProduct: 1,
+        });
+      console.log("hey")
+      updateOrderSummary()
+    }
+
+   const updateOrderSummary = ()=>{
+        const orderSummaryElement = document.getElementById('order-summary');
+        const currentTax = document.getElementById('currentTax').value;
+
+        orderSummaryElement.innerHTML ="";
+
+
+         if(OrderItems.length === 0){
+
+            orderSummaryElement.innerHTML = `<li class="list-group-item text-muted"> No items selected <li>`;
+            document.getElementById("checkout-button").disabled  = true
+          }else{
+            let total = 0;
+            let TotalBeforeTax = 0;
+            OrderItems.forEach((product, index) =>{
+                const productTotal = (product.ProductCost - ( product.ProductCost * product.Discount)) * product.AmountOfProduct
+                TotalBeforeTax += productTotal;
+                const listItem = document.createElement("li");
+
+                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                listItem.innerHTML = `
+                      ${product.ProductName}  ${productTotal} 
+                    <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick=" return updateCount(${index}, false);">-</button>
+                        <span id="count-${index}" class="mx-2">${product.AmountOfProduct}</span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary ms-2" onclick=" return updateCount(${index}, true);">+</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger ms-3" onclick=" return removeItem(${index});">Remove</button>
+                    </div>
+                `;
+                
+                orderSummaryElement.appendChild(listItem);
+            })
+
+            total += TotalBeforeTax + (TotalBeforeTax * currentTax);
+            const totalItem = document.createElement("li");
+           totalItem.className = 'list-group-item font-weight-bold';
+           totalItem.innerHTML = `
+              Total Before tax: ${TotalBeforeTax} <br>
+              Tax: ${currentTax} <br>
+              Total: ${total}
+            `
+             orderSummaryElement.appendChild(totalItem);
+              document.getElementById("checkout-button").disabled  = false
+
+          }
+   }
+
+    function updateCount(index, increment){
+        const product = OrderItems[index];
+        let AmmountOfProduct = product.AmountOfProduct;
+
+        if( !increment  && (AmmountOfProduct--) >= 0){
+          (AmmountOfProduct--  < 0) ?  product.AmountOfProduct = 0  : product.AmountOfProduct--;
+            updateOrderSummary();
+           
+        }else{
+            product.AmountOfProduct++;
+            updateOrderSummary(); 
+        }
+        
+        
+    }
+
+    function  removeItem(index){
+        OrderItems.splice(index,1);
+        updateOrderSummary()
+    }
+
+   const submitForm = document.getElementById("formOrder");
+
+   submitForm.addEventListener("submit", CreateOrder(e))
+
+   function CreateOrder(e){
+    e.preventDefault();
+
+ //TODO: implement submit logic
+
+    e.currentTarget.submit()
+   }
+</script>

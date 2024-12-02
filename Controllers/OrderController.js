@@ -43,12 +43,24 @@ exports.GetOrderDetail = async (req,res,next) =>{
     }
 }
 exports.GetAddOrder = async (req,res,next) =>{
-    const id = req.params;
+    const id = req.params.id;
     try{
+        let categories = await categoryModel.findAll({where:{ CommerceId:id}});
+        categories =  categories.map((c) => c.dataValues);
+
         let products = await productModel.findAll({include:[{model:categoryModel}], where:{ CommerceId:id}});
-        products =  products.map((c)=> c.dataValues)
+        products =  products.map((p)=> p.dataValues);
+        products =  products.map((p)=> {
+            p.IntDiscount = (p.Discount * 100);
+            return p;
+        });
+
+        console.log(products);
+        console.log(categories);
+        
         res.render("OrdersViews/order-add",{
             products: products,
+            categories: categories,
             currentTax: Number((await config.findByPk(1)).dataValues.Value),
             isEmpty: products.length === 0,
         } );

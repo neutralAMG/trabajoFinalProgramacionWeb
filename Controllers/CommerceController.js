@@ -39,7 +39,7 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
 
         commerces = commerces.map((c) => {
             c.IsFav = c.UserFavCommerces.length != 0;
-            c.IsClose = (c.ClousingHour > currentTime || c.OpeningHour < currentTime);
+            c.IsClose =  false/*(c.ClousingHour < currentTime || c.OpeningHour > currentTime)*/;
             return c;
         });
 

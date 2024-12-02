@@ -90,7 +90,7 @@ app.use(function(req,res,next){
         
     res.redirect("/account/authenticate");
 })
-connection.sync(/*{force:true}*/).then(() => {
+connection.sync(/*{alter:true}*/).then(() => {
     seeds.GenerateSeeds();
     app.listen(8001);
 }

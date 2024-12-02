@@ -15,7 +15,10 @@
                                 <a href="{{#if commerce.IsClose}}#{{else}}/order/order-add/{{commerce.Id}} {{/if}}" class="text-decoration-none d-flex col-11">
                                     <img src="{{commerce.Logo}}" alt="{{commerce.Name}}" loading="lazy" style="height: 50px; width: 50px;" class="img-fluid mx-4 rounded-circle">
                                     <h5 class="card-title mt-2 text-primary">{{commerce.Name}}</h5>
-                                    <p class="badge bg-danger rounded-pill mx-2 mt-2">close</p>
+                                    {{#if commerce.IsClose}}
+                                        <p class="badge bg-danger rounded-pill mx-2 mt-2">close</p>
+                                    {{/if}}
+                                    
                                 </a>   
                                 <form action="{{#if commerce.IsFav}}/favCommerce/favCommerce-delete{{else}}/favCommerce/favCommerce-add{{/if}}" method="post" class="m-0 col-1 d-flex justify-content-center align-items-center {{#if commerce.IsFav}}bg-secondary{{else}}bg-light{{/if}}">
                                     <input type="hidden" name="Id" value="{{commerce.Id}}">

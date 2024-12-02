@@ -12,6 +12,10 @@ const OrderDetails = connection.define("OrderDetails",{
         allowNull: false,
         primaryKey: true
     }, 
+    AmountOfProduct:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
      ProductCost:{
         type: DataTypes.DECIMAL(10,2),
         allowNull: false,
