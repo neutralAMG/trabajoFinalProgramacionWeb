@@ -57,10 +57,11 @@ exports.GetAddOrder = async (req,res,next) =>{
 
         console.log(products);
         console.log(categories);
-        
+        //TODO: pass the directions
         res.render("OrdersViews/order-add",{
             products: products,
             categories: categories,
+            CommerceId: id,
             currentTax: Number((await config.findByPk(1)).dataValues.Value),
             isEmpty: products.length === 0,
         } );
@@ -73,7 +74,7 @@ exports.GetAddOrder = async (req,res,next) =>{
 
 exports.PostAddOrder = async (req,res,next) =>{
     try {
-        const OrderItems = req.body.GetAddOrder;
+        const OrderItems = req.body.OrderItems;
         const {
         TotalBeforeTax,
         TotalAfterTax, 

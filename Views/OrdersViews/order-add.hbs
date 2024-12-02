@@ -42,7 +42,9 @@
                         </div>
                         <form action="/order/order-add" method="post" id="formOrder">
 
-                            <input type="hidden" name="currentTax" id="currentTax" value="{{currentTax}}">
+                            <input type="hidden" name="TaxApplied" id="TaxApplied" value="{{currentTax}}">
+                            <input type="hidden" name="CommerceId" id="CommerceId" value="{{CommerceId}}">
+                            
                             <div class="card-body">
                                 <ul id="order-summary" class="list-group">
                                     <li class="list-group-item text-muted">No items selected</li>
@@ -63,9 +65,10 @@
 
 <script>
     const OrderItems = [];
+    let Total = 0;
+    let TotalBeforeTax = 0;
 
      function addToOrder(ProductId, ProductName, ProductCost, Discount ){
-
       OrderItems.push({
                ProductId: ProductId, 
                ProductName: ProductName,
@@ -73,7 +76,6 @@
               Discount: Discount,
               AmountOfProduct: 1,
         });
-      console.log("hey")
       updateOrderSummary()
     }
 
@@ -89,8 +91,8 @@
             orderSummaryElement.innerHTML = `<li class="list-group-item text-muted"> No items selected <li>`;
             document.getElementById("checkout-button").disabled  = true
           }else{
-            let total = 0;
-            let TotalBeforeTax = 0;
+            {{!-- let Total = 0;
+            let TotalBeforeTax = 0; --}}
             OrderItems.forEach((product, index) =>{
                 const productTotal = (product.ProductCost - ( product.ProductCost * product.Discount)) * product.AmountOfProduct
                 TotalBeforeTax += productTotal;
@@ -110,7 +112,7 @@
                 orderSummaryElement.appendChild(listItem);
             })
 
-            total += TotalBeforeTax + (TotalBeforeTax * currentTax);
+            Total += TotalBeforeTax + (TotalBeforeTax * currentTax);
             const totalItem = document.createElement("li");
            totalItem.className = 'list-group-item font-weight-bold';
            totalItem.innerHTML = `
@@ -118,7 +120,7 @@
               Tax: ${currentTax} <br>
               Total: ${total}
             `
-             orderSummaryElement.appendChild(totalItem);
+              orderSummaryElement.appendChild(totalItem);
               document.getElementById("checkout-button").disabled  = false
 
           }
@@ -152,7 +154,25 @@
    function CreateOrder(e){
     e.preventDefault();
 
- //TODO: implement submit logic
+    //TODO: implement submit logic
+
+    const orderItemsInput = document.createElement("input");
+    orderItemsInput.type ="hidden";
+    orderItemsInput.value = JSON.stringify(OrderItems);
+    orderItemsInput.name = "OrderItems";
+    orderItemsInput.id = "OrderItems";
+
+    const totalInput = document.createElement("input");
+    orderItemsInput.type ="hidden";
+    orderItemsInput.value = Total;
+    orderItemsInput.name = "TotalAfterTax";
+    orderItemsInput.id = "TotalAfterTax";
+
+    const totalBeforeTax = document.createElement("input");
+    orderItemsInput.type ="hidden";
+    orderItemsInput.value = TotalBeforeTax;
+    orderItemsInput.name = "TotalBeforeTax";
+    orderItemsInput.id = "TotalBeforeTax";
 
     e.currentTarget.submit()
    }
