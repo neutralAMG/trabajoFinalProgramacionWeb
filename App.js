@@ -9,7 +9,7 @@ const seeds = require("./Utils/Seeds")
 const SessionManager = require("./Utils/SessionManager");
 const session = require("express-session");
 const flash = require("connect-flash");
-const {ErrorNameforFlash, Roles} = require("./Utils/ImportantENVVariables");
+const {ErrorNameforFlash, Roles,OrderStatus} = require("./Utils/ImportantENVVariables");
 const User = require("./Models/User");
 const multer = require("multer");
 const {v4: uuidv4} = require("uuid")
@@ -75,6 +75,7 @@ app.use((req, res, next) =>{
     res.locals.UserInfo = SessionManager.ShowLogin(req);
     res.locals.errorMessages = errors;
     res.locals.roles = Roles;
+    res.locals.orderStatus = OrderStatus;
     res.locals.hasErrors = errors.length > 0;
     // res.locals.csrfToken = req.csrfToken();
     next();

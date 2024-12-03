@@ -1,0 +1,65 @@
+<h1 class="display-2 text-center p-2">ORDERS</h1>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-9 col-sm-8 mx-auto">
+        {{#if IsEmpty}}
+            <div class="text-center mt-4">
+                <h3 class="text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    There are no orders registered with this type yet.
+                </h3>
+            </div>
+        {{else}}
+            <div class="row gy-3">
+                {{#each orders as |order|}}
+                    <div class="col-12">
+                        <div class="card h-100 shadow-sm bg-light rounded">
+                            <div class="card-body d-flex align-items-center">
+                                <a href="/order/order-detail/{{order.Id}}" class="text-decoration-none d-flex w-100 align-items-center">
+                                    <img 
+                                        src="{{order.Commerce.dataValues.Logo}}" 
+                                        alt="{{order.Commerce.dataValues.Name}}" 
+                                        loading="lazy" 
+                                        class="img-fluid mx-3 rounded-circle shadow-sm" 
+                                        style="height: 60px; width: 60px;"
+                                    >
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <h5 class="text-primary mb-1">
+                                            {{order.Commerce.dataValues.Name}}
+                                        </h5>
+                                        <div class="d-flex align-items-center">
+                                            {{#if (equals  ../orderStatus.Created  order.OrderStatusId) }}
+                                                 <span class="badge bg-warning text-dark me-2">
+                                                    {{order.OrderStatus.dataValues.Name}}
+                                                 </span>
+                                            {{/if}}
+
+                                            {{#if (equals  ../orderStatus.InProgress  order.OrderStatusId) }}
+                                                 <span class="badge bg-info text-dark me-2">
+                                                    {{order.OrderStatus.dataValues.Name}}
+                                                 </span>
+                                            {{/if}}
+
+                                            {{#if (equals  ../orderStatus.Completed  order.OrderStatusId) }}
+                                                <span class="badge bg-success text-dark me-2">
+                                                   {{order.OrderStatus.dataValues.Name}}
+                                                </span>
+                                            {{/if}}
+                                            <span class="text-muted">
+                                                {{order.FormateDate}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="mb-0"><strong>Total:</strong> ${{order.TotalAfterTax}}</p>
+                                        <p class="mb-0"><strong>Items:</strong> {{order.AmountOfProducts}}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{/if}}
+    </div>
+</div>

@@ -1,69 +1,94 @@
-<h1 class="display-2 text-center p-2">ORDER</h1>
+<h1 class="display-2 text-center p-3 text-primary">Order Your Products</h1>
 
 <div class="row justify-content-center">
-    <div class="col-12 col-md-9 col-xs-8 mx-auto">
+    <div class="col-12 col-lg-10 mx-auto">
         {{#if IsEmpty}}
-            <h3 class="text-center text-muted">There are no products, seriously, what are the managers doing...</h3>
+            <div class="alert alert-warning text-center">
+                <h3 class="text-muted">There are no products. What are the managers doing?</h3>
+            </div>
         {{else}}
             <div class="row">
                 <!-- Left Column: Products -->
-                <div class="col-12 col-lg-8">
+                <div class="col-12 col-lg-8 mb-4">
                     {{#each categories as |category|}}
-                        <h2 class="display-4 text-center p-2">{{category.Name}}</h2>
-                        <div class="row">
-                            {{#each ../products as |product|}}
-                                {{#if (equals category.Id product.CategoryId)}}
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card h-100 shadow-sm bg-light rounded">
-                                            <img src="{{product.Photo}}" alt="{{product.Name}}" class="card-img-top img-fluid rounded-top">
-                                            <div class="card-body">
-                                                <h5 class="card-title text-center text-primary">{{product.Name}}</h5>
-                                                <h6 class="card-subtitle text-center text-secondary">{{product.Description}}</h6>
-                                                <hr>
-                                                <p class="text-muted mb-1"><strong>Price:</strong> ${{product.Price}}</p>
-                                                {{#unless (equals product.Discount 0)}}
-                                                    <p class="text-success mb-1"><strong>Discount:</strong> -{{product.IntDiscount}}%</p>
-                                                {{/unless}}
-                                                <button class="btn btn-outline-primary w-100" onclick="addToOrder({{product.Id}}, '{{product.Name}}', {{product.Price}}, {{product.Discount}});">Add to Order</button>
+                        <div class="category-section mb-4">
+                            <h2 class="display-5 text-center text-secondary p-2">{{category.Name}}</h2>
+                            <div class="row">
+                                {{#each ../products as |product|}}
+                                    {{#if (equals category.Id product.CategoryId)}}
+                                        <div class="col-lg-4 col-md-6 mb-4">
+                                            <div class="card h-100 shadow-sm">
+                                                <img src="{{product.Photo}}" alt="{{product.Name}}" class="card-img-top img-fluid rounded-top">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title text-dark">{{product.Name}}</h5>
+                                                    <p class="card-text text-muted">{{product.Description}}</p>
+                                                    <hr>
+                                                    <p class="price text-primary mb-1">
+                                                        <strong>Price:</strong> ${{product.Price}}
+                                                    </p>
+                                                    {{#unless (equals product.Discount 0)}}
+                                                        <p class="discount text-success mb-1">
+                                                            <strong>Discount:</strong> -{{product.IntDiscount}}%
+                                                        </p>
+                                                    {{/unless}}
+                                                    <button 
+                                                        class="btn btn-outline-primary w-100"
+                                                        onclick="addToOrder({{product.Id}}, '{{product.Name}}', {{product.Price}}, {{product.Discount}});">
+                                                        Add to Order
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                {{/if}}
-                            {{/each}}
+                                    {{/if}}
+                                {{/each}}
+                            </div>
                         </div>
                     {{/each}}
                 </div>
 
                 <!-- Right Column: Order Summary -->
                 <div class="col-12 col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header text-center">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white text-center">
                             <h4>Order Summary</h4>
                         </div>
                         <form action="/order/order-add" method="post" id="formOrder">
-
                             <input type="hidden" name="TaxApplied" id="TaxApplied" value="{{currentTax}}">
                             <input type="hidden" name="CommerceId" id="CommerceId" value="{{CommerceId}}">
+                            <input type="hidden" name="OrderItems" id="OrderItems">
+                            <input type="hidden" name="TotalAfterTax" id="TotalAfterTax">
+                            <input type="hidden" name="TotalBeforeTax" id="TotalBeforeTax">
                             
                             <div class="card-body">
                                 <ul id="order-summary" class="list-group">
-                                    <li class="list-group-item text-muted">No items selected</li>
+                                    <li class="list-group-item text-muted text-center">No items selected</li>
                                 </ul>
                                 <div class="text-center mt-4">
-                                     <div class="form-outline mb-4">
-                                          <label class="form-label" for="Direction">Category:</label>
-                                             <select id="Direction" name="Direction" class="form-control form-control-lg" required>
-                                               <option value="">Select Direction</option>
-                                                  {{#each directions as |direction|}}
-                                                  <option value="{{direction.Description}}" >{{direction.Name}}</option>
-                                                   {{/each}}
-                                             </select>
-                                       </div>
-                                    <button  class="btn btn-success w-100" id="checkout-button" disabled>Checkout</button>
+                                    <div class="form-group">
+                                        <label for="Direction" class="form-label">
+                                            Select Delivery Direction:
+                                        </label>
+                                        <select 
+                                            id="Direction" 
+                                            name="Direction" 
+                                            class="form-control" 
+                                            required>
+                                            <option value="">Select Direction</option>
+                                            {{#each directions as |direction|}}
+                                                <option value="{{direction.Description}}">{{direction.Name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                    <button 
+                                        type="submit" 
+                                        class="btn btn-success w-100 mt-3" 
+                                        id="checkout-button" 
+                                        disabled>
+                                        Checkout
+                                    </button>
                                 </div>
                             </div>
                         </form>
-                        
                     </div>
                 </div>
             </div>
@@ -71,118 +96,85 @@
     </div>
 </div>
 
-
 <script>
     const OrderItems = [];
     let Total = 0;
     let TotalBeforeTax = 0;
 
-     function addToOrder(ProductId, ProductName, ProductCost, Discount ){
-      OrderItems.push({
-               ProductId: ProductId, 
-               ProductName: ProductName,
-              ProductCost: ProductCost, 
-              Discount: Discount,
-              AmountOfProduct: 1,
+    function addToOrder(ProductId, ProductName, ProductCost, Discount) {
+        OrderItems.push({
+            ProductId,
+            ProductName,
+            ProductCost,
+            Discount,
+            AmountOfProduct: 1,
         });
-      updateOrderSummary()
+        updateOrderSummary();
     }
 
-   const updateOrderSummary = ()=>{
+    const updateOrderSummary = () => {
         const orderSummaryElement = document.getElementById('order-summary');
-        const currentTax = document.getElementById('currentTax').value;
+        const currentTax = parseFloat(document.getElementById('TaxApplied').value);
 
-        orderSummaryElement.innerHTML ="";
+        orderSummaryElement.innerHTML = "";
 
-
-         if(OrderItems.length === 0){
-
-            orderSummaryElement.innerHTML = `<li class="list-group-item text-muted"> No items selected <li>`;
-            document.getElementById("checkout-button").disabled  = true
-          }else{
-            {{!-- let Total = 0;
-            let TotalBeforeTax = 0; --}}
-            OrderItems.forEach((product, index) =>{
-                const productTotal = (product.ProductCost - ( product.ProductCost * product.Discount)) * product.AmountOfProduct
-                TotalBeforeTax += productTotal;
-                const listItem = document.createElement("li");
-
-                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-                listItem.innerHTML = `
-                      ${product.ProductName}  ${productTotal} 
-                    <div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick=" return updateCount(${index}, false);">-</button>
-                        <span id="count-${index}" class="mx-2">${product.AmountOfProduct}</span>
-                        <button type="button" class="btn btn-sm btn-outline-secondary ms-2" onclick=" return updateCount(${index}, true);">+</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger ms-3" onclick=" return removeItem(${index});">Remove</button>
-                    </div>
-                `;
-                
-                orderSummaryElement.appendChild(listItem);
-            })
-
-            Total += TotalBeforeTax + (TotalBeforeTax * currentTax);
-            const totalItem = document.createElement("li");
-           totalItem.className = 'list-group-item font-weight-bold';
-           totalItem.innerHTML = `
-              Total Before tax: ${TotalBeforeTax} <br>
-              Tax: ${currentTax} <br>
-              Total: ${total}
-            `
-              orderSummaryElement.appendChild(totalItem);
-              document.getElementById("checkout-button").disabled  = false
-
-          }
-   }
-
-    function updateCount(index, increment){
-        const product = OrderItems[index];
-        let AmmountOfProduct = product.AmountOfProduct;
-
-        if( !increment  && (AmmountOfProduct--) >= 0){
-          (AmmountOfProduct--  < 0) ?  product.AmountOfProduct = 0  : product.AmountOfProduct--;
-            updateOrderSummary();
-           
-        }else{
-            product.AmountOfProduct++;
-            updateOrderSummary(); 
+        if (OrderItems.length === 0) {
+            orderSummaryElement.innerHTML = `<li class="list-group-item text-muted text-center">No items selected</li>`;
+            document.getElementById("checkout-button").disabled = true;
+            return;
         }
-        
-        
+
+        TotalBeforeTax = 0;
+        OrderItems.forEach((product, index) => {
+            const productTotal = product.ProductCost * (1 - product.Discount / 100) * product.AmountOfProduct;
+            TotalBeforeTax += productTotal;
+
+            const listItem = document.createElement("li");
+            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+            listItem.innerHTML = `
+                <span>${product.ProductName} - $${productTotal.toFixed(2)}</span>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="updateCount(${index}, false);">-</button>
+                    <span>${product.AmountOfProduct}</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" onclick="updateCount(${index}, true);">+</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-3" onclick="removeItem(${index});">Remove</button>
+                </div>
+            `;
+            orderSummaryElement.appendChild(listItem);
+        });
+
+        Total = TotalBeforeTax * (1 + currentTax / 100);
+        const totalItem = document.createElement("li");
+        totalItem.className = "list-group-item text-center font-weight-bold";
+        totalItem.innerHTML = `
+            Total Before Tax: $${TotalBeforeTax.toFixed(2)} <br>
+            Tax (${currentTax}%): $${(Total - TotalBeforeTax).toFixed(2)} <br>
+            Total: $${Total.toFixed(2)}
+        `;
+        orderSummaryElement.appendChild(totalItem);
+
+        document.getElementById("checkout-button").disabled = false;
+    };
+
+    function updateCount(index, increment) {
+        const product = OrderItems[index];
+        product.AmountOfProduct += increment ? 1 : -1;
+        if (product.AmountOfProduct <= 0) removeItem(index);
+        else updateOrderSummary();
     }
 
-    function  removeItem(index){
-        OrderItems.splice(index,1);
-        updateOrderSummary()
+    function removeItem(index) {
+        OrderItems.splice(index, 1);
+        updateOrderSummary();
     }
 
-   const submitForm = document.getElementById("formOrder");
+    document.getElementById("formOrder").addEventListener("submit", (e) => {
+        e.preventDefault();
 
-   submitForm.addEventListener("submit", CreateOrder(e))
+        document.getElementById('OrderItems').value = JSON.stringify(OrderItems);
+        document.getElementById('TotalAfterTax').value = Total.toFixed(2);
+        document.getElementById('TotalBeforeTax').value = TotalBeforeTax.toFixed(2);
 
-   function CreateOrder(e){
-    e.preventDefault();
-
-    //TODO: implement submit logic
-
-    const orderItemsInput = document.createElement("input");
-    orderItemsInput.type ="hidden";
-    orderItemsInput.value = JSON.stringify(OrderItems);
-    orderItemsInput.name = "OrderItems";
-    orderItemsInput.id = "OrderItems";
-
-    const totalInput = document.createElement("input");
-    orderItemsInput.type ="hidden";
-    orderItemsInput.value = Total;
-    orderItemsInput.name = "TotalAfterTax";
-    orderItemsInput.id = "TotalAfterTax";
-
-    const totalBeforeTax = document.createElement("input");
-    orderItemsInput.type ="hidden";
-    orderItemsInput.value = TotalBeforeTax;
-    orderItemsInput.name = "TotalBeforeTax";
-    orderItemsInput.id = "TotalBeforeTax";
-
-    e.currentTarget.submit()
-   }
+        e.currentTarget.submit();
+    });
 </script>

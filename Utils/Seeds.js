@@ -9,10 +9,6 @@ const bycrypt = require("bcryptjs");
 const orderStatusesToSeed =[ 
     {  Name: "Created"},
     { Name: "In progress" },
-    { Name: "Food picked up" },
-    {  Name: "On delivery"},
-    { Name: "Pending completion confirmation"},
-    { Name: "Cancel"},
     { Name: "Completed"}
 ]
 

@@ -11,11 +11,7 @@ exports.Roles ={
 exports.OrderStatus ={
     Created: 1,
     InProgress: 2,
-    FoodPickedUp: 3,
-    OnDelivery: 4,
-    PendingCompletionConfirmation: 5,
-    Cancel: 6,
-    Completed: 7 
+    Completed: 3 
 }
 
 exports.ConfigurationValueTypes ={

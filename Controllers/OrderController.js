@@ -6,19 +6,28 @@ const productModel = require("../Models/Product");
 const  directionModel = require("../Models/Direction");
 const categoryModel = require("../Models/Category");
 const userModel = require("../Models/User");
-const {Roles,OrderStatus} = require("../Utils/ImportantENVVariables");
+const {Roles,OrderStatus, ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
 const Order = require("../Models/Order");
 const config = require("../Models/Configuration");
 const OrderDetails = require("../Models/OrderDetail");
-const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables")
+const Commerece = require("../Models/Commerce");
 
 exports.GetAllUserOrders = async (req,res,next) => {
     try{
         let orders = await orderModel.findAll({
-            include:[{model:orderDetailModel}, {model:orderStatusModel} ], 
+            include:[{model:orderDetailModel}, {model:orderStatusModel},{model:Commerece} ], 
             where:{ ClientId: res.locals.UserInfo.Id}});
         orders = orders.map((p) => p.dataValues);
-        orders.sort((a,b) => b - a)
+        orders.map((o) => {
+            o.FormateDate = ("00" + (o.createdAt.getMonth() + 1)).slice(-2) 
+            + "/" + ("00" + o.createdAt.getDate()).slice(-2) 
+            + "/" + o.createdAt.getFullYear() + " " 
+            + ("00" + o.createdAt.getHours()).slice(-2) + ":" 
+            + ("00" + o.createdAt.getMinutes()).slice(-2) 
+
+            return o;
+        })
+        
         res.render("OrdersViews/order-user-order",{
             orders: orders.sort((a,b) => b.createdAt - a.createdAt),
             isEmpty: orders.length === 0,
@@ -57,9 +66,7 @@ exports.GetAddOrder = async (req,res,next) =>{
             return p;
         });
 
-        console.log(products);
-        console.log(categories);
-        //TODO: pass the directions
+
         res.render("OrdersViews/order-add",{
             products: products,
             categories: categories,
@@ -77,12 +84,20 @@ exports.GetAddOrder = async (req,res,next) =>{
 
 exports.PostAddOrder = async (req,res,next) =>{
     try {
-        const OrderItems = req.body.OrderItems;
+        
+        let OrderItems = req.body.OrderItems;
+        OrderItems = JSON.parse(OrderItems) 
+        console.log(OrderItems);
+        let AmountOfProducts = 0;
+        
+        OrderItems.forEach(element => {
+            AmountOfProducts +=  element.AmountOfProduct;
+        });
+        delete OrderItems.ProductName
         const {
         TotalBeforeTax,
         TotalAfterTax, 
         TaxApplied,
-        AmountOfProducts,
         Direction,
         CommerceId} = req.body
     
@@ -97,11 +112,16 @@ exports.PostAddOrder = async (req,res,next) =>{
         ClientId: res.locals.UserInfo.Id,
         });
     
-        const fullOrderDetails = OrderItems.map((o) => o.OrderId = newOrder.Id)
+        const fullOrderDetails = OrderItems.map((o) => {
+            o.OrderId = newOrder.Id
+            return o;
+        })
+        console.log(fullOrderDetails);
+        
         await OrderDetails.bulkCreate(fullOrderDetails);
     
         res.redirect("/home/home-client");
-    } catch (error) {
+    } catch (err) {
         req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
         res.redirect("/home/home-client");
