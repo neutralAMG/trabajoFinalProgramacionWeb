@@ -3,7 +3,7 @@ const roleModel = require("../Models/Role");
 const SessionManager = require("../Utils/SessionManager");
 const bycrypt = require("bcryptjs");
 const {Op} = require("sequelize");
-const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {Roles,UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 const crypto = require("crypto");
 const User = require("../Models/User");
 const transporter = require("../Services/EmailService")
@@ -25,7 +25,7 @@ exports.PostAuthenticate = async (req,res,next)=>{
         })
     
         if(!UserToAuth){
-            req.flash(ErrorNameforFlash, "Email or username is invalid");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Email or username is invalid");
            return res.redirect("/account/authenticate");
         }
 
@@ -38,10 +38,10 @@ exports.PostAuthenticate = async (req,res,next)=>{
         
         if(!UserToAuth.dataValues.IsActive){
             if( (UserToAuth.dataValues.RoleId === Roles.Employee || UserToAuth.dataValues.RoleId === Roles.Manager )&& UserToAuth.dataValues.CommerceId){
-                req.flash(ErrorNameforFlash, "Commerece is not active, contact an admin");
+                req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Commerece is not active, contact an admin");
                  return  res.redirect("/account/authenticate");
             }
-            req.flash(ErrorNameforFlash, "User is not active");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "User is not active");
             return  res.redirect("/account/authenticate");
         }
 
@@ -50,24 +50,27 @@ exports.PostAuthenticate = async (req,res,next)=>{
         
         req.session.save((err) => {
             if (err) {
-                req.flash(ErrorNameforFlash, "Error saving session");
+                req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error saving session");
                 return res.redirect("/account/authenticate");
             }
 
             // Redirect to home page based on the user's role
+            req.flash(UIMessagesNamesForFlash.SuccessMessageName, "Login was successfull");
             return res.redirect(GetRoleHomeUrl(UserToAuth.dataValues.RoleId));
         });
        
     }catch(err){
-        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected errror happed");
         res.redirect("/account/authenticate");
+        console.error(err);
     }
 }
 exports.PostUnAuthenticate =  (req,res,next)=>{
      req.session.destroy((err) => {
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error destroying session");
         console.log(err);
-        
      });
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName, "Logout was successfull");
      res.redirect("/account/authenticate");
 }
 
@@ -105,12 +108,12 @@ exports.PostRegister = async (req,res,next)=>{
         userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
 
         if(userWithSameCredentials){
-            req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "There is allready a user with the username, "+ UserName);
             return res.redirect("/account/register");
         }
 
         if(Password != ConfirmPassword){
-            req.flash(ErrorNameforFlash, "passwords dont match");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "passwords dont match");
             return  res.redirect("/account/register");
         }
             
@@ -139,11 +142,12 @@ exports.PostRegister = async (req,res,next)=>{
             </a>
             `
         }, (err) =>{console.error("Error during registration:", err.toString().split(" at ")[0]); });
-    
+
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName, "User was registered successfully");
         res.redirect("/account/authenticate");
     }catch (err){
         console.error("Error during registration:", err.toString().split(" at ")[0]);
-        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         res.redirect("/account/register");
     }
 }
@@ -162,11 +166,10 @@ exports.PostChangeActiveState = async (req,res,next)=>{
              return res.redirect("back");
 
         }
-             return res.redirect("back");
-   
-  
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "User was registered successfully");
+        return res.redirect("back");
     } catch (err) {
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }
@@ -184,20 +187,19 @@ exports.PostChangeEmployeeRole = async (req,res,next)=>{
               RoleId: RoleId,
             }, {where:{Id:Id}});
              // using http referrer
-       
+             req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "User has been changed");
              return res.redirect("back");
 
         }
-             return res.redirect("back");
-   
-  
+        req.flash(UIMessagesNamesForFlash.InfoMessageName,  "User cant change it self");
+        return res.redirect("back");
     } catch (err) {
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }
 }
-
+//TODO: abstract this
 const GetRoleHomeUrl = (role) =>{
     let url; 
     if (role === Roles.Admin) {
@@ -224,7 +226,7 @@ exports.PostReset = async (req,res,next)=>{
         crypto.randomBytes(32, async (err, buffer) =>{
             if(err){
                 console.error(err);
-                req.flash(ErrorNameforFlash, "An unexpected errror happed");
+                req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected errror happed");
                 return res.render("/account/reset-password");
             };
             const token = buffer.toString("hex");
@@ -232,7 +234,7 @@ exports.PostReset = async (req,res,next)=>{
            const user =  await User.findOne({where:{Email: Email}});
 
            if(!user){
-            req.flash(ErrorNameforFlash, "There is no user with that email");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "There is no user with that email");
             return res.render("/account/reset-password");
            }
 
@@ -242,7 +244,6 @@ exports.PostReset = async (req,res,next)=>{
             {ResetToken: token,
                 ResetTokenExpiration: Date.now() + 3000000
             },{where:{Id: user.dataValues.Id}}
-
            )
           await transporter.sendMail({
             from: "alejandrodanielmoscosoguerrero@gmail.com",
@@ -250,12 +251,13 @@ exports.PostReset = async (req,res,next)=>{
             subject: "change password",
             html: `<h1><a href='http://localhost:8001/account/reset-password/${token}'>  Click this link to reset your password </a></h1>`
            });
+           req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The email to reset your password has been sent");
            res.redirect("/account/authenticate");
         })
         
        
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("/account/reset-password");
     }
@@ -269,15 +271,16 @@ exports.GetNewPassword = async (req,res,next)=>{
         }}});
 
         if(!user){
-            req.flash(ErrorNameforFlash, "invalid token");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "invalid token");
           return res.redirect("/account/reset-password");  
         }
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "Create your new password");
         res.render("Auth/new-password",{
             userId: user.dataValues.Id,
             token:user.dataValues.ResetToken
         })
     } catch (err) {
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("/account/reset-password");
     }
@@ -288,7 +291,7 @@ exports.PostNewPassword  = async (req,res,next)=>{
         const {newPass, confirmPass, userId, passToken} = req.body;
 
        if(newPass != confirmPass){
-        req.flash(ErrorNameforFlash, "password dont match");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "password dont match");
          return res.redirect("/account/reset-password/" + passToken);
        }
        const user = await User.findOne({where:{Id: userId,ResetToken: passToken, ResetTokenExpiration: {
@@ -296,7 +299,7 @@ exports.PostNewPassword  = async (req,res,next)=>{
        }}});
 
        if(!user){
-       req.flash(ErrorNameforFlash, "invalid token");
+       req.flash(UIMessagesNamesForFlash.ErrorMessageName, "invalid token");
        return res.redirect("/account/reset-password");
        }  
 
@@ -307,11 +310,11 @@ exports.PostNewPassword  = async (req,res,next)=>{
         ResetToken: null,
         ResetTokenExpiration: null,
        }, {where:{Id:userId}});
-
+       req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "Your new password has been set");
        res.redirect("/account/authenticate");
 
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("/account/new-password");
     }
@@ -323,13 +326,13 @@ exports.GetActivateUser  = async (req,res,next)=>{
     try{
         const Id = req.params.id;
 
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "Activate your account now");
         res.render("Auth/activate",{
             Id: Id
         });
-      
 
     }catch(err){
-        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected errror happed");
         res.redirect("/account/authenticate");
     }
 
@@ -343,17 +346,19 @@ exports.PostActivateUser  = async (req,res,next)=>{
        const user = await User.findOne({where:{Id: Id}});
 
        if(!user){
-        req.flash(ErrorNameforFlash, "An unexpected errror happed");
-        return res.redirect("/account/reset-password");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected errror happed");
+        return res.redirect(/*"/account/reset-password"*/ "back");
        }
        
         await user.update({
             IsActive: true
           }, {where:{Id:Id}});
 
-       res.redirect("/account/authenticate")
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "Your account has been activated");
+       res.redirect("/account/authenticate");
+
     }catch(err){
-        req.flash(ErrorNameforFlash, "An unexpected errror happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected errror happed");
         res.redirect("/account/reset-password");
     }
 

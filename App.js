@@ -9,7 +9,7 @@ const seeds = require("./Utils/Seeds")
 const SessionManager = require("./Utils/SessionManager");
 const session = require("express-session");
 const flash = require("connect-flash");
-const {ErrorNameforFlash, Roles,OrderStatus} = require("./Utils/ImportantENVVariables");
+const {UIMessagesNamesForFlash, Roles,OrderStatus} = require("./Utils/ImportantENVVariables");
 const User = require("./Models/User");
 const multer = require("multer");
 const {v4: uuidv4} = require("uuid")
@@ -70,13 +70,19 @@ app.use(async (req, res, next)  =>{
 })
 
 app.use((req, res, next) =>{
-    const errors = req.flash(ErrorNameforFlash);
+    const errors = req.flash(UIMessagesNamesForFlash.ErrorMessageName);
+    const successes = req.flash(UIMessagesNamesForFlash.SuccessMessageName);
+    const infos = req.flash(UIMessagesNamesForFlash.InfoMessageName);
     res.locals.IsLoggedIn = SessionManager.IsLogin(req);
     res.locals.UserInfo = SessionManager.ShowLogin(req);
     res.locals.errorMessages = errors;
+    res.locals.successMessages = successes;
+    res.locals.infoMessages = infos;
     res.locals.roles = Roles;
     res.locals.orderStatus = OrderStatus;
     res.locals.hasErrors = errors.length > 0;
+    res.locals.hasSuccess = successes.length > 0;
+    res.locals.hasInfos = infos.length > 0;
     // res.locals.csrfToken = req.csrfToken();
     next();
 });

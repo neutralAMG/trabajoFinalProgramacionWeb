@@ -1,6 +1,6 @@
 const userFavCommerceModel = require("../Models/UserFavCommerce");
 const commerceModel = require("../Models/Commerce");
-
+const {UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 
 exports.GetAllUserFavCommerces = async (req,res,next) =>{
     try{
@@ -20,7 +20,9 @@ exports.GetAllUserFavCommerces = async (req,res,next) =>{
             isEmpty: userFavCommerce.length === 0,
         } );
     }catch (err){
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("back");
     }
 }
 
@@ -32,12 +34,13 @@ exports.PostAddUserFavCommerces = async (req,res,next) =>{
             UserId: res.locals.UserInfo.Id, 
             CommerceId: Id,
         })
-console.log(commerces);
-        res.redirect("back");
+         console.log(commerces);
+          res.redirect("back");
 
         }catch (err){
-           res.redirect("back");
-           console.error(err);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
+            console.error(err);
+            res.redirect("back");
         }
 }
 
@@ -46,11 +49,11 @@ exports.PostDeleteUserFavCommerces = async (req,res,next) =>{
         const Id = req.body.Id;
 
         await  userFavCommerceModel.destroy({where:{UserId: res.locals.UserInfo.Id,  CommerceId: Id} });
-
         res.redirect("back");
 
         }catch{
-           res.redirect("back");
-           console.error(err);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
+            console.error(err);
+            res.redirect("back");
         }
 }

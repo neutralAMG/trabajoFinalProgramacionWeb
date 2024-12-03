@@ -6,7 +6,7 @@ const productModel = require("../Models/Product");
 const  directionModel = require("../Models/Direction");
 const categoryModel = require("../Models/Category");
 const userModel = require("../Models/User");
-const {Roles,OrderStatus, ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {Roles,OrderStatus, UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 const Order = require("../Models/Order");
 const config = require("../Models/Configuration");
 const OrderDetails = require("../Models/OrderDetail");
@@ -36,7 +36,7 @@ exports.GetAllUserOrders = async (req,res,next) => {
         } );
 
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while preforming the operation");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
         res.redirect("/home/home-client");
     }
@@ -67,8 +67,9 @@ exports.GetOrderDetail = async (req,res,next) =>{
             order: order,
         } );
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while preforming the operation");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("back");
     }
 }
 exports.GetAddOrder = async (req,res,next) =>{
@@ -95,7 +96,7 @@ exports.GetAddOrder = async (req,res,next) =>{
             isEmpty: products.length === 0,
         } );
     }catch{
-        req.flash(ErrorNameforFlash, "Error while preforming the operation");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
         res.redirect("/home/home-client");
     }
@@ -138,10 +139,10 @@ exports.PostAddOrder = async (req,res,next) =>{
         console.log(fullOrderDetails);
         
         await OrderDetails.bulkCreate(fullOrderDetails);
-    
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The order has been created succesfully");
         res.redirect("/home/home-client");
     } catch (err) {
-        req.flash(ErrorNameforFlash, "Error while preforming the operation");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
         res.redirect("/home/home-client");
     }
@@ -162,10 +163,10 @@ exports.PostUpdateOrderStatus = async (req,res,next) =>{
     await User.update({
         IsBusy: false,
     }, {where:{Id:DeliveryId}})
-    
+    req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The order has been completed succesfully");
       res.redirect("/home/home-delivery"); 
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while preforming the operation");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
         res.redirect("/home/home-delivery"); 
     }
@@ -178,23 +179,25 @@ exports.PostAssingOrder = async (req,res,next) =>{
        const freeDeliveries = await userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery}});
 
     if(freeDeliveries.length === 0){
-        req.flash(ErrorNameforFlash, "There are no free deliveries");
+        req.flash(UIMessagesNamesForFlash.InfoMessageName, "There are no free deliveries");
        return res.redirect("/home/home-Commerece");
     }
-        const freeDeliveryId = freeDeliveries.map((d) => d.dataValues)[0].Id;
+        const freeDelivery = freeDeliveries.map((d) => d.dataValues)[0];
 
         await orderModel.update({
-            DeliveryId: freeDeliveryId,
+            DeliveryId: freeDelivery.Id,
             HasBeenAssinged: true,
             OrderStatusId: OrderStatus.InProgress,
         },{where: {Id:Id}});
 
         await User.update({
             IsBusy: true,
-        }, {where:{Id:freeDeliveryId}})
+        }, {where:{Id:freeDelivery.Id}})
+
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  `The order has been assing to the delivery ${freeDelivery.Name} succesfully`);
         res.redirect("/home/home-Commerece");  
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while preforming the operation");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
         res.redirect("/home/home-Commerece"); 
     }

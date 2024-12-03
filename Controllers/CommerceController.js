@@ -5,7 +5,7 @@ const orderModel = require("../Models/Order");
 const userFave = require("../Models/UserFavCommerce")
 const User = require("../Models/User");
 const { Op } = require("sequelize");
-const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 
 exports.GetAllCommerece = async (req,res,next) =>{
     try{
@@ -21,7 +21,7 @@ exports.GetAllCommerece = async (req,res,next) =>{
             isEmpty: commerces.length === 0,
         });
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }
@@ -49,7 +49,7 @@ exports.GetAllCommereceByCommerceType = async (req,res,next) =>{
        } );
 
    }catch (err){
-    req.flash(ErrorNameforFlash, "Error while processing the request");
+    req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
     console.error(err);
     res.redirect("/commerceType/commerceType-Index");
    }
@@ -64,7 +64,7 @@ exports.GetAddCommerece = async (req,res,next) =>{
         })
 
       }catch(err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
       }
@@ -105,13 +105,14 @@ exports.PostAddCommerece = async (req,res,next) =>{
         
         req.session.save((err) => {
             if (err) {
-                req.flash(ErrorNameforFlash, "Error saving session");
+                req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error saving session");
                 return res.redirect("/account/authenticate");
             }})
 
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "Your Commerece has been created succesfully");
        res.status(201).redirect("/home/home-commerece");
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }
@@ -128,7 +129,7 @@ exports.GetEditCommerece = async (req,res,next) =>{
         EditMode: true,
        })
     } catch (error) {
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }
@@ -157,9 +158,10 @@ exports.PostEditCommerece = async (req,res,next) =>{
      ClousingHour, 
     }, {where:{Id: res.locals.UserInfo.CommerceId}});
 
+    req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "Your commerce info has been updated succesfully");
     res.redirect("/commerece/commerce-edit/"+res.locals.UserInfo.CommerceId);
     } catch (err) {
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }
@@ -185,10 +187,11 @@ exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
            IsActive: status,
         }, {where:{Id:CommerceId}});
 
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The commerce and all of its employees have been " + status ? "activated" : "deactivated");
        res.redirect("back")
 
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }

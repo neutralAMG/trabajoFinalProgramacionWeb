@@ -21,4 +21,8 @@ exports.ConfigurationValueTypes ={
     Date: "DATE",
 }
 
-exports.ErrorNameforFlash = "errors"
+exports.UIMessagesNamesForFlash ={
+    ErrorMessageName: "errors",
+    SuccessMessageName: "successes",
+    InfoMessageName: "infos",
+} 

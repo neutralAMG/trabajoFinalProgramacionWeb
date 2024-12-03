@@ -1,5 +1,6 @@
 const productModel = require("../Models/Product");
 const categoryModel = require("../Models/Category");
+const { UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 
 
 exports.GetAllProducts = async (req,res,next) =>{
@@ -15,7 +16,9 @@ exports.GetAllProducts = async (req,res,next) =>{
             isEmpty: products.length === 0,
         } );
     }catch (err){
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("back");
     }
 }
 exports.GetAllProductsByCommerceId = async (req,res,next) =>{
@@ -33,7 +36,9 @@ exports.GetAllProductsByCommerceId = async (req,res,next) =>{
             isEmpty: products.length === 0,
         } );
     }catch(err){
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("back");
     }
 }
 
@@ -48,7 +53,9 @@ exports.GetAllProductsByCategory = async (req,res,next) =>{
             isEmpty: products.length === 0,
         } );
     }catch(err){
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("back");
     }
 }
 
@@ -61,7 +68,9 @@ exports.GetProductById = async (req,res,next) =>{
             product: product.dataValues,
         } );
     }catch(err){
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("back");
     }
 }
 
@@ -88,11 +97,13 @@ exports.PostAddProduct = async (req,res,next) =>{
         CategoryId,
         CommerceId: res.locals.UserInfo.CommerceId
      })
-
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The product has been created succesfully");
      res.redirect("/product/prod-mant");
    }catch(err){
-    res.redirect("/product/prod-add");
+    req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
     console.error(err);
+    res.redirect("/product/prod-add");
+   
    }
 }
 
@@ -108,8 +119,9 @@ exports.GetEditProduct = async (req,res,next) =>{
             EditMode: true,
         });
     }catch(err){
-        res.redirect("/product/prod-mant");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("/product/prod-mant");
     }
 }
 
@@ -127,11 +139,14 @@ exports.PostEditProduct = async (req,res,next) =>{
         CategoryId,
      },{where: {Id:Id, CommerceId: res.locals.UserInfo.CommerceId }})
 
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The product has been updated succesfully");
      res.redirect("/product/prod-mant")
 
    }catch(err){
-     res.redirect("/product/prod-edit/" + Id)
+     req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
      console.error(err);
+     res.redirect("/product/prod-edit/" + Id)
+
    }
 }
 
@@ -143,10 +158,13 @@ exports.PostAddDiscoundProduct = async (req,res,next) =>{
             Discount: (Discount / 100)
          },{where: {Id:Id, CommerceId: res.locals.UserInfo.CommerceId }});
 
+         req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The product discount has been updated succesfully");
          res.redirect("/product/prod-mant");
     }catch{
-        res.redirect("/product/prod-mant");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("/product/prod-mant");
+       
     }
 }
 
@@ -156,9 +174,11 @@ exports.PostDeleteProduct = async (req,res,next) =>{
     try{
         await productModel.destroy({where: {Id:Id, CommerceId: res.locals.UserInfo.CommerceId }});
 
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The product has been deleted succesfully");
         res.redirect("/product/prod-mant");
     }catch (err){
-        res.redirect("/product/prod-mant");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
         console.error(err);
+        res.redirect("/product/prod-mant");
     }
 }

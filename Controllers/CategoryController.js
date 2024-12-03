@@ -1,7 +1,7 @@
 const categoryModel = require("../Models/Category");
 const Commerce = require("../Models/Commerce");
 const Product = require("../Models/Product");
-const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 
 
 exports.GetAllCategory = async (req,res,next) =>{
@@ -21,7 +21,7 @@ exports.GetAllCategory = async (req,res,next) =>{
             isEmpty: categories.length === 0,
         } );
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.location(req.get("Referrer") || "/") 
     }
@@ -46,9 +46,10 @@ exports.PostAddCategory = async  (req,res,next) =>{
         CommerceId: res.locals.UserInfo.CommerceId
      });
 
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The category has been created");
      res.redirect("/category/category-mant");
    }catch(err){
-    req.flash(ErrorNameforFlash, "Error while processing the request");
+    req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
     res.redirect("/category/category-add");
     console.error(err);
    }
@@ -67,7 +68,7 @@ exports.GetEditCategory = async (req,res,next) =>{
         EditMode: true,
     });
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
        res.redirect("/category/category-mant");
        console.error(err);
     }
@@ -84,10 +85,11 @@ exports.PostEditCategory = async (req,res,next) =>{
         Description,
      },{where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId }});
 
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The category has been updated succesfully");
      res.redirect("/category/category-mant");
 
    }catch(err){
-     req.flash(ErrorNameforFlash, "Error while processing the request");
+     req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
      res.redirect("/category/category-edit/" + Id);
      console.error(err);
    }
@@ -98,9 +100,11 @@ exports.PostDeleteCategory = async (req,res,next) =>{
 
     try{
         await categoryModel.destroy({where: {Id:Id, CommerceId:res.locals.UserInfo.CommerceId}});
+
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The category has been deleted succesfully");
         res.redirect("/category/category-mant");
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         res.redirect("/category/category-mant");
         console.error(err);
     }

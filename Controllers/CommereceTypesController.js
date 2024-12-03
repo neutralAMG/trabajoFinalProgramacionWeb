@@ -1,6 +1,6 @@
 const commereceTypeModel = require("../Models/CommerceType");
 const commereceModel = require("../Models/Commerce");
-const {ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 
 exports.GetAllCommereceType = async (req,res,next) =>{
     try{
@@ -18,7 +18,7 @@ exports.GetAllCommereceType = async (req,res,next) =>{
             isEmpty: commereceTypes.length === 0,
         } );
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
         res.redirect("back");
     }
@@ -39,9 +39,10 @@ exports.PostAddCommereceType = async (req,res,next) =>{
        Description,
        Icon: "/"+Icon.path
     });
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The commerce type has been created succesfully");
         res.redirect("/commereceType/commerceType-mant");
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
        console.error(err);
       res.redirect("/commereceType/commerceType-add");
       
@@ -59,7 +60,7 @@ exports.GetEditCommereceType = async (req,res,next) =>{
             EditMode: true
         });
     }catch (err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
        res.redirect("/commereceType/commerceType-mant");
        console.error(err);
      }
@@ -75,11 +76,11 @@ exports.PostEditCommereceType = async (req,res,next) =>{
         Description,
         Icon: Icon != null  ? "/"+Icon.path : PrevImage
      },{where: {Id:Id}})
-
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The commerce type has been updated succesfully");
      res.redirect("/commereceType/commerceType-mant");
 
    }catch(err){
-    req.flash(ErrorNameforFlash, "Error while processing the request");
+     req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
      res.redirect("/commereceType/commerceType-edit/" + Id)
      console.error(err);
    }
@@ -89,9 +90,11 @@ exports.PostDeleteCommereceType = async (req,res,next) =>{
     try{
         const Id = req.body.Id;
         await commereceTypeModel.destroy({where: {Id:Id}});
+
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The commerce type has been deleted succesfully");
         res.redirect("/commereceType/commerceType-mant");
     }catch(err){
-        req.flash(ErrorNameforFlash, "Error while processing the request");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         res.redirect("/commereceType/commerceType-mant");
         console.error(err);
 

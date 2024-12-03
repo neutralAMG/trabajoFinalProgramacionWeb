@@ -9,8 +9,10 @@ exports.GetAllUserDirection = async (req,res,next) =>{
             directions: directions,
             isEmpty: directions.length === 0,
         } );
-    }catch{
+    }catch(err){
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         console.error(err);
+        res.redirect("back");
     }
 }
 
@@ -28,8 +30,10 @@ exports.PostAddDirection = async (req,res,next) =>{
         UserId: res.locals.UserInfo.Id
      })
 
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The address has been created succesfully");
      res.redirect("/direction/direction-mant");
    }catch(err){
+    req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
     res.redirect("/direction/direction-add");
     console.error(err);
    }
@@ -47,6 +51,7 @@ exports.GetEditDirection = async (req,res,next) =>{
             EditMode: true
         });
         }catch (err){
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
            res.redirect("/direction/direction-mant");
            console.error(err);
     }
@@ -62,10 +67,11 @@ exports.PostEditDirection = async (req,res,next) =>{
         Name,
         Description,
      },{where:{Id:Id, UserId:res.locals.UserInfo.Id}})
-
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The address has been updated succesfully");
      res.redirect("/direction/direction-mant")
 
    }catch(err){
+    req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
      res.redirect("/direction/direction-edit/" + Id)
      console.error(err);
    }
@@ -76,9 +82,10 @@ exports.PostDeleteDirection = async (req,res,next) =>{
 
     try{
         await directionModel.destroy({where: {Id:Id, UserId: res.locals.UserInfo.Id }});
-
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The address has been deleted succesfully");
         res.redirect("/direction/direction-mant");
     }catch (err){
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
         res.redirect("/direction/direction-mant");
         console.error(err);
     }

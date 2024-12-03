@@ -165,6 +165,7 @@
   </div>
 </nav>
     <main class="container">
+
         {{#if hasErrors}}
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <ul style="list-style: none;">
@@ -178,7 +179,40 @@
          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
            <span aria-hidden="true">&times;</span>
          </button>
+         {{/if}}       
+         
+          {{#if hasSuccess}}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <ul style="list-style: none;">
+                {{#each successMessages}}
+                <li>
+                    {{this}}
+                </li>
+                {{/each}}
+            </ul>
+           
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+         {{/if}}       
+         
+          {{#if hasInfos}}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <ul style="list-style: none;">
+                {{#each infoMessages}}
+                <li>
+                    {{this}}
+                </li>
+                {{/each}}
+            </ul>
+           
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
          {{/if}}
+
+
+
        </div>
         {{{body}}}
     </main>

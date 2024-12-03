@@ -1,7 +1,7 @@
 const userModel = require("../Models/User");
 const roleModel = require("../Models/Role");
 const orderModel = require("../Models/Order");
-const {Roles,ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {Roles,UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 const {Op} = require("sequelize")
 const bycrypt = require("bcryptjs");
 
@@ -21,7 +21,7 @@ exports.GetAllUserClientMant = async (req,res,next) =>{
         } );
     }catch (err){
         console.error(err);
-        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         res.redirect("/user/user-admin-mant");
     }
 }
@@ -40,7 +40,7 @@ exports.GetAllUserDeliveryMant = async (req,res,next) =>{
         } );
     }catch (err){
         console.error(err);
-        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         res.redirect("/user/user-admin-mant");
     }
 
@@ -57,7 +57,7 @@ exports.GetAllAdminUserMant = async (req,res,next) =>{
         } );
     }catch (err){
         console.error(err);
-        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         res.redirect("/user/user-admin-mant");
     }
 
@@ -74,7 +74,7 @@ exports.GetAllEmployeeUserMant = async (req,res,next) =>{
         } );
     }catch (err){
         console.error(err);
-        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         res.redirect("/home/home-commerece");
     }
 
@@ -103,19 +103,19 @@ exports.PostAddAdmin = async (req,res,next)=>{
         let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
 
         if(userWithSameCredentials){
-            req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "There is allready a user with the email, "+ Email);
           return  res.redirect("/user/user-admin-add");
         }
 
         userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
 
         if(userWithSameCredentials){
-            req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "There is allready a user with the username, "+ UserName);
             return res.redirect("/user/user-admin-add");
         }
 
         if(Password != ConfirmPassword){
-            req.flash(ErrorNameforFlash, "passwords dont match");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "passwords dont match");
             return  res.redirect("/user/user-admin-add");
         }
             
@@ -132,11 +132,11 @@ exports.PostAddAdmin = async (req,res,next)=>{
             Password: hashPass,
             RoleId: Roles.Admin,
         });
-    
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName, "The admin has been created successfully"); 
         res.redirect("/user/user-admin-mant");
     }catch (err){
         console.error("Error during registration:", err.toString().split(" at ")[0]);
-        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         res.redirect("/user/user-admin-mant");
     }
 }
@@ -176,19 +176,19 @@ exports.PostAddEmployee = async (req,res,next)=>{
         let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
 
         if(userWithSameCredentials){
-            req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "There is allready a user with the email, "+ Email);
           return  res.redirect("/user/user-employee-add");
         }
 
         userWithSameCredentials  = await userModel.findOne({ where:{UserName: UserName}});
 
         if(userWithSameCredentials){
-            req.flash(ErrorNameforFlash, "There is allready a user with the username, "+ UserName);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "There is allready a user with the username, "+ UserName);
             return res.redirect("/user/user-employee-add");
         }
 
         if(Password != ConfirmPassword){
-            req.flash(ErrorNameforFlash, "passwords dont match");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "passwords dont match");
             return  res.redirect("/user/user-employee-add");
         }
             
@@ -206,11 +206,11 @@ exports.PostAddEmployee = async (req,res,next)=>{
             Password: hashPass,
             RoleId: RoleId,
         });
-    
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName, "The employee has been created successfully"); 
         res.redirect("/user/user-employee-mant");
     }catch (err){
         console.error("Error during registration:", err.toString().split(" at ")[0]);
-        req.flash(ErrorNameforFlash, "An unexpected error happed");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         res.redirect("/user/user-employee-mant");
     }
 }
@@ -254,12 +254,14 @@ exports.PostEditUser = async (req,res,next) =>{
         Photo: Photo !=null? "/"+Photo.path : PrevImage,
         Phone ,
      },{where: {Id:Id}})
-
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName, "Your account info has been updated successfully"); 
      res.redirect("back")
 
    }catch(err){
-     res.redirect("/user/user-edit/" + Id)
+     req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
      console.error(err);
+     res.redirect("/user/user-edit/" + Id)
+     
    }
 }
 exports.GetEditAdmin = async (req,res,next) =>{
@@ -274,8 +276,10 @@ exports.GetEditAdmin = async (req,res,next) =>{
         });
 
         }catch{
-           res.redirect(back);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
            console.error(err);
+           res.redirect(back);
+           
         }
 }
 exports.PostEditUserAdmin = async (req,res,next) =>{
@@ -294,6 +298,7 @@ exports.PostEditUserAdmin = async (req,res,next) =>{
         let newPass = PrevPassword;
         if(Password){
             if(Password != ConfirmPassword){
+                req.flash(UIMessagesNamesForFlash.ErrorMessageName, "The passwords must match");
                 return res.redirect("/user/user-admin-edit/" + Id);
             }
             newPass = await bycrypt.hash(Password, 12)  
@@ -309,31 +314,32 @@ exports.PostEditUserAdmin = async (req,res,next) =>{
         Password: newPass,
        },{where: {Id:Id}
       });
- 
+     req.flash(UIMessagesNamesForFlash.SuccessMessageName, "The admin has been edited successfully"); 
      res.redirect("/user/user-admin-mant")
 
    }catch(err){
-     res.redirect("/user/user-admin-edit/" + Id)
+     req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
      console.error(err);
+     res.redirect("/user/user-admin-edit/" + Id);
+     
    }
 }
 
 exports.PostDeleteUser = async (req,res,next) =>{
     const Id = req.body.Id;
-
-   
-    
-
     try{
-       if(Id === res.locals.UserInfo.Id){
+       if(Id != res.locals.UserInfo.Id){
          await userModel.destroy({where: {Id:Id}});
-            // make diferent by role
-          return res.redirect(back);
+           req.flash(UIMessagesNamesForFlash.SuccessMessageName, "The user has been deleted successfully"); 
+          return res.redirect("back");
        }
-     return res.redirect("back")
+       req.flash(UIMessagesNamesForFlash.InfoMessageName, "You whant to delete your own account?... really?"); 
+      return res.redirect("back");
+
     }catch (err){
-        res.redirect("/user/user-mant");
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "An unexpected error happed");
         console.error(err);
+        res.redirect("/user/user-mant");
     }
 }
 

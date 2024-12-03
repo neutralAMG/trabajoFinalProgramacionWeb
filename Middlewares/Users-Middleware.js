@@ -2,14 +2,14 @@ const isAuth = require("./IsAuth");
 const isActive = require("./IsAuth");
 const createCommerece = require("./needToCreateCommerece");
 const noNeddCreateCommerece = require("./commereceIsCreated");
-const {Roles, ErrorNameforFlash} = require("../Utils/ImportantENVVariables");
+const {Roles, UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 
 const RoleMiddle = (AllowRoles) =>{ 
     return [
         isAuth, 
         (req, res, next) =>{ 
             if (!AllowRoles.includes(res.locals.UserInfo.RoleId)  ) {
-                req.flash(ErrorNameforFlash, "You are not authorized to view this content");
+                req.flash(UIMessagesNamesForFlash.InfoMessageName, "You are not authorized to view this content");
                 return res.redirect("..");
             };
           next();
