@@ -1,0 +1,112 @@
+<h1 class="display-2 text-center py-3 bg-primary text-white rounded">{{order.Commerce.dataValues.Name}}</h1>
+
+<div class="container my-4">
+    <!-- Manager Role: Assign Order -->
+    {{#if (equals UserInfo.RoleId roles.Manager)}}
+        {{#if (equals orderStatus.Created order.OrderStatusId)}}
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <form action="/order/order-Assing" method="post" class="d-inline">
+                        <input type="hidden" name="Id" value="{{order.Id}}">
+                        <button type="submit" class="btn btn-info btn-lg shadow">
+                            Assign
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {{/if}}
+    {{/if}}
+
+    <p class="text-dark text-center my-3">
+        <strong>Date:</strong> {{order.FormateDate}}
+    </p>
+
+    <!-- Delivery Role: Complete Order -->
+    {{#if (equals UserInfo.RoleId roles.Delivery)}}
+        {{#if (equals orderStatus.InProgress order.OrderStatusId)}}
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <form action="/order/order-complete" method="post" class="d-inline">
+                        <input type="hidden" name="Id" value="{{order.Id}}">
+                        <input type="hidden" name="DeliveryId" value="{{UserInfo.Id}}">
+                        <button type="submit" class="btn btn-success btn-lg shadow">
+                            Complete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {{/if}}
+    {{/if}}
+
+    <!-- Order Status Badge -->
+    <div class="text-center my-4">
+        {{#if (equals orderStatus.Created order.OrderStatusId)}}
+            <span class="badge bg-warning text-dark px-3 py-2 fs-5">
+                {{order.OrderStatus.dataValues.Name}}
+            </span>
+        {{/if}}
+        {{#if (equals orderStatus.InProgress order.OrderStatusId)}}
+            <span class="badge bg-info text-dark px-3 py-2 fs-5">
+                {{order.OrderStatus.dataValues.Name}}
+            </span>
+        {{/if}}
+        {{#if (equals orderStatus.Completed order.OrderStatusId)}}
+            <span class="badge bg-success text-white px-3 py-2 fs-5">
+                {{order.OrderStatus.dataValues.Name}}
+            </span>
+        {{/if}}
+    </div>
+
+    <!-- Order Details -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-9">
+            <div class="row gy-4">
+                {{#each order.OrderDetails.dataValues as |detail|}}
+                    <div class="col-12">
+                        <div class="card h-100 shadow-sm rounded-4 bg-light">
+                            <div class="card-body d-flex align-items-center">
+                                <!-- Product Link -->
+                                <a href="/order/order-detail/{{order.Id}}" class="text-decoration-none d-flex w-100 align-items-center">
+                                    <!-- Product Image -->
+                                    <img 
+                                        src="{{detail.Product.dataValues.Photo}}" 
+                                        alt="{{detail.Product.dataValues.Name}}" 
+                                        class="img-fluid mx-3 rounded-circle shadow-sm border border-secondary"
+                                        style="height: 80px; width: 80px;"
+                                    >
+                                    <!-- Product Info -->
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <h5 class="text-primary mb-1">{{detail.Product.dataValues.Name}}</h5>
+                                        <p class="text-muted small mb-0">{{order.FormateDate}}</p>
+                                    </div>
+                                    <!-- Product Stats -->
+                                    <div class="text-end">
+                                        <p class="mb-1"><strong>Total:</strong> ${{detail.Product.dataValues.ProductCost}}</p>
+                                        <p class="mb-0"><strong>Items:</strong> {{detail.Product.dataValues.AmountOfProducts}}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Totals -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-12 col-md-9">
+            <div class="card bg-light shadow-sm rounded-4 p-3">
+                <h4 class="text-center text-primary mb-3">Order Totals</h4>
+                <div class="row">
+                    <div class="col-md-6 text-start">
+                        <p class="fs-5"><strong>Total before tax:</strong> ${{order.TotalBeforeTax}}</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="fs-5"><strong>Total after tax:</strong> ${{order.TotalAfterTax}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,6 +11,8 @@ const Order = require("../Models/Order");
 const config = require("../Models/Configuration");
 const OrderDetails = require("../Models/OrderDetail");
 const Commerece = require("../Models/Commerce");
+const Product = require("../Models/Product");
+const User = require("../Models/User");
 
 exports.GetAllUserOrders = async (req,res,next) => {
     try{
@@ -40,14 +42,31 @@ exports.GetAllUserOrders = async (req,res,next) => {
     }
 }
 exports.GetOrderDetail = async (req,res,next) =>{
+   
     try{
-        let order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel}, ], /* where:{ Id:id ,ClientId: req.user.id}*/});
-        const orderStatuses = await orderStatusModel.findAll();
+        const id = req.params.id
+        let order;
+        if(res.locals.UserInfo.RoleId === Roles.Client){
+            order = await orderModel.findOne({include:[{model:orderDetailModel, include: [{model: Product}]}, {model:orderStatusModel}, {model:orderUpdateModel}, {model: Commerece}], where:{ Id:id, ClientId: res.locals.UserInfo.Id}});
+        }else if(res.locals.UserInfo.RoleId === Roles.Delivery){
+            order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel}, {model: Commerece}], where:{ Id:id , DeliveryId: res.locals.UserInfo.Id}});
+        }else if (res.locals.UserInfo.RoleId === Roles.Employee || res.locals.UserInfo.RoleId === Roles.Manager ) {
+            order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel},{model: Commerece} ], where:{ Id:id , CommerceId: res.locals.UserInfo.CommerceId}});
+        }
+        
+        order = order.dataValues;
+        console.log(order);
+        
+        order.FormateDate = ("00" + (order.createdAt.getMonth() + 1)).slice(-2) 
+            + "/" + ("00" + order.createdAt.getDate()).slice(-2) 
+            + "/" + order.createdAt.getFullYear() + " " 
+            + ("00" + order.createdAt.getHours()).slice(-2) + ":" 
+            + ("00" + order.createdAt.getMinutes()).slice(-2) 
+
         res.render("OrdersViews/order-detail",{
-            order: order.dataValues,
-            orderStatuses: orderStatuses.map((o) => o.dataValues),
+            order: order,
         } );
-    }catch{
+    }catch(err){
         req.flash(ErrorNameforFlash, "Error while preforming the operation");
         console.error(err);
     }
@@ -133,14 +152,16 @@ exports.PostAddOrder = async (req,res,next) =>{
 
 exports.PostUpdateOrderStatus = async (req,res,next) =>{
     try{
-       const {Id, OrderStatusId, Comment} = req.body;
+       const {Id, DeliveryId} = req.body;
 
+      await orderModel.update({
+        DeliveryId: Id,
+        OrderStatusId: OrderStatus.Completed,
+    },{where: {Id:Id}});
 
-      await orderUpdateModel.create({
-          NewStatusId: OrderStatusId ?? null ,
-          Comment: Comment ?? "",
-          OrderId: Id,
-      })
+    await User.update({
+        IsBusy: false,
+    }, {where:{Id:DeliveryId}})
     
       res.redirect("/home/home-delivery"); 
     }catch (err){
@@ -153,18 +174,24 @@ exports.PostUpdateOrderStatus = async (req,res,next) =>{
 
 exports.PostAssingOrder = async (req,res,next) =>{
     try{
+        const Id = req.body.Id
        const freeDeliveries = await userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery}});
 
-    if(!freeDeliveries){
+    if(freeDeliveries.length === 0){
         req.flash(ErrorNameforFlash, "There are no free deliveries");
        return res.redirect("/home/home-Commerece");
     }
-        
+        const freeDeliveryId = freeDeliveries.map((d) => d.dataValues)[0].Id;
 
         await orderModel.update({
-            DeliveryId: await freeDeliveries.map((d) => d.dataValues)[0].Id,
+            DeliveryId: freeDeliveryId,
             HasBeenAssinged: true,
-        },{where: {Id:id}});
+            OrderStatusId: OrderStatus.InProgress,
+        },{where: {Id:Id}});
+
+        await User.update({
+            IsBusy: true,
+        }, {where:{Id:freeDeliveryId}})
         res.redirect("/home/home-Commerece");  
     }catch(err){
         req.flash(ErrorNameforFlash, "Error while preforming the operation");

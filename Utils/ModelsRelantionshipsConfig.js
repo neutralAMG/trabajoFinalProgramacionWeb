@@ -16,7 +16,7 @@ exports.Config = () =>{
     Product.belongsTo(Category, {foreignKey:"CategoryId", hooks:true});
 
     Product.hasMany(OrderDetail, {foreignKey:"ProductId", onDelete:"CASCADE", hooks:true});
-    OrderDetail.belongsTo(OrderDetail, {foreignKey:"ProductId", hooks:true});
+    OrderDetail.belongsTo(Product, {foreignKey:"ProductId", hooks:true});
 
     Commerce.hasMany(Product, {foreignKey:"CommerceId", onDelete:"CASCADE", hooks:true});
     Product.hasMany(Commerce, {foreignKey:"CommerceId", hooks:true});
