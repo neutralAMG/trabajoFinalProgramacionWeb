@@ -7,6 +7,7 @@ const {Roles,UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables"
 const crypto = require("crypto");
 const User = require("../Models/User");
 const transporter = require("../Services/EmailService")
+const GetRoleHomeUrl = require("../Utils/GetRoleHomeUrl")
 
 exports.GetAuthenticate = async (req,res,next)=>{
     res.render("Auth/login",{})
@@ -196,21 +197,6 @@ exports.PostChangeEmployeeRole = async (req,res,next)=>{
         console.error(err);
         res.redirect("back");
     }
-}
-//TODO: abstract this
-const GetRoleHomeUrl = (role) =>{
-    let url; 
-    if (role === Roles.Admin) {
-        url =  "/home/home-admin";
-    }else if (role === Roles.Delivery) {
-        url =  "/home/home-delivery";
-    }else if (role === Roles.Client) {
-        url =  "/home/home-client";
-    }else{
-        //Commerece
-        url =  "/home/home-commerece";
-    }
-    return url;
 }
 
 exports.GetReset = async (req,res,next)=>{

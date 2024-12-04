@@ -3,7 +3,7 @@ const isActive = require("./IsAuth");
 const createCommerece = require("./needToCreateCommerece");
 const noNeddCreateCommerece = require("./commereceIsCreated");
 const {Roles, UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
-
+const GetRoleHomeUrl = require("../Utils/GetRoleHomeUrl")
 const RoleMiddle = (AllowRoles) =>{ 
     return [
         isAuth, 
@@ -16,20 +16,7 @@ const RoleMiddle = (AllowRoles) =>{
         }
     ]
 }
-const GetRoleHomeUrl = (role) =>{
-    let url; 
-    if (role === Roles.Admin) {
-        url =  "/home/home-admin";
-    }else if (role === Roles.Delivery) {
-        url =  "/home/home-delivery";
-    }else if (role === Roles.Client) {
-        url =  "/home/home-client";
-    }else if(role === Roles.Employee || role === Roles.Manager){
-        //Commerece
-        url =  "/home/home-commerece";
-    }
-    return url;
-}
+
 exports.AdminMiddleware = RoleMiddle([Roles.Admin])
 
 exports.ImportantUsersMiddleware = RoleMiddle([Roles.Admin, Roles.Manager])

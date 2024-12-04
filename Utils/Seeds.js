@@ -115,8 +115,8 @@ const DefaultCommerces = [
 const DefaultUsers = [
     // Admin
     {
-        Name: "Admin User",
-        LastName: "Admin LastName",
+        Name: "Armando",
+        LastName: "Pepe",
         UserName: "admin",
         Email: "admin@example.com",
         Cedula: "1234567890",
@@ -130,8 +130,8 @@ const DefaultUsers = [
     },
     // Client
     {
-        Name: "Client User",
-        LastName: "Client LastName",
+        Name: "Jhom",
+        LastName: "Doe",
         UserName: "client1",
         Email: "client1@example.com",
         Cedula: null,
@@ -145,8 +145,8 @@ const DefaultUsers = [
     },
     // Managers
     {
-        Name: "Manager User 1",
-        LastName: "Manager LastName",
+        Name: "Clara",
+        LastName: "Martinez",
         UserName: "manager1",
         Email: "manager1@example.com",
         Cedula: null,
@@ -159,8 +159,8 @@ const DefaultUsers = [
         CommerceId: 1, // Example CommerceId
     },
     {
-        Name: "Manager User 2",
-        LastName: "Manager LastName",
+        Name: "Misko",
+        LastName: "Jonez",
         UserName: "manager2",
         Email: "manager2@example.com",
         Cedula: null,
@@ -173,8 +173,8 @@ const DefaultUsers = [
         CommerceId: 2,
     },
     {
-        Name: "Manager User 3",
-        LastName: "Manager LastName",
+        Name: "Ryn",
+        LastName: "Lin",
         UserName: "manager3",
         Email: "manager3@example.com",
         Cedula: null,
@@ -187,8 +187,8 @@ const DefaultUsers = [
         CommerceId: 3,
     },
     {
-        Name: "Manager User 4",
-        LastName: "Manager LastName",
+        Name: "Mandy",
+        LastName: "Reyez",
         UserName: "manager4",
         Email: "manager4@example.com",
         Cedula: null,
@@ -202,8 +202,8 @@ const DefaultUsers = [
     },
     // Deliveries
     {
-        Name: "Delivery User 1",
-        LastName: "Delivery LastName",
+        Name: "Lara",
+        LastName: "Raith",
         UserName: "delivery1",
         Email: "delivery1@example.com",
         Cedula: null,
@@ -216,8 +216,8 @@ const DefaultUsers = [
         CommerceId: null,
     },
     {
-        Name: "Delivery User 2",
-        LastName: "Delivery LastName",
+        Name: "Susan",
+        LastName: "Martinez",
         UserName: "delivery2",
         Email: "delivery2@example.com",
         Cedula: null,
@@ -230,8 +230,8 @@ const DefaultUsers = [
         CommerceId: null,
     },
     {
-        Name: "Delivery User 3",
-        LastName: "Delivery LastName",
+        Name: "Tyron",
+        LastName: "Marcus",
         UserName: "delivery3",
         Email: "delivery3@example.com",
         Cedula: null,
