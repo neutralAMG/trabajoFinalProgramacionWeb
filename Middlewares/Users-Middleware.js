@@ -9,14 +9,27 @@ const RoleMiddle = (AllowRoles) =>{
         isAuth, 
         (req, res, next) =>{ 
             if (!AllowRoles.includes(res.locals.UserInfo.RoleId)  ) {
-                req.flash(UIMessagesNamesForFlash.InfoMessageName, "You are not authorized to view this content");
-                return res.redirect("..");
+                req.flash(UIMessagesNamesForFlash.InfoMessageName, "You are not authorized to view that content");
+                return res.redirect(GetRoleHomeUrl(res.locals.UserInfo.RoleId));
             };
           next();
         }
     ]
 }
-
+const GetRoleHomeUrl = (role) =>{
+    let url; 
+    if (role === Roles.Admin) {
+        url =  "/home/home-admin";
+    }else if (role === Roles.Delivery) {
+        url =  "/home/home-delivery";
+    }else if (role === Roles.Client) {
+        url =  "/home/home-client";
+    }else if(role === Roles.Employee || role === Roles.Manager){
+        //Commerece
+        url =  "/home/home-commerece";
+    }
+    return url;
+}
 exports.AdminMiddleware = RoleMiddle([Roles.Admin])
 
 exports.ImportantUsersMiddleware = RoleMiddle([Roles.Admin, Roles.Manager])

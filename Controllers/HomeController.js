@@ -26,7 +26,8 @@ exports.GetDeliveryHome = async  (req,res,next)=>{
         let orders = await orderModel.findAll({
             
             include:[{model:orderDetailModel}, {model:orderStatusModel},{model: Commerece}, ], 
-            where:{ Delivery: res.locals.UserInfo.Id}});
+            where:{ DeliveryId: res.locals.UserInfo.Id}});
+            
         orders = orders.map((p) => p.dataValues);
         orders.map((o) => {
             o.FormateDate = ("00" + (o.createdAt.getMonth() + 1)).slice(-2) 
@@ -53,7 +54,7 @@ exports.GetCommereceHome = async (req,res,next)=>{
 
         let orders = await orderModel.findAll({
             include:[{model:orderDetailModel}, {model:orderStatusModel}, {model: Commerece}, ], 
-            where:{ Id: res.locals.UserInfo.CommerceId}});
+            where:{ CommerceId: res.locals.UserInfo.CommerceId}});
         orders = orders.map((p) => p.dataValues);
         orders.map((o) => {
             o.FormateDate = ("00" + (o.createdAt.getMonth() + 1)).slice(-2) 
@@ -92,7 +93,7 @@ exports.GetAdminHome = async (req,res,next)=>{
     const commerece =  (await commereceModel.findAll()).map((o) => o.dataValues);
 
     metrics.AmountOfOrders = orders.length;
-    metrics.AmountOfOrdersToday = orders.filter((o) => o.toUTCString() === new Date().toUTCString()).length;
+    metrics.AmountOfOrdersToday = orders.filter((o) => o.createdAt.toISOString().split('T')[0] === new Date().toISOString().split('T')[0]).length;
     metrics.AmountOfClientsActive = client.filter((o) => o.IsActive === true).length;
     metrics.AmountOfClientsUnActive =  Math.abs(client.length - metrics.AmountOfClientsActive);
     metrics.AmountOfDeliveryActive = delivery.filter((o) => o.IsActive === true).length;

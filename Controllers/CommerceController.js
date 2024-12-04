@@ -187,7 +187,7 @@ exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
            IsActive: status,
         }, {where:{Id:CommerceId}});
 
-        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The commerce and all of its employees have been " + status ? "activated" : "deactivated");
+        req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "The commerce and all of its employees have been " + (status ? "activated" : "deactivated"));
        res.redirect("back")
 
     }catch(err){

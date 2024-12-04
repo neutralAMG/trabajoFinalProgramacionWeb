@@ -8,13 +8,13 @@ const bycrypt = require("bcryptjs");
 
 exports.GetAllUserClientMant = async (req,res,next) =>{
     try{
-        let clients = await userModel.findAll({ include:[{model:orderModel}],where:{ RoleId:Roles.Client}});
+        let clients = await userModel.findAll({ include:[{model:orderModel, as:"ClientOrders"}],where:{ RoleId:Roles.Client}});
         clients = clients.map((p) => p.dataValues);
         console.log(clients);
 
         res.render("UserViews/user-client",{
             clients: clients.map((p) => {
-                p.amountOrder = p.Orders.length;
+                p.amountOrder = p.ClientOrders.length;
                 return p;
                }),
             isEmpty: clients.length === 0,
@@ -28,12 +28,12 @@ exports.GetAllUserClientMant = async (req,res,next) =>{
 
 exports.GetAllUserDeliveryMant = async (req,res,next) =>{
     try{
-        let deliveries = await userModel.findAll({ include:[{model:orderModel}],where:{ RoleId:Roles.Delivery}});
+        let deliveries = await userModel.findAll({ include:[{model:orderModel, as:"DeliveryOrders"}],where:{ RoleId:Roles.Delivery}});
         deliveries = deliveries.map((p) => p.dataValues);
 
         res.render("UserViews/user-delivery",{
             deliveries: deliveries.map((p) => {
-                p.amountOrder = p.Orders.length;
+                p.amountOrder = p.DeliveryOrders.length;
                 return p;
                }),
             isEmpty: deliveries.length === 0,

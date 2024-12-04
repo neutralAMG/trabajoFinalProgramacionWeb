@@ -1,5 +1,5 @@
 const configModel = require("../Models/Configuration");
-
+const {UIMessagesNamesForFlash} = require("../Utils/ImportantENVVariables");
 exports.GetAllConfiguration = async (req,res,next) =>{
     try {
         let configurations = await configModel.findAll();

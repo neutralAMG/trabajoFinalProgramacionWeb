@@ -20,6 +20,9 @@
     <p class="text-dark text-center my-3">
         <strong>Date:</strong> {{order.FormateDate}}
     </p>
+       <p class="text-dark text-center my-3">
+        <strong>{{order.Direction}}</strong> 
+    </p>
 
     <!-- Delivery Role: Complete Order -->
     {{#if (equals UserInfo.RoleId roles.Delivery)}}
@@ -61,30 +64,24 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-9">
             <div class="row gy-4">
-                {{#each order.OrderDetails.dataValues as |detail|}}
+                {{#each order.OrderDetails as |detail|}}
                     <div class="col-12">
                         <div class="card h-100 shadow-sm rounded-4 bg-light">
                             <div class="card-body d-flex align-items-center">
-                                <!-- Product Link -->
-                                <a href="/order/order-detail/{{order.Id}}" class="text-decoration-none d-flex w-100 align-items-center">
-                                    <!-- Product Image -->
                                     <img 
-                                        src="{{detail.Product.dataValues.Photo}}" 
-                                        alt="{{detail.Product.dataValues.Name}}" 
+                                        src="{{detail.dataValues.Product.dataValues.Photo}}" 
+                                        alt="{{detail.dataValues.Product.dataValues.Name}}" 
                                         class="img-fluid mx-3 rounded-circle shadow-sm border border-secondary"
                                         style="height: 80px; width: 80px;"
                                     >
-                                    <!-- Product Info -->
                                     <div class="d-flex flex-column flex-grow-1">
-                                        <h5 class="text-primary mb-1">{{detail.Product.dataValues.Name}}</h5>
+                                        <h5 class="text-primary mb-1">{{detail.dataValues.Product.dataValues.Name}}</h5>
                                         <p class="text-muted small mb-0">{{order.FormateDate}}</p>
                                     </div>
-                                    <!-- Product Stats -->
                                     <div class="text-end">
-                                        <p class="mb-1"><strong>Total:</strong> ${{detail.Product.dataValues.ProductCost}}</p>
-                                        <p class="mb-0"><strong>Items:</strong> {{detail.Product.dataValues.AmountOfProducts}}</p>
+                                        <p class="mb-1"><strong>Total:</strong> ${{detail.dataValues.ProductCost}}</p>
+                                        <p class="mb-0"><strong>Items:</strong> {{detail.dataValues.AmountOfProduct}}</p>
                                     </div>
-                                </a>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,9 @@
 <h1 class="display-2 text-center p-3 text-primary">Order Your Products</h1>
+<div class="text-center mb-3">
+    <a href="javascript:history.back()" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Go Back
+    </a>
+</div>
 
 <div class="row justify-content-center">
     <div class="col-12 col-lg-10 mx-auto">
@@ -12,7 +17,7 @@
                 <div class="col-12 col-lg-8 mb-4">
                     {{#each categories as |category|}}
                         <div class="category-section mb-4">
-                            <h2 class="display-5 text-center text-secondary p-2">{{category.Name}}</h2>
+                            <h2 class="display-5  text-secondary p-2">{{category.Name}}</h2>
                             <div class="row">
                                 {{#each ../products as |product|}}
                                     {{#if (equals category.Id product.CategoryId)}}
@@ -126,7 +131,8 @@
 
         TotalBeforeTax = 0;
         OrderItems.forEach((product, index) => {
-            const productTotal = product.ProductCost * (1 - product.Discount / 100) * product.AmountOfProduct;
+            const productTotal = (product.ProductCost - (product.ProductCost *  product.Discount)) * product.AmountOfProduct;
+             console.log(productTotal)
             TotalBeforeTax += productTotal;
 
             const listItem = document.createElement("li");
@@ -142,8 +148,8 @@
             `;
             orderSummaryElement.appendChild(listItem);
         });
-
-        Total = TotalBeforeTax * (1 + currentTax / 100);
+console.log(currentTax)
+        Total = (TotalBeforeTax * (currentTax/ 100)) + TotalBeforeTax;
         const totalItem = document.createElement("li");
         totalItem.className = "list-group-item text-center font-weight-bold";
         totalItem.innerHTML = `
@@ -170,6 +176,8 @@
 
     document.getElementById("formOrder").addEventListener("submit", (e) => {
         e.preventDefault();
+        if(!confirm("You sure you want to make this order?"))
+        return
 
         document.getElementById('OrderItems').value = JSON.stringify(OrderItems);
         document.getElementById('TotalAfterTax').value = Total.toFixed(2);

@@ -49,9 +49,9 @@ exports.GetOrderDetail = async (req,res,next) =>{
         if(res.locals.UserInfo.RoleId === Roles.Client){
             order = await orderModel.findOne({include:[{model:orderDetailModel, include: [{model: Product}]}, {model:orderStatusModel}, {model:orderUpdateModel}, {model: Commerece}], where:{ Id:id, ClientId: res.locals.UserInfo.Id}});
         }else if(res.locals.UserInfo.RoleId === Roles.Delivery){
-            order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel}, {model: Commerece}], where:{ Id:id , DeliveryId: res.locals.UserInfo.Id}});
+            order = await orderModel.findOne({include:[{model:orderDetailModel, include: [{model: Product}]}, {model:orderStatusModel}, {model:orderUpdateModel}, {model: Commerece}], where:{ Id:id , DeliveryId: res.locals.UserInfo.Id}});
         }else if (res.locals.UserInfo.RoleId === Roles.Employee || res.locals.UserInfo.RoleId === Roles.Manager ) {
-            order = await orderModel.findOne({include:[{model:orderDetailModel}, {model:orderStatusModel}, {model:orderUpdateModel},{model: Commerece} ], where:{ Id:id , CommerceId: res.locals.UserInfo.CommerceId}});
+            order = await orderModel.findOne({include:[{model:orderDetailModel, include: [{model: Product}]}, {model:orderStatusModel}, {model:orderUpdateModel},{model: Commerece} ], where:{ Id:id , CommerceId: res.locals.UserInfo.CommerceId}});
         }
         
         order = order.dataValues;
@@ -156,7 +156,6 @@ exports.PostUpdateOrderStatus = async (req,res,next) =>{
        const {Id, DeliveryId} = req.body;
 
       await orderModel.update({
-        DeliveryId: Id,
         OrderStatusId: OrderStatus.Completed,
     },{where: {Id:Id}});
 
@@ -176,7 +175,7 @@ exports.PostUpdateOrderStatus = async (req,res,next) =>{
 exports.PostAssingOrder = async (req,res,next) =>{
     try{
         const Id = req.body.Id
-       const freeDeliveries = await userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery}});
+       const freeDeliveries = await userModel.findAll({where:{IsBusy:false, RoleId:Roles.Delivery, IsActive: true}});
 
     if(freeDeliveries.length === 0){
         req.flash(UIMessagesNamesForFlash.InfoMessageName, "There are no free deliveries");

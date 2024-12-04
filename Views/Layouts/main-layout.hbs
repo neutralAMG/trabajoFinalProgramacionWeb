@@ -167,37 +167,31 @@
     <main class="container">
 
         {{#if hasErrors}}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <ul style="list-style: none;">
+        <div class="alert alert-warning text-center h2 alert-dismissible fade show" id="FlashMessage" role="alert">
+            <ul style="list-style: none; ">
                 {{#each errorMessages}}
                 <li>
                     {{this}}
                 </li>
                 {{/each}}
             </ul>
-           
-         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
+        </div>
          {{/if}}       
          
           {{#if hasSuccess}}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success  text-center h2 alert-dismissible fade show" id="FlashMessage"  role="alert">
             <ul style="list-style: none;">
                 {{#each successMessages}}
                 <li>
                     {{this}}
                 </li>
                 {{/each}}
-            </ul>
-           
-         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
+            </ul> 
+            </div>
          {{/if}}       
          
           {{#if hasInfos}}
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <div class="alert alert-info  text-center h2 alert-dismissible fade show" id="FlashMessage"  role="alert">
             <ul style="list-style: none;">
                 {{#each infoMessages}}
                 <li>
@@ -205,10 +199,7 @@
                 </li>
                 {{/each}}
             </ul>
-           
-         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
+            </div>
          {{/if}}
 
 
@@ -216,5 +207,19 @@
        </div>
         {{{body}}}
     </main>
+
+    <script>
+     const messages = document.getElementById("FlashMessage")
+      
+      if(messages){
+        let opacity = 1;
+        setInterval(()=>{
+          opacity -= 0.02
+          messages.style.opacity = ` ${opacity}`
+          
+        }, 100);
+          document.addEventListener("DOMContentLoaded",  () => setTimeout(() => messages.remove(),5000));
+      }
+    </script>
 </body>
 </html>

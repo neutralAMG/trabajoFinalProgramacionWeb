@@ -19,13 +19,13 @@ exports.Config = () =>{
     OrderDetail.belongsTo(Product, {foreignKey:"ProductId", hooks:true});
 
     Commerce.hasMany(Product, {foreignKey:"CommerceId", onDelete:"CASCADE", hooks:true});
-    Product.hasMany(Commerce, {foreignKey:"CommerceId", hooks:true});
+    Product.belongsTo(Commerce, {foreignKey:"CommerceId", hooks:true});
 
     CommerceType.hasMany(Commerce, {foreignKey:"CommerceTypeId", onDelete:"CASCADE", hooks:true});
-    Commerce.hasMany(CommerceType, {foreignKey:"CommerceTypeId", hooks:true});
+    Commerce.belongsTo(CommerceType, {foreignKey:"CommerceTypeId", hooks:true});
 
     Order.hasMany(OrderDetail, {foreignKey:"OrderId", onDelete:"CASCADE", hooks:true});
-    OrderDetail.belongsTo(Order, {foreignKey:"OrderId", hooks:true});
+    OrderDetail.belongsTo(Order, {foreignKey:"OrderId", onDelete:"CASCADE", hooks:true});
 
     Order.hasMany(OrderUpdate, {foreignKey:"OrderId", onDelete:"CASCADE", hooks:true});
     OrderUpdate.belongsTo(Order, {foreignKey:"OrderId", hooks:true});
@@ -36,11 +36,8 @@ exports.Config = () =>{
     Commerce.hasMany(Order, {foreignKey:"CommerceId", onDelete:"CASCADE", hooks:true});
     Order.belongsTo(Commerce, {foreignKey:"CommerceId", hooks:true});
 
-    OrderStatus.hasMany(OrderUpdate, {foreignKey:"NewStatusId", onDelete:"CASCADE", hooks:true});
-    OrderUpdate.belongsTo(OrderStatus, {foreignKey:"NewStatusId", hooks:true});
-
     Commerce.hasMany(User, {foreignKey:"CommerceId", onDelete:"CASCADE", hooks:true});
-    User.belongsTo(Commerce, {foreignKey:"CommerceId", hooks:true})
+    User.belongsTo(Commerce, {foreignKey:"CommerceId",  allowNull: true, hooks:true})
 
     Commerce.hasMany(Category, {foreignKey:"CommerceId", onDelete:"CASCADE", hooks:true});
     Category.belongsTo(Commerce, {foreignKey:"CommerceId", hooks:true});
@@ -48,11 +45,11 @@ exports.Config = () =>{
     Role.hasMany(User, {foreignKey:"RoleId", onDelete:"CASCADE", hooks:true});
     User.belongsTo(Role, {foreignKey:"RoleId", hooks:true});
 
-    User.hasMany(Order, {foreignKey:"ClientId", onDelete:"CASCADE", hooks:true});
-    Order.belongsTo(User, {foreignKey:"ClientId", hooks:true}); 
-    
-    User.hasMany(Order, {foreignKey:"DeliveryId", onDelete:"CASCADE", hooks:true});
-    Order.belongsTo(User, {foreignKey:"DeliveryId", hooks:true});
+    User.hasMany(Order, { foreignKey: "ClientId", as: "ClientOrders", onDelete: "CASCADE", hooks: true });
+     Order.belongsTo(User, { foreignKey: "ClientId", as: "Client", hooks: true });
+
+    User.hasMany(Order, { foreignKey: "DeliveryId", as: "DeliveryOrders", onDelete: "CASCADE", hooks: true });
+    Order.belongsTo(User, { foreignKey: "DeliveryId", as: "Delivery", hooks: true });
 
     User.hasMany(Direction, {foreignKey:"UserId", onDelete:"CASCADE", hooks:true});
     Direction.belongsTo(User, {foreignKey:"UserId", hooks:true});

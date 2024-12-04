@@ -34,7 +34,6 @@ exports.PostAddUserFavCommerces = async (req,res,next) =>{
             UserId: res.locals.UserInfo.Id, 
             CommerceId: Id,
         })
-         console.log(commerces);
           res.redirect("back");
 
         }catch (err){
@@ -51,7 +50,7 @@ exports.PostDeleteUserFavCommerces = async (req,res,next) =>{
         await  userFavCommerceModel.destroy({where:{UserId: res.locals.UserInfo.Id,  CommerceId: Id} });
         res.redirect("back");
 
-        }catch{
+        }catch(err){
             req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while preforming the operation");
             console.error(err);
             res.redirect("back");

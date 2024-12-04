@@ -32,7 +32,7 @@ exports.PostAuthenticate = async (req,res,next)=>{
         const IsPasswordValid = await bycrypt.compare(Pass, UserToAuth.dataValues.Password)
     
         if(!IsPasswordValid) {
-            req.flash(ErrorNameforFlash, "The password is incorrect");
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "The password is incorrect");
             return res.redirect("/account/authenticate");
         }
         
@@ -67,10 +67,8 @@ exports.PostAuthenticate = async (req,res,next)=>{
 }
 exports.PostUnAuthenticate =  (req,res,next)=>{
      req.session.destroy((err) => {
-        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error destroying session");
         console.log(err);
      });
-     req.flash(UIMessagesNamesForFlash.SuccessMessageName, "Logout was successfull");
      res.redirect("/account/authenticate");
 }
 
@@ -101,7 +99,7 @@ exports.PostRegister = async (req,res,next)=>{
         let userWithSameCredentials  = await userModel.findOne({ where:{Email: Email}});
 
         if(userWithSameCredentials){
-            req.flash(ErrorNameforFlash, "There is allready a user with the email, "+ Email);
+            req.flash(UIMessagesNamesForFlash.ErrorMessageName, "There is allready a user with the email, "+ Email);
           return  res.redirect("/account/register");
         }
 
