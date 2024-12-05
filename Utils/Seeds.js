@@ -7,6 +7,7 @@ const CommerceType = require("../Models/CommerceType");
 const Commerece = require("../Models/Commerce");
 const Direction = require("../Models/Direction");
 const Category = require("../Models/Category");
+const Product = require("../Models/Product");
 const bycrypt = require("bcryptjs");
 const {Roles} = require("../Utils/ImportantENVVariables")
 
@@ -111,6 +112,89 @@ const DefaultCommerces = [
     },
 ];
 
+const Defaultproducts = [
+    // Pizza Palace Products
+    // Entradas
+    { Name: "Breadsticks", Description: "Delicious breadsticks with marinara sauce", Price: 4.99, Discount: 0, Photo: "/Images/SeedImages/SW260120-56-2.jpg", CategoryId: 1, CommerceId: 1 },
+    { Name: "Mozzarella Sticks", Description: "Crispy mozzarella cheese sticks with marinara sauce", Price: 5.49, Discount: 0, Photo: "/Images/SeedImages/SW260120-56-2.jpg",  CategoryId: 1, CommerceId: 1 },
+    { Name: "Garlic Knots", Description: "Soft, garlicky bread knots served with marinara", Price: 4.49, Discount: 0, Photo: "/Images/SeedImages/garlic_knots.jpg", CategoryId: 1, CommerceId: 1 },
+
+    // Platos Fuertes
+    { Name: "Margherita Pizza", Description: "Classic pizza with tomato, mozzarella, and basil", Price: 9.99, Discount: 0, Photo: "/Images/SeedImages/margherita_pizza.jpg", CategoryId: 2, CommerceId: 1 },
+    { Name: "Pepperoni Pizza", Description: "Pizza topped with pepperoni and cheese", Price: 10.99, Discount: 0, Photo: "/Images/SeedImages/pepperoni_pizza.jpg", CategoryId: 2, CommerceId: 1 },
+    { Name: "Vegetarian Pizza", Description: "Pizza with a variety of fresh vegetables", Price: 11.49, Discount: 0, Photo: "/Images/SeedImages/vegetarian_pizza.jpg", CategoryId: 2, CommerceId: 1 },
+
+    // Postres
+    { Name: "Tiramisu", Description: "Italian dessert with layers of coffee-soaked cake", Price: 5.99, Discount: 0, Photo: "/Images/SeedImages/tiramisu.jpg", CategoryId: 3, CommerceId: 1 },
+    { Name: "Cheesecake", Description: "Creamy cheesecake with a graham cracker crust", Price: 6.99, Discount: 0, Photo: "/Images/SeedImages/cheesecake.jpg", CategoryId: 3, CommerceId: 1 },
+    { Name: "Chocolate Cake", Description: "Rich and moist chocolate cake with frosting", Price: 5.49, Discount: 0, Photo: "/Images/SeedImages/chocolate_cake.jpg", CategoryId: 3, CommerceId: 1 },
+
+    // Bebidas
+    { Name: "Soda", Description: "Refreshing soft drink", Price: 2.49, Discount: 0, Photo: "/Images/SeedImages/soda.jpg", CategoryId: 4, CommerceId: 1 },
+    { Name: "Iced Tea", Description: "Chilled iced tea with a hint of lemon", Price: 2.99, Discount: 0, Photo: "/Images/SeedImages/iced_tea.jpg", CategoryId: 4, CommerceId: 1 },
+    { Name: "Lemonade", Description: "Freshly squeezed lemonade", Price: 3.49, Discount: 0, Photo: "/Images/SeedImages/lemonade.jpg", CategoryId: 4, CommerceId: 1 },
+
+    // Coffee Haven Products
+    // Entradas
+    { Name: "Croissant", Description: "Flaky buttery croissant", Price: 2.49, Discount: 0, Photo: "/Images/SeedImages/croissant.jpg", CategoryId: 5, CommerceId: 2 },
+    { Name: "Quiche", Description: "Savory quiche with eggs, cheese, and vegetables", Price: 4.99, Discount: 0, Photo: "/Images/SeedImages/quiche.jpg", CategoryId: 5, CommerceId: 2 },
+    { Name: "Bagels", Description: "Soft bagels with cream cheese", Price: 3.49, Discount: 0, Photo: "/Images/SeedImages/bagels.jpg", CategoryId: 5, CommerceId: 2 },
+
+    // Platos Fuertes
+    { Name: "Cappuccino", Description: "Espresso with steamed milk and foam", Price: 3.99, Discount: 0, Photo: "/Images/SeedImages/cappuccino.jpg", CategoryId: 6, CommerceId: 2 },
+    { Name: "Latte", Description: "Espresso with steamed milk", Price: 3.49, Discount: 0, Photo: "/Images/SeedImages/latte.jpg", CategoryId: 6, CommerceId: 2 },
+    { Name: "Americano", Description: "Espresso diluted with hot water", Price: 2.99, Discount: 0, Photo: "/Images/SeedImages/americano.jpg", CategoryId: 6, CommerceId: 2 },
+
+    // Postres
+    { Name: "Cheesecake", Description: "Rich and creamy cheesecake with a graham cracker crust", Price: 4.99, Discount: 0, Photo: "/Images/SeedImages/cheesecake.jpg", CategoryId: 7, CommerceId: 2 },
+    { Name: "Chocolate Cake", Description: "Moist chocolate cake with rich frosting", Price: 5.49, Discount: 0, Photo: "/Images/SeedImages/chocolate_cake.jpg", CategoryId: 7, CommerceId: 2 },
+    { Name: "Tiramisu", Description: "Classic Italian dessert with coffee and mascarpone", Price: 5.99, Discount: 0, Photo: "/Images/SeedImages/tiramisu.jpg", CategoryId: 7, CommerceId: 2 },
+
+    // Bebidas
+    { Name: "Hot Chocolate", Description: "Rich and creamy hot chocolate", Price: 3.49, Discount: 0, Photo: "/Images/SeedImages/hot_chocolate.jpg", CategoryId: 8, CommerceId: 2 },
+    { Name: "Mocha", Description: "Espresso, chocolate, and steamed milk", Price: 4.49, Discount: 0, Photo: "/Images/SeedImages/mocha.jpg", CategoryId: 8, CommerceId: 2 },
+    { Name: "Iced Coffee", Description: "Chilled coffee with milk and ice", Price: 3.49, Discount: 0, Photo: "/Images/SeedImages/iced_coffee.jpg", CategoryId: 8, CommerceId: 2 },
+
+    { Name: "Bruschetta", Description: "Grilled bread with tomatoes, basil, and olive oil", Price: 5.49, Discount: 0, Photo: "/Images/SeedImages/bruschetta.jpg", CategoryId: 9, CommerceId: 3 },
+   { Name: "Stuffed Mushrooms", Description: "Mushrooms filled with cheese and herbs", Price: 6.99, Discount: 0, Photo: "/Images/SeedImages/stuffed_mushrooms.jpg", CategoryId: 9, CommerceId: 3 },
+   { Name: "Caprese Salad", Description: "Tomatoes, mozzarella, basil, and balsamic glaze", Price: 5.99, Discount: 0, Photo: "/Images/SeedImages/caprese_salad.jpg", CategoryId: 9, CommerceId: 3 },
+
+// Platos Fuertes
+{ Name: "Steak Frites", Description: "Grilled steak served with crispy French fries", Price: 14.99, Discount: 0, Photo: "/Images/SeedImages/steak_frites.jpg", CategoryId: 10, CommerceId: 3 },
+{ Name: "Lamb Shank", Description: "Slow-cooked lamb shank served with mashed potatoes", Price: 16.99, Discount: 0, Photo: "/Images/SeedImages/lamb_shank.jpg", CategoryId: 10, CommerceId: 3 },
+{ Name: "Grilled Salmon", Description: "Salmon fillet grilled to perfection with seasonal vegetables", Price: 13.99, Discount: 0, Photo: "/Images/SeedImages/grilled_salmon.jpg", CategoryId: 10, CommerceId: 3 },
+
+// Postres
+{ Name: "Crème Brûlée", Description: "Classic French dessert with caramelized sugar top", Price: 6.49, Discount: 0, Photo: "/Images/SeedImages/creme_brulee.jpg", CategoryId: 11, CommerceId: 3 },
+{ Name: "Chocolate Mousse", Description: "Rich and creamy chocolate mousse with whipped cream", Price: 5.99, Discount: 0, Photo: "/Images/SeedImages/chocolate_mousse.jpg", CategoryId: 11, CommerceId: 3 },
+{ Name: "Lemon Sorbet", Description: "Refreshing lemon sorbet served chilled", Price: 4.99, Discount: 0, Photo: "/Images/SeedImages/lemon_sorbet.jpg", CategoryId: 11, CommerceId: 3 },
+
+// Bebidas
+{ Name: "Red Wine", Description: "Rich and smooth red wine, perfect for pairing with meals", Price: 7.99, Discount: 0, Photo: "/Images/SeedImages/red_wine.jpg", CategoryId: 12, CommerceId: 3 },
+{ Name: "Sparkling Water", Description: "Refreshing sparkling water", Price: 2.49, Discount: 0, Photo: "/Images/SeedImages/sparkling_water.jpg", CategoryId: 12, CommerceId: 3 },
+{ Name: "Espresso", Description: "Strong and aromatic espresso", Price: 2.99, Discount: 0, Photo: "/Images/SeedImages/espresso.jpg", CategoryId: 12, CommerceId: 3 },
+
+// Pizza Haven Products
+// Entradas
+{ Name: "Antipasto Platter", Description: "A selection of cured meats, cheeses, and olives", Price: 7.99, Discount: 0, Photo: "/Images/SeedImages/antipasto_platter.jpg", CategoryId: 13, CommerceId: 4 },
+{ Name: "Bruschetta with Goat Cheese", Description: "Grilled bread topped with goat cheese and tomatoes", Price: 5.49, Discount: 0, Photo: "/Images/SeedImages/bruschetta_goat_cheese.jpg", CategoryId: 13, CommerceId: 4 },
+{ Name: "Chicken Wings", Description: "Crispy chicken wings served with ranch dip", Price: 6.49, Discount: 0, Photo: "/Images/SeedImages/chicken_wings.jpg", CategoryId: 13, CommerceId: 4 },
+
+// Platos Fuertes
+{ Name: "BBQ Chicken Pizza", Description: "Pizza topped with barbecue chicken, cheese, and onions", Price: 11.49, Discount: 0, Photo: "/Images/SeedImages/bbq_chicken_pizza.jpg", CategoryId: 14, CommerceId: 4 },
+{ Name: "Hawaiian Pizza", Description: "Pizza with ham, pineapple, and cheese", Price: 10.99, Discount: 0, Photo: "/Images/SeedImages/hawaiian_pizza.jpg", CategoryId: 14, CommerceId: 4 },
+{ Name: "Marinara Pizza", Description: "Pizza topped with marinara sauce, garlic, and herbs", Price: 8.99, Discount: 0, Photo: "/Images/SeedImages/marinara_pizza.jpg", CategoryId: 14, CommerceId: 4 },
+
+// Postres
+{ Name: "Gelato", Description: "Italian-style ice cream in various flavors", Price: 4.49, Discount: 0, Photo: "/Images/SeedImages/gelato.jpg", CategoryId: 15, CommerceId: 4 },
+{ Name: "Cannoli", Description: "Crispy pastry filled with sweet ricotta cheese", Price: 5.99, Discount: 0, Photo: "/Images/SeedImages/cannoli.jpg", CategoryId: 15, CommerceId: 4 },
+{ Name: "Nutella Pizza", Description: "Pizza with Nutella spread and topped with fresh fruit", Price: 6.49, Discount: 0, Photo: "/Images/SeedImages/nutella_pizza.jpg", CategoryId: 15, CommerceId: 4 },
+
+// Bebidas
+{ Name: "Coca-Cola", Description: "Classic cola beverage", Price: 2.49, Discount: 0, Photo: "/Images/SeedImages/coca_cola.jpg", CategoryId: 16, CommerceId: 4 },
+{ Name: "Iced Lemon Tea", Description: "Chilled lemon-flavored iced tea", Price: 2.99, Discount: 0, Photo: "/Images/SeedImages/iced_lemon_tea.jpg", CategoryId: 16, CommerceId: 4 },
+{ Name: "Sparkling Lemonade", Description: "Refreshing sparkling lemonade", Price: 3.49, Discount: 0, Photo: "/Images/SeedImages/sparkling_lemonade.jpg", CategoryId: 16, CommerceId: 4 }
+];
 
 const DefaultUsers = [
     // Admin
@@ -140,7 +224,7 @@ const DefaultUsers = [
         IsActive: true,
         IsBusy: false,
         Password: "client123",
-        RoleId: Roles.Client, // Assuming RoleId 2 is for Client
+        RoleId: Roles.Client, 
         CommerceId: null,
     },
     // Managers
@@ -155,7 +239,7 @@ const DefaultUsers = [
         IsActive: true,
         IsBusy: false,
         Password: "manager123",
-        RoleId: Roles.Manager, // Assuming RoleId 3 is for Manager
+        RoleId: Roles.Manager, 
         CommerceId: 1, // Example CommerceId
     },
     {
@@ -212,7 +296,7 @@ const DefaultUsers = [
         IsActive: true,
         IsBusy: false,
         Password: "delivery123",
-        RoleId: Roles.Delivery, // Assuming RoleId 4 is for Delivery
+        RoleId: Roles.Delivery, 
         CommerceId: null,
     },
     {
@@ -274,6 +358,7 @@ exports.GenerateSeeds = async ()=>{
     const commereces = await Commerece.findOne();
     const Directions = await Direction.findOne();
     const Categories = await Category.findOne();
+     const Products = await Product.findOne();
     if(!orderstatuses)
         await OrderStatuses.bulkCreate(orderStatusesToSeed);
 
@@ -298,6 +383,13 @@ exports.GenerateSeeds = async ()=>{
         n++;
     }
     
+   }
+
+   if (!Products) {
+    for(const product of Defaultproducts){
+        product.Photo = "/Images/SeedImages/SW260120-56-2.jpg";
+        await Product.create(product);
+    }
    }
     if(!users){
        for(const u of DefaultUsers){

@@ -166,6 +166,27 @@ exports.PostEditCommerece = async (req,res,next) =>{
         res.redirect("back");
     }
 }
+
+exports.PostFilterName = async (req,res,next) =>{
+    try {
+        const 
+    {
+     Name,  
+    } = req.body;
+    const commerece =  await commereceModel.findOne( {where:{Name: Name}});
+    if (!commerece) {
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "No commerece found");
+       return res.redirect("back");
+    }
+
+    req.flash(UIMessagesNamesForFlash.SuccessMessageName,  "Your commerce has been found");
+    res.redirect("/order/order-add/ "+commerece.dataValues.Id);
+    } catch (err) {
+        req.flash(UIMessagesNamesForFlash.ErrorMessageName, "Error while processing the request");
+        console.error(err);
+        res.redirect("back");
+    }
+}
 exports.PostChangeActiveStateCommerece = async (req,res,next) =>{
      const CommerceId = req.body.CommerceId;
     try{

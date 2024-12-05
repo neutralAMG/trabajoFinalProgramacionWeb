@@ -1,5 +1,10 @@
 <h1 class="display-2 text-center py-3 bg-primary text-white rounded">{{order.Commerce.dataValues.Name}}</h1>
-
+<div class="text-center mb-3">
+  
+    <a href="javascript:history.back()" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Go Back
+    </a>
+</div>
 <div class="container my-4">
     <!-- Manager Role: Assign Order -->
     {{#if (equals UserInfo.RoleId roles.Manager)}}

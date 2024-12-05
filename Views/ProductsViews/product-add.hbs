@@ -24,7 +24,7 @@
       </div> 
       <div class="form-outline mb-4">
         <label class="form-label" for="Photo">Photo:</label>
-        <input type="file" id="Photo" name="Image" class="form-control form-control-lg" >
+        <input type="file" id="Photo" name="Image" class="form-control form-control-lg" {{#unless EditMode }} required {{/unless}} >
       </div>
 
       <div class="form-outline mb-4">

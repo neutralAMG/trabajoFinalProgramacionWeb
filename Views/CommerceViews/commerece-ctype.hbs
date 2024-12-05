@@ -1,7 +1,14 @@
 <h1 class="display-2 text-center p-2">COMMERCES</h1>
 <!-- Back Button -->
+<form action="/commerece/filter-name" method="post" class="d-flex justify-content-center mb-2">
+        <input type="text" class="form-control me-2" placeholder="Search commerces" name="Name" style="max-width: 250px;" required>
+        
+        <button class="btn btn-primary">Search</button>
+    </form>  
+    <p class="h5 text-center p-4"> Commerces: {{commerces.length}}</p>
 <div class="text-center mb-3">
-    <a href="javascript:history.back()" class="btn btn-secondary">
+  
+    <a href="/home/home-client" class="btn btn-secondary">
         <i class="bi bi-arrow-left-circle"></i> Go Back
     </a>
 </div>

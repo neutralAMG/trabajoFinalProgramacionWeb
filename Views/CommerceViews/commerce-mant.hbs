@@ -46,7 +46,7 @@
                                </td>
                             <td><div class="d-flex justify-content-center text-center">
                                <form enctype="multipart/form-data" action="/commerece/commerce-change-active-status" method="post" onsubmit=" return confirm('You sure?');">
-                                 <input type="hidden" value="{{commerce.Id}}" id="CommerceId" name="CommerceId"/>
+                                 <input type="hidden" value="{{commerce.Id}}" id="CommerceId" name="CommerceId" required/>
                                  <button class="btn btn-warning btn-sm">Change Status</button>
                                </form>
                             </div>

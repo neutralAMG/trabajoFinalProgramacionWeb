@@ -8,6 +8,7 @@ router.get("/commerce-add", middlewares.ManagerMiddlewareWithCommerece, commerec
 router.post("/commerce-add", middlewares.ManagerMiddlewareWithCommerece, commereceController.PostAddCommerece);
 router.get("/commerce-edit/:id", middlewares.ManagerMiddleware, commereceController.GetEditCommerece);
 router.post("/commerce-edit", middlewares.ManagerMiddleware, commereceController.PostEditCommerece);
+router.post("/filter-name", middlewares.ClientMiddleware, commereceController.PostFilterName);
 router.post("/commerce-change-active-status",middlewares.AdminMiddleware, commereceController.PostChangeActiveStateCommerece);
 
 

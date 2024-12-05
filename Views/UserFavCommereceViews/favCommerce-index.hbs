@@ -11,11 +11,9 @@
                     <div class="col-lg-12 col-md-12 mt-1">
                         <div class="card h-100 shadow-sm background mask mx-2">
                             <div class="card-body d-flex">
-                                <!-- First part: Commerce name and logo (col-10) -->
-                                <a href="{{#if IsClose}}# {{else}}/order/order-add/{{commerce.Id}} {{/if}}" class="text-decoration-none d-flex col-11">
+                                <a href="/order/order-add/{{commerce.Id}}" class="text-decoration-none d-flex col-11">
                                     <img src="{{commerce.Logo}}" alt="{{commerce.Name}}" loading="lazy" style="height: 50px; width: 50px;" class="img-fluid mx-4 rounded-circle">
                                     <h5 class="card-title mt-2 text-primary">{{commerce.Name}}</h5>
-                                    <p class="badge bg-danger rounded-pill mx-2 mt-2">close</p>
                                 </a>   
                                 <form action="/favCommerce/favCommerce-delete" method="post" class="m-0 col-1 d-flex justify-content-center align-items-center bg-secondary">
                                     <input type="hidden" name="Id" value="{{commerce.Id}}">

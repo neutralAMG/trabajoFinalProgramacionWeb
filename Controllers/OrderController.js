@@ -86,7 +86,7 @@ exports.GetAddOrder = async (req,res,next) =>{
             return p;
         });
 
-
+        console.log(products)
         res.render("OrdersViews/order-add",{
             products: products,
             categories: categories,

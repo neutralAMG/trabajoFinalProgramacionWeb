@@ -93,11 +93,12 @@ routesRegister.Register(app)
 modelRelationshipConfig.Config();
 
 app.use(function(req,res,next){
+    
     if(res.locals.IsLoggedIn){ return res.status(400).send("<h1 class='text-center display-1 mt-5' >404</h1>");}
         
     res.redirect("/account/authenticate");
 })
-connection.sync(/*{alter:true}*/).then(() => {
+connection.sync(/*{force:true}*/).then(() => {
     seeds.GenerateSeeds();
     app.listen(8001);
 }

@@ -6,13 +6,7 @@ exports.GetAllUserFavCommerces = async (req,res,next) =>{
     try{
         let userFavCommerce = await userFavCommerceModel.findAll({include:[{model:commerceModel}],where: {UserId: res.locals.UserInfo.Id}});
         userFavCommerce = userFavCommerce.map((c) => c.dataValues.Commerce.dataValues);
-        const currentTime = new Date().toLocaleTimeString("en-US",{hour12: false, hour: "2-digit", minute: "2-digit" } );
-
-        userFavCommerce = userFavCommerce.map((c) => {
-            c.IsClose = (c.ClousingHour > currentTime || c.OpeningHour < currentTime);
-            return c;
-        });
-
+       
         
         
         res.render("UserFavCommereceViews/favCommerce-index",{

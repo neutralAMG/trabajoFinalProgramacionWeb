@@ -8,7 +8,7 @@
     </div>
 
     <div class="col-12">
-      <!-- Table displaying admins -->
+    
       <div class="table-responsive">
         <table class="table text-center table-bordered table-striped table-hover align-middle">
           <thead class="table-light">
@@ -51,7 +51,7 @@
               <td>
                 {{#unless (equals ../UserInfo.Id  admin.Id)}}
                    <div class="d-flex justify-content-center text-center gap-2">
-                  <!-- Delete button -->
+
                   <form action="/user/user-delete" method="post" onsubmit=" return confirm('You sure you want to delete this admin?');">
                     {{!-- <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}"> --}}
                     <input type="hidden" value="{{admin.Id}}" id="Id" name="Id"/>
@@ -63,7 +63,6 @@
                       <input type="hidden" value="{{admin.Id}}" name="Id"/>
                     <button class="btn btn-warning btn-sm">Change Status</button>
                   </form>
-                  <!-- Edit button -->
                   <a href="/user/user-admin-edit/{{admin.Id}}" class="btn btn-info btn-sm">
                     Edit
                   </a>

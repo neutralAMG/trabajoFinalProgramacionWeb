@@ -67,7 +67,7 @@ exports.GetEditCommereceType = async (req,res,next) =>{
 }
 
 exports.PostEditCommereceType = async (req,res,next) =>{
-    const {Id, Name, Description } = req.body;
+    const {Id, Name, Description, PrevImage } = req.body;
     const Icon = req.file
     try{
 
